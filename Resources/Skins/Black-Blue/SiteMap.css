@@ -1,0 +1,21 @@
+/*--- Black & Blue SiteMap Skin ----*/
+.SiteMap-Black-Blue:after {
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}
+.SiteMap-Black-Blue .Black-Blue, .SiteMap-Black-Blue .Black-Blue ul  {margin:5px 0 0 5px; padding: 0px; }
+.SiteMap-Black-Blue .Black-Blue li li {padding: 4px 0 0 4px}
+.SiteMap-Black-Blue .Black-Blue li {list-style:none;}
+.SiteMap-Black-Blue .Black-Blue li img {padding-right:5px;}
+
+.SiteMap-Black-Blue .Black-Blue a,.Black-Blue ul a{	text-decoration: none;	font-size: 100%;	line-height:120%;	color: black;	font-family:'Verdana',sans-serif;}
+.SiteMap-Black-Blue .Black-Blue ul a {font-size: smaller;color:blue;}
+.SiteMap-Black-Blue .SubItem  {font-weight:bold;}
+
+.SiteMap-Black-Blue .SubLi {float:left; min-width:150px }
+.SiteMap-Black-Blue .SubLi .SubLi {clear:both;width:50%; }
+
+.SiteMap-Black-Blue .Black-Blue li a:hover {background-color: red;color:white;}

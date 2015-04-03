@@ -1,0 +1,47 @@
+/*--- SiteMap Basic Styles   -----*/
+.SiteMap-Shiny {
+	border: solid 1px #444;
+	-moz-border-radius: 0.8em; 
+	-webkit-border-radius: 0.8em;
+	border-radius: 0.8em;
+    
+	-webkit-box-shadow: 0 1px 4px rgba(0,0,0,.2);
+	-moz-box-shadow: 0 1px 4px rgba(0,0,0,.2);
+	box-shadow: 0 1px 4px rgba(0,0,0,.2);
+	
+	border: solid 1px #555;
+	background: #ccc;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ccc), to(#575757));
+	background: -moz-linear-gradient(top,  #ccc,  #575757);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ccc', endColorstr='#575757');
+
+	padding-bottom:80px;
+	margin-top:20px;
+	width:100%;
+}
+
+.SiteMap-Shiny:after {
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}
+
+.SiteMap-Shiny a  {color: #000;}
+.SiteMap-Shiny .Shiny li li {padding: 4px}
+.SiteMap-Shiny .SubItem  {color: #000; font-weight:bold;}
+
+.SiteMap-Shiny ul ul a {color: #000;}
+.SiteMap-Shiny .Shiny li a:hover {color:red;}
+
+.SiteMap-Shiny ul {list-style:none;padding:8px}
+.SiteMap-Shiny .SubLi {float:left; min-width:150px }
+.SiteMap-Shiny .SubLi .SubLi {clear:both;width:50%; }
+
+.SiteMap-Shiny .Shiny {margin-left:10px;}
+
+.SiteMap-Shiny .Shiny li {list-style:none;}
+
+.SiteMap-Shiny .Shiny .SubLi {	min-width: 100px;	margin-right: 5px;}
+

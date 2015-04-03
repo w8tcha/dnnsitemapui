@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="mscorlib" name="mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.TrayLargeIcon" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="$this.TrayAutoArrange" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <assembly alias="System" name="System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.DefaultModifiers" type="System.CodeDom.MemberAttributes, System">
+    <value>Private</value>
+  </data>
+  <data name="lblMaxLevel.Help" xml:space="preserve">
+    <value>Maximales Unterseiten Level das dargestellt werden soll. "-1" ist Unbegrenzt.</value>
+  </data>
+  <data name="lblMaxLevel.Text" xml:space="preserve">
+    <value>Maximales Level</value>
+  </data>
+  <data name="lblStartRenderCt.Help" xml:space="preserve">
+    <value>Zeigt alle Seiten ab dem aktuellen Level in dem Sich diese Seite befindet.</value>
+  </data>
+  <data name="lblStartRenderCt.Text" xml:space="preserve">
+    <value>Ab dem aktuellen Seiten Level starten</value>
+  </data>
+  <data name="ModuleHelp.Text" xml:space="preserve">
+    <value>Hier könnnen Sie alle relevanten Einstellungen für dieses Modul vornehmen.</value>
+  </data>
+  <data name="lblShowHidden.Help" xml:space="preserve">
+    <value>Die Sitemap zeigt Seiten an die als "Versteckt" gekennzeichnet sind.</value>
+  </data>
+  <data name="lblShowHidden.Text" xml:space="preserve">
+    <value>Zeige Versteckte Seiten</value>
+  </data>
+  <data name="lblShowTabIcons.Help" xml:space="preserve">
+    <value>Zeigt die Seiten Icons falls definiert in der SiteMap an.</value>
+  </data>
+  <data name="lblShowTabIcons.Text" xml:space="preserve">
+    <value>Seiten Icons anzeigen</value>
+  </data>
+  <data name="lblExcludeLst.Help" xml:space="preserve">
+    <value>Liste mit allen Seiten, Sie können Seiten definieren die nicht in der SiteMap angezeigt werden sollen. WARNUNG: Wenn Sie eine Hauptseite auschließen werden alle Unterseiten auch ausgeschlossen.</value>
+  </data>
+  <data name="lblExcludeLst.Text" xml:space="preserve">
+    <value>Folgende Seiten nicht anzeigen</value>
+  </data>
+  <data name="btnSelectAll.Text" xml:space="preserve">
+    <value>Alle auswählen</value>
+  </data>
+  <data name="btnSelectNone.Text" xml:space="preserve">
+    <value>Alle abwählen</value>
+  </data>
+  <data name="lblSkin.Help" xml:space="preserve">
+    <value>Liste mit allen Verfügbaren Skins für die SiteMap.</value>
+  </data>
+  <data name="lblSkin.Text" xml:space="preserve">
+    <value>Skin Auswahl</value>
+  </data>
+  <data name="lblRender.Help" xml:space="preserve">
+    <value>Sitemap normal anzeigen oder TreeView mit Animation.</value>
+  </data>
+  <data name="lblRender.Text" xml:space="preserve">
+    <value>Darstellung</value>
+  </data>
+  <data name="Error.Text" xml:space="preserve">
+    <value>Wert muss eine Nummer sein!</value>
+  </data>
+  <data name="lblShowInfo.Help" xml:space="preserve">
+    <value>Zeigt am Ende der SiteMap eine Copyright Nachicht.</value>
+  </data>
+  <data name="lblShowInfo.Text" xml:space="preserve">
+    <value>Zeige Copyright Info</value>
+  </data>
+  <data name="lblRootLevel.Help" xml:space="preserve">
+    <value>Level von dem gestarten werden soll. Wenn man "Custom" auswählt kann man einen Tab unter Root Seite auswählen</value>
+  </data>
+  <data name="lblRootLevel.Text" xml:space="preserve">
+    <value>Start Level</value>
+  </data>
+  <data name="lblRootTab.Help" xml:space="preserve">
+    <value>Seite von der die SiteMap gestartet wird.</value>
+  </data>
+  <data name="lblRootTab.Text" xml:space="preserve">
+    <value>Root Seite</value>
+  </data>
+  <data name="lExlOpt.Text" xml:space="preserve">
+    <value>Exclude Einstellungen</value>
+  </data>
+  <data name="lRenderOpt.Text" xml:space="preserve">
+    <value>Render Einstellungen</value>
+  </data>
+  <data name="lVislOpt.Text" xml:space="preserve">
+    <value>Optische Einstellungen</value>
+  </data>
+  <data name="lblAnimated.Help" xml:space="preserve">
+    <value>Einstellung zur Anmimation von Öffnen/ Schliessen von Zweigen, Optionen sind "slow", "normal", "fast" oder keine.</value>
+  </data>
+  <data name="lblAnimated.Text" xml:space="preserve">
+    <value>Animation</value>
+  </data>
+  <data name="lblCollapsed.Help" xml:space="preserve">
+    <value>Einstellung ob alle TreeView Zweige geschlossen sind beim Start.</value>
+  </data>
+  <data name="lblCollapsed.Text" xml:space="preserve">
+    <value>Alle Zweige geschlossen</value>
+  </data>
+  <data name="lblPersist.Help" xml:space="preserve">
+    <value>Persists the tree's expand/collapse state in one of two ways:
+"location": looks within all tree nodes with link anchors that match the document's current URL (location.href), and if found, expands that node (including its parent nodes). Great for href-based state saving.
+"cookie": Saves the current state of the tree on each click to a cookie and restores that state on page load.
+
+To disable persistence, remove this option entirely.</value>
+  </data>
+  <data name="lblPersist.Text" xml:space="preserve">
+    <value>Persist</value>
+  </data>
+  <data name="lblUnique.Help" xml:space="preserve">
+    <value>Einstellung um immer nur einen Zweig geöffnet zu haben.</value>
+  </data>
+  <data name="lblUnique.Text" xml:space="preserve">
+    <value>Einzelne Zweige</value>
+  </data>
+  <data name="lTreeOpt.Text" xml:space="preserve">
+    <value>TreeView Ansichtseinstellungen</value>
+  </data>
+  <data name="No.Text" xml:space="preserve">
+    <value>Nein</value>
+  </data>
+  <data name="None.Text" xml:space="preserve">
+    <value>Keine</value>
+  </data>
+  <data name="Yes.Text" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="lblRenderName.Help" xml:space="preserve">
+    <value>Der Seitename ist der Hauptzweig im TreeView.</value>
+  </data>
+  <data name="lblRenderName.Text" xml:space="preserve">
+    <value>Sitenname als Hauptzweig</value>
+  </data>
+  <data name="lPreview.Text" xml:space="preserve">
+    <value>Skin Vorschau:</value>
+  </data>
+  <data name="lblHumanUrls.Help" xml:space="preserve">
+    <value>Möglichkeit die Seiten Links Menschen Freundlich zu Formatieren, z.B.: http://mydomain.com/Home.aspx statt http://mydomain.com/Home/tabid/40/Default.aspx.</value>
+  </data>
+  <data name="lblHumanUrls.Text" xml:space="preserve">
+    <value>Menschen Freundliche Urls Erstellen</value>
+  </data>
+  <data name="ControlTitle_settings.Text" xml:space="preserve">
+    <value>WatchersNET.SiteMap Einstellungen</value>
+  </data>
+  <data name="lblError.Text" xml:space="preserve">
+    <value>Skins Ordner Nicht gefunden, Bitte Re-Installieren Sie das Modul.</value>
+  </data>
+  <data name="lblDemoMode.Help" xml:space="preserve">
+    <value>Enable Demo Mode (Show case). Wenn Aktiviert, wird über der SiteMap eine Auswahl mit den Skins angezeigt um das Skin zu wechseln.</value>
+  </data>
+  <data name="lblDemoMode.Text" xml:space="preserve">
+    <value>Demomodus aktivieren</value>
+  </data>
+  <data name="AllTerms.Text" xml:space="preserve">
+    <value>Alle Terms benutzen</value>
+  </data>
+  <data name="CustomVocabulary.Text" xml:space="preserve">
+    <value>Vokabular wählen</value>
+  </data>
+  <data name="lblChooseVoc.Help" xml:space="preserve">
+    <value>Markieren Sie von welchen Vokabularien die Terms als Filter verwendet werden sollen.</value>
+  </data>
+  <data name="lblChooseVoc.Text" xml:space="preserve">
+    <value>Vokabulare auswählen</value>
+  </data>
+  <data name="lblFilterByTax.Help" xml:space="preserve">
+    <value>Nur Seiten anzeigen, bei denen der Seitenname ein Tax Term enthällt.</value>
+  </data>
+  <data name="lblFilterByTax.Text" xml:space="preserve">
+    <value>Filter Tabs by Taxonomy Tags</value>
+  </data>
+  <data name="lTaxOpt.Text" xml:space="preserve">
+    <value>Taxonomy Terms Filter Einstellungen</value>
+  </data>
+  <data name="TabTerms.Text" xml:space="preserve">
+    <value>Terms des Aktueller Seite benutzen</value>
+  </data>
+</root>

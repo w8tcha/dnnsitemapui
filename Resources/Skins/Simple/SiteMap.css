@@ -1,0 +1,21 @@
+/*--- Simple SiteMap Skin ----*/
+.SiteMap-Simple:after {
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}
+.SiteMap-Simple .Simple, .SiteMap-Simple .Simple ul  {margin:5px 0 0 5px; padding: 0px; }
+.SiteMap-Simple .Simple li li {padding: 4px}
+.SiteMap-Simple .Simple li {list-style:none;}
+.SiteMap-Simple .Simple li img {padding-right:5px;}
+
+.SiteMap-Simple .Simple li a, .SiteMap-Simple .Simple ul a{	text-decoration: none;	font-size: 100%;	line-height:120%;	color: black;	font-family:'Arial',sans-serif;text-transform:uppercase;}
+.SiteMap-Simple .Simple li li a{	text-transform:none;}
+.SiteMap-Simple .SubItem  {font-weight:bold;}
+
+.SiteMap-Simple .SubLi {float:left; min-width:150px }
+.SiteMap-Simple .SubLi .SubLi {clear:both;width:50%; }
+
+.SiteMap-Simple .Simple li a:hover {background-color: red;color:white;}

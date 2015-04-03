@@ -1,0 +1,64 @@
+<dotnetnuke version="3.0" type="Module">
+  <folders>
+    <folder>
+      <name>WatchersNET - SiteMap</name>
+      <description>
+        &lt;p&gt;&lt;strong&gt;WatchersNET.SiteMap - A Modern SiteMap / TreeView&lt;/strong&gt;&lt;/p&gt;<br />
+        &lt;p&gt;Back in the old days, almost every website had a sitemap where they listed out all the pages. The purpose of the sitemap is to help visitors and search engine spiders to find information on the site. &lt;/p&gt;<br />
+        &lt;p&gt;Now, a lot of modern websites have dropped the sitemap page, instead they place the sitemap in the footer area. &lt;/p&gt;<br />
+        &lt;p&gt;This Module creates such an SiteMap which automatically builds a site map based on the visitor's authorized permission level, you can define which Tabs schould be shown and which not. Also the Tab Icons can be displayed.&lt;/p&gt;
+      </description>
+      <version>01.03.10</version>
+      <businesscontrollerclass>WatchersNET.DNN.Modules.SiteMapController, WatchersNET.DNN.Modules.SiteMap</businesscontrollerclass>
+      <resourcefile>Resources.zip</resourcefile>
+      <modules>
+        <module>
+          <friendlyname>SiteMap</friendlyname>
+          <cachetime>0</cachetime>
+          <controls>
+            <control>
+              <title>SiteMap</title>
+              <src>SiteMap.ascx</src>
+              <type>View</type>
+            </control>
+            <control>
+              <key>Settings</key>
+              <title>SiteMap Settings</title>
+              <src>Settings.ascx</src>
+              <type>Edit</type>
+            </control>
+          </controls>
+        </module>
+      </modules>
+      <files>
+        <file>
+          <name>module.css</name>
+        </file>
+        <file>
+          <name>SiteMap.ascx</name>
+        </file>
+        <file>
+          <name>SiteMapSl.ascx</name>
+        </file>
+        <file>
+          <name>Settings.ascx</name>
+        </file>
+        <file>
+          <name>WatchersNET.DNN.Modules.SiteMap.dll</name>
+        </file>
+        <file>
+          <name>license.txt</name>
+        </file>
+        <file>
+          <name>readme.txt</name>
+        </file>
+        <file>
+          <name>01.02.00.SqlDataProvider</name>
+        </file>
+        <file>
+          <name>Uninstall.SqlDataProvider</name>
+        </file>
+      </files>
+    </folder>
+  </folders>
+</dotnetnuke>

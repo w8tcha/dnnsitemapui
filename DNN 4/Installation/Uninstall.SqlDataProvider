@@ -1,0 +1,15 @@
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/*****                                                  *****/
+/*****                                                  *****/
+/***** Note: To manually execute this script you must   *****/
+/*****       perform a search and replace operation     *****/
+/*****       for {databaseOwner} and {objectQualifier}  *****/
+/*****                                                  *****/
+/************************************************************/
+/* This sql statement deletes the skinobject reference from the database */
+
+DELETE FROM {databaseOwner}{objectQualifier}ModuleControls 
+WHERE ControlKey = 'SiteMapSl'
+GO
+

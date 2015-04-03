@@ -1,0 +1,21 @@
+/*--- Black SiteMap Skin ----*/
+.SiteMap-Black:after {
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}
+.SiteMap-Black .Black, .SiteMap-Black .Black ul  {margin:5px 0 0 5px; padding: 0px; }
+.SiteMap-Black .Black li li {padding: 4px 0 0 4px}
+.SiteMap-Black .Black li {list-style:none;}
+.SiteMap-Black .Black li img {padding-right:5px;}
+
+.SiteMap-Black .Black a,.Black ul a{	text-decoration: none;	font-size: 100%;	line-height:120%;	color: black;	font-family:'Verdana',sans-serif;}
+.SiteMap-Black .Black li li a {font-size: smaller;}
+.SiteMap-Black .SubItem  {font-weight:bold;}
+
+.SiteMap-Black .SubLi {float:left; min-width:150px }
+.SiteMap-Black .SubLi .SubLi {clear:both;width:50%; }
+
+.SiteMap-Black .Black li a:hover {background:red; color:white;}

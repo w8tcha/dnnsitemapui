@@ -1,0 +1,330 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AllTerms.Text" xml:space="preserve">
+    <value>Użyj wszystkich terminów</value>
+  </data>
+  <data name="btnSelectAll.Text" xml:space="preserve">
+    <value>Wybierz wszystkie</value>
+  </data>
+  <data name="btnSelectNone.Text" xml:space="preserve">
+    <value>Odznacz wszystkie</value>
+  </data>
+  <data name="Child.Text" xml:space="preserve">
+    <value>Podrzędna</value>
+  </data>
+  <data name="ControlTitle_settings.Text" xml:space="preserve">
+    <value>Ustawienia mapy witryny</value>
+  </data>
+  <data name="Cookie.Text" xml:space="preserve">
+    <value>Cookies</value>
+  </data>
+  <data name="Current.Text" xml:space="preserve">
+    <value>Bieżąca</value>
+  </data>
+  <data name="Custom.Text" xml:space="preserve">
+    <value>Własna</value>
+  </data>
+  <data name="CustomTerms.Text" xml:space="preserve">
+    <value>Wybierz terminy</value>
+  </data>
+  <data name="CustomVocabulary.Text" xml:space="preserve">
+    <value>Wybierz słowniki</value>
+  </data>
+  <data name="Error.Text" xml:space="preserve">
+    <value>Wartość musi być liczbowa!</value>
+  </data>
+  <data name="Fast.Text" xml:space="preserve">
+    <value>Szybka</value>
+  </data>
+  <data name="lblAnimated.Help" xml:space="preserve">
+    <value>Ustawia szybkość animacji rozwijania/zwijania stron podrzędnych. Prawidłowe wartości to napisy wolna, normalna, szybka.</value>
+  </data>
+  <data name="lblAnimated.Text" xml:space="preserve">
+    <value>Animacja</value>
+  </data>
+  <data name="lblChooseVoc.Help" xml:space="preserve">
+    <value>Wybierz które słownictwa mają być używane jako filtr</value>
+  </data>
+  <data name="lblChooseVoc.Text" xml:space="preserve">
+    <value>Wybierz słownictwo</value>
+  </data>
+  <data name="lblCollapsed.Help" xml:space="preserve">
+    <value>Ustawia, czy wszystkie węzły mają być rozwinięte domyślnie</value>
+  </data>
+  <data name="lblCollapsed.Text" xml:space="preserve">
+    <value>Wszystkie gałęzie rozwinięte</value>
+  </data>
+  <data name="lblDemoMode.Help" xml:space="preserve">
+    <value>Włącza tryb demonstracyjny (pokazowy). Jeśli włączone, to wyświetla wysuwane menu z wyborem motywu.</value>
+  </data>
+  <data name="lblDemoMode.Text" xml:space="preserve">
+    <value>Włącz tryb demonstracyjny</value>
+  </data>
+  <data name="lblError.Text" xml:space="preserve">
+    <value>Folder z motywami nie został odnaleziony, proszę zainstalować moduł ponownie</value>
+  </data>
+  <data name="lblExcludeLst.Help" xml:space="preserve">
+    <value>Lista ze wszystkim stronami, wybrane strony NIE zostaną wyświetlone na mapie. UWAGA: Jeśli główna strona zostania wyłączona, to wszystkie podrzędne również nie zostaną wyświetlone.</value>
+  </data>
+  <data name="lblExcludeLst.Text" xml:space="preserve">
+    <value>Strony wyłączone</value>
+  </data>
+  <data name="lblFilterByTax.Help" xml:space="preserve">
+    <value>Wyświetla tylko strony portalu, których nazwa zawiera termin ze słownika.</value>
+  </data>
+  <data name="lblFilterByTax.Text" xml:space="preserve">
+    <value>Filtruj strony według słownika etykiet</value>
+  </data>
+  <data name="lblHumanUrls.Help" xml:space="preserve">
+    <value>Możliwość uruchomienia przyjaznych odnośników. Na przykład http://mydomain.com/Home.aspx zamiast http://mydomain.com/Home/tabid/40/Default.aspx.</value>
+  </data>
+  <data name="lblHumanUrls.Text" xml:space="preserve">
+    <value>Generuj przyjazne odnośniki URL</value>
+  </data>
+  <data name="lblMaxLevel.Help" xml:space="preserve">
+    <value>Ustaw maksymalny poziom zagnieżdżenia do wyświetlania na mapie. "-1" oznacza brak ograniczeń.</value>
+  </data>
+  <data name="lblMaxLevel.Text" xml:space="preserve">
+    <value>Maksymalny poziom do wyświetlania</value>
+  </data>
+  <data name="lblPersist.Help" xml:space="preserve">
+    <value>Zachowanie stanu rozwinięcia/zwinięcia na dwa sposoby: "położenie": wyszukuje węzły drzewa z kotwicami pasującymi do bieżącego adresu URL, jeśli odnajdzie, to rozwija ten węzeł (wraz z węzłami nadrzędnymi). Rozwiązanie dobre przy zapisie stanu na podstawie HREF. "cookie": zapisuje bieżący stan drzewa po każdym kliknięciu do pliku cookie i odtwarza ten stan po wczytaniu strony. Aby wyłączyć zachowanie stanu, wyłącz tę funkcję.</value>
+  </data>
+  <data name="lblPersist.Text" xml:space="preserve">
+    <value>Zachowanie stanu</value>
+  </data>
+  <data name="lblRender.Help" xml:space="preserve">
+    <value>Wyświetla mapę witryny normalnie lub w formie animowanego drzewa.</value>
+  </data>
+  <data name="lblRender.Text" xml:space="preserve">
+    <value>Wyświetlanie</value>
+  </data>
+  <data name="lblRenderName.Help" xml:space="preserve">
+    <value>Wyświetla nazwę portalu jako główny węzeł mapy.</value>
+  </data>
+  <data name="lblRenderName.Text" xml:space="preserve">
+    <value>Nazwa strony jako główny węzeł</value>
+  </data>
+  <data name="lblRootLevel.Help" xml:space="preserve">
+    <value>Wybierz początkowy poziom dla stron. Jeśli wybierzesz "Własny", to będzie można wybrać stronę poniżej.</value>
+  </data>
+  <data name="lblRootLevel.Text" xml:space="preserve">
+    <value>Poziom główny mapy</value>
+  </data>
+  <data name="lblRootTab.Help" xml:space="preserve">
+    <value>Strona główna, od której ma rozpocząć się wyświetlanie.</value>
+  </data>
+  <data name="lblRootTab.Text" xml:space="preserve">
+    <value>Strona główna mapy</value>
+  </data>
+  <data name="lblShowHidden.Help" xml:space="preserve">
+    <value>Mapa wyświetli strony oznaczone jako "ukryte".</value>
+  </data>
+  <data name="lblShowHidden.Text" xml:space="preserve">
+    <value>Wyświetlaj ukryte strony</value>
+  </data>
+  <data name="lblShowInfo.Help" xml:space="preserve">
+    <value>Wyświetla informacje o prawie autorskim poniżej mapy.</value>
+  </data>
+  <data name="lblShowInfo.Text" xml:space="preserve">
+    <value>Wyświetlaj informacje o prawie autorskim</value>
+  </data>
+  <data name="lblShowTabIcons.Help" xml:space="preserve">
+    <value>Wyświetla ikony stron, jeśli dostępne.</value>
+  </data>
+  <data name="lblShowTabIcons.Text" xml:space="preserve">
+    <value>Wyświetlaj ikony stron</value>
+  </data>
+  <data name="lblSkin.Help" xml:space="preserve">
+    <value>List dostępnych motywów dla mapy.</value>
+  </data>
+  <data name="lblSkin.Text" xml:space="preserve">
+    <value>Wybór motywu</value>
+  </data>
+  <data name="lblStartRenderCt.Help" xml:space="preserve">
+    <value>Wyświetla strony tylko z bieżącego poziomu</value>
+  </data>
+  <data name="lblStartRenderCt.Text" xml:space="preserve">
+    <value>Rozpocznij od bieżącego poziomu</value>
+  </data>
+  <data name="lblUnique.Help" xml:space="preserve">
+    <value>Ustawia, czy tylko jeden węzeł na raz może zostać otwarty, zamykając uprzednio otwarte węzły.</value>
+  </data>
+  <data name="lblUnique.Text" xml:space="preserve">
+    <value>Unikalne gałęzie</value>
+  </data>
+  <data name="lblUseDefaultIcon.Help" xml:space="preserve">
+    <value>Domyślna ikona dla stron zostanie wyświetlona dla tych, które nie mają zdefiniowanej ikony.</value>
+  </data>
+  <data name="lblUseDefaultIcon.Text" xml:space="preserve">
+    <value>Domyślna ikona strony</value>
+  </data>
+  <data name="lExlOpt.Text" xml:space="preserve">
+    <value>Ustawienia wyłączeń</value>
+  </data>
+  <data name="Location.Text" xml:space="preserve">
+    <value>Położenie</value>
+  </data>
+  <data name="lPreview.Text" xml:space="preserve">
+    <value>Podgląd motywu:</value>
+  </data>
+  <data name="lRenderOpt.Text" xml:space="preserve">
+    <value>Ustawienia wyświetlania</value>
+  </data>
+  <data name="lTaxOpt.Text" xml:space="preserve">
+    <value>Ustawienia filtra terminów z taksonomii</value>
+  </data>
+  <data name="lTreeOpt.Text" xml:space="preserve">
+    <value>Ustawienia wyświetlania widoku drzewa</value>
+  </data>
+  <data name="lVislOpt.Text" xml:space="preserve">
+    <value>Ustawienia wizualne</value>
+  </data>
+  <data name="ModuleHelp.Text" xml:space="preserve">
+    <value>Tutaj można zmienić wszystkie ustawienia modułu modułu.</value>
+  </data>
+  <data name="No.Text" xml:space="preserve">
+    <value>Nie</value>
+  </data>
+  <data name="None.Text" xml:space="preserve">
+    <value>Brak</value>
+  </data>
+  <data name="Normal.Text" xml:space="preserve">
+    <value>Normalna</value>
+  </data>
+  <data name="Parent.Text" xml:space="preserve">
+    <value>Nadrzędna</value>
+  </data>
+  <data name="Root.Text" xml:space="preserve">
+    <value>Główna</value>
+  </data>
+  <data name="Slow.Text" xml:space="preserve">
+    <value>Wolna</value>
+  </data>
+  <data name="TabTerms.Text" xml:space="preserve">
+    <value>Użyj terminów z bieżącej strony</value>
+  </data>
+  <data name="Treeview.Text" xml:space="preserve">
+    <value>Widok drzewa</value>
+  </data>
+  <data name="Yes.Text" xml:space="preserve">
+    <value>Tak</value>
+  </data>
+</root>

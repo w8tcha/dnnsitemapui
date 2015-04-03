@@ -1,0 +1,21 @@
+/*--- Mozilla Inspired SiteMap Skin ----*/
+.SiteMap-Mozilla:after {
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}
+.SiteMap-Mozilla, .SiteMap-Mozilla ul  {margin:5px 0 0 5px;padding: 0px; }
+.SiteMap-Mozilla .Mozilla li li {padding: 4px 0 0 4px}
+.SiteMap-Mozilla .Mozilla li {list-style:none;}
+.SiteMap-Mozilla .Mozilla li img {padding-right:5px;}
+
+.SiteMap-Mozilla .Mozilla li a,.SiteMap-Mozilla .Mozilla ul a{	text-decoration: none;	font-size: 11px;	line-height:120%;	color: #898378;	font-family:'Verdana',sans-serif;}
+.SiteMap-Mozilla .Mozilla ul ul a {font-size: 10px;}
+.SiteMap-Mozilla .SubItem  {font-weight:bold;}
+
+.SiteMap-Mozilla .SubLi {float:left; min-width:150px }
+.SiteMap-Mozilla .SubLi .SubLi {clear:both;width:50%; }
+
+.Mozilla li a:hover {color:red;}

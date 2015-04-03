@@ -1,0 +1,32 @@
+/*--- SiteMap Basic Styles   -----*/
+.SiteMap-Default:after {
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}
+.SiteMap-Default .Default li a:hover {color:red;}
+
+/*--- Default SiteMap Skin ----*/
+.SiteMap-Default .Default, .SiteMap-Default .Default ul  {margin: 10px 0px 10px 15px; padding: 0px; }
+
+.SiteMap-Default .SubUl li {list-style-type: square;}
+.SiteMap-Default .Default li img {padding-right:5px;}
+
+
+.SiteMap-Default .Default li {padding-right: 5px;}
+
+.SiteMap-Default .Default a,
+.SiteMap-Default .Default ul a{
+	text-decoration: none;
+	font-family:'Arial',sans-serif;
+	font-size: 12px;
+	line-height:120%;
+	
+}
+.SiteMap-Default a {color: green;}
+.SiteMap-Default .SubItem  {font-weight:bold;color:black;}
+
+.SiteMap-Default .SubLi {float:left; min-width:150px;list-style:none;}
+.SiteMap-Default .SubLi .SubLi {clear:both;width:50%; }

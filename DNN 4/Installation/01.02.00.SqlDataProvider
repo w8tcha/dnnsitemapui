@@ -1,0 +1,22 @@
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/*****                                                  *****/
+/*****                                                  *****/
+/***** Note: To manually execute this script you must   *****/
+/*****       perform a search and replace operation     *****/
+/*****       for {databaseOwner} and {objectQualifier}  *****/
+/*****                                                  *****/
+/************************************************************/
+
+/* This sql statement makes sure that the module is also installed as a skin object */
+
+IF ( SELECT COUNT(*) 
+	 FROM {databaseOwner}{objectQualifier}ModuleControls 
+	 WHERE ControlKey = 'SiteMapSl') = 0
+BEGIN
+  INSERT INTO {databaseOwner}{objectQualifier}ModuleControls
+    (ControlKey, ControlTitle, ControlSrc, ControlType)
+  VALUES
+    ('SiteMapSl' , 'SKIN', 'DesktopModules/WatchersNET - SiteMap/SiteMapSl.ascx', -2)
+END
+GO
