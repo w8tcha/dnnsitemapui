@@ -21,8 +21,11 @@ namespace WatchersNET.DNN.Modules
     using System.Web.UI.HtmlControls;
     using System.Web.UI.WebControls;
 
+    using DotNetNuke.Abstractions.Portals;
+    using DotNetNuke.Collections;
     using DotNetNuke.Common;
     using DotNetNuke.Common.Utilities;
+    using DotNetNuke.Entities.Content;
     using DotNetNuke.Entities.Content.Common;
     using DotNetNuke.Entities.Content.Taxonomy;
     using DotNetNuke.Entities.Tabs;
@@ -48,39 +51,9 @@ namespace WatchersNET.DNN.Modules
         private List<Term> taxTerms;
 
         /// <summary>
-        /// The demo mode.
-        /// </summary>
-        private bool bDemoMode;
-
-        /// <summary>
-        /// The filter by tax.
-        /// </summary>
-        private bool bFilterByTax;
-
-        /// <summary>
-        /// The human URLs.
-        /// </summary>
-        private bool bHumanUrls;
-
-        /// <summary>
         /// The is skin changed.
         /// </summary>
-        private bool bIsSkinChanged;
-
-        /// <summary>
-        /// The render name.
-        /// </summary>
-        private bool bRenderName;
-
-        /// <summary>
-        /// The show hidden.
-        /// </summary>
-        private bool bShowHidden;
-
-        /// <summary>
-        /// The show tab icons.
-        /// </summary>
-        private bool bShowTabIcons;
+        private bool isSkinChanged;
 
         /// <summary>
         /// The exclusion tabs.
@@ -93,11 +66,6 @@ namespace WatchersNET.DNN.Modules
         private IList<string> inclusionTabs;
 
         /// <summary>
-        /// The i max level.
-        /// </summary>
-        private int iMaxLevel = -1;
-
-        /// <summary>
         /// The items skins.
         /// </summary>
         private ListItemCollection itemsSkins;
@@ -106,76 +74,6 @@ namespace WatchersNET.DNN.Modules
         /// The items tree view.
         /// </summary>
         private ListItemCollection itemsTreeView;
-
-        /// <summary>
-        /// The s animated.
-        /// </summary>
-        private string sAnimated = "normal";
-
-        /// <summary>
-        /// The s collapsed.
-        /// </summary>
-        private string sCollapsed = "true";
-
-        /// <summary>
-        /// The s default icon.
-        /// </summary>
-        private string sDefaultIcon = string.Empty;
-
-        /// <summary>
-        /// The s exclusion tabs.
-        /// </summary>
-        private string sExclusionTabs = string.Empty;
-
-        /// <summary>
-        /// The Inclusion tabs.
-        /// </summary>
-        private string sInclusionTabs = string.Empty;
-
-        /// <summary>
-        /// The s persist.
-        /// </summary>
-        private string sPersist = "location";
-
-        /// <summary>
-        /// The s render mode.
-        /// </summary>
-        private string sRenderMode = "normal";
-
-        /// <summary>
-        /// The s root level.
-        /// </summary>
-        private string sRootLevel = "root";
-
-        /// <summary>
-        /// The s root tab.
-        /// </summary>
-        private string sRootTab = "-1";
-
-        /// <summary>
-        /// The s skin name.
-        /// </summary>
-        private string sSkinName = "Default";
-
-        /// <summary>
-        /// The s tax mode.
-        /// </summary>
-        private string sTaxMode = "all";
-
-        /// <summary>
-        /// The s tax vocabularies.
-        /// </summary>
-        private string sTaxVocabularies = string.Empty;
-
-        /// <summary>
-        /// The s tax terms.
-        /// </summary>
-        private string sTaxTerms = string.Empty;
-
-        /// <summary>
-        /// The s unique.
-        /// </summary>
-        private string sUnique = "true";
 
         /// <summary>
         /// The tab permissions.
@@ -193,9 +91,9 @@ namespace WatchersNET.DNN.Modules
         private string[] terms;
 
         /// <summary>
-        /// The ti tabs.
+        /// The tabs.
         /// </summary>
-        private List<TabInfo> tiTabs;
+        private List<TabInfo> tabs;
 
         #endregion
 
@@ -204,338 +102,107 @@ namespace WatchersNET.DNN.Modules
         /// <summary>
         /// Gets or sets Animated.
         /// </summary>
-        public string Animated
-        {
-            get
-            {
-                return this.sAnimated;
-            }
-
-            set
-            {
-                this.sAnimated = value;
-            }
-        }
+        public string Animated { get; set; } = "normal";
 
         /// <summary>
         /// Gets or sets Collapsed.
         /// </summary>
-        public string Collapsed
-        {
-            get
-            {
-                return this.sCollapsed;
-            }
-
-            set
-            {
-                this.sCollapsed = value;
-            }
-        }
+        public string Collapsed { get; set; } = "true";
 
         /// <summary>
         /// Gets or sets DefaultIcon.
         /// </summary>
-        public string DefaultIcon
-        {
-            get
-            {
-                return this.sDefaultIcon;
-            }
-
-            set
-            {
-                this.sDefaultIcon = value;
-            }
-        }
+        public string DefaultIcon { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets a value indicating whether DemoMode.
         /// </summary>
-        public bool DemoMode
-        {
-            get
-            {
-                return this.bDemoMode;
-            }
-
-            set
-            {
-                this.bDemoMode = value;
-            }
-        }
+        public bool DemoMode { get; set; }
 
         /// <summary>
         /// Gets or sets ExclusionTabs.
         /// </summary>
-        public string ExclusionTabs
-        {
-            get
-            {
-                return this.sExclusionTabs;
-            }
-
-            set
-            {
-                this.sExclusionTabs = value;
-            }
-        }
+        public string ExclusionTabs { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets InclusionTabs.
         /// </summary>
-        public string InclusionTabs
-        {
-            get
-            {
-                return this.sInclusionTabs;
-            }
-
-            set
-            {
-                this.sInclusionTabs = value;
-            }
-        }
+        public string InclusionTabs { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets a value indicating whether FilterByTax.
         /// </summary>
-        public bool FilterByTax
-        {
-            get
-            {
-                return this.bFilterByTax;
-            }
-
-            set
-            {
-                this.bFilterByTax = value;
-            }
-        }
+        public bool FilterByTax { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether Human URLs.
         /// </summary>
-        public bool HumanUrls
-        {
-            get
-            {
-                return this.bHumanUrls;
-            }
-
-            set
-            {
-                this.bHumanUrls = value;
-            }
-        }
+        public bool HumanUrls { get; set; }
 
         /// <summary>
         /// Gets or sets MaxLevel.
         /// </summary>
-        public int MaxLevel
-        {
-            get
-            {
-                return this.iMaxLevel;
-            }
-
-            set
-            {
-                this.iMaxLevel = value;
-            }
-        }
+        public int MaxLevel { get; set; } = -1;
 
         /// <summary>
         /// Gets or sets Persist.
         /// </summary>
-        public string Persist
-        {
-            get
-            {
-                return this.sPersist;
-            }
-
-            set
-            {
-                this.sPersist = value;
-            }
-        }
+        public string Persist { get; set; } = "location";
 
         /// <summary>
         /// Gets or sets RenderMode.
         /// </summary>
-        public string RenderMode
-        {
-            get
-            {
-                return this.sRenderMode;
-            }
-
-            set
-            {
-                this.sRenderMode = value;
-            }
-        }
+        public string RenderMode { get; set; } = "normal";
 
         /// <summary>
         /// Gets or sets a value indicating whether RenderName.
         /// </summary>
-        public bool RenderName
-        {
-            get
-            {
-                return this.bRenderName;
-            }
-
-            set
-            {
-                this.bRenderName = value;
-            }
-        }
+        public bool RenderName { get; set; }
 
         /// <summary>
         /// Gets or sets RootLevel.
         /// </summary>
-        public string RootLevel
-        {
-            get
-            {
-                return this.sRootLevel;
-            }
-
-            set
-            {
-                this.sRootLevel = value;
-            }
-        }
+        public string RootLevel { get; set; } = "root";
 
         /// <summary>
         /// Gets or sets RootTab.
         /// </summary>
-        public string RootTab
-        {
-            get
-            {
-                return this.sRootTab;
-            }
-
-            set
-            {
-                this.sRootTab = value;
-            }
-        }
+        public string RootTab { get; set; } = "-1";
 
         /// <summary>
         /// Gets or sets a value indicating whether ShowHidden.
         /// </summary>
-        public bool ShowHidden
-        {
-            get
-            {
-                return this.bShowHidden;
-            }
-
-            set
-            {
-                this.bShowHidden = value;
-            }
-        }
+        public bool ShowHidden { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether ShowTabIcons.
         /// </summary>
-        public bool ShowTabIcons
-        {
-            get
-            {
-                return this.bShowTabIcons;
-            }
-
-            set
-            {
-                this.bShowTabIcons = value;
-            }
-        }
+        public bool ShowTabIcons { get; set; }
 
         /// <summary>
         /// Gets or sets SkinName.
         /// </summary>
-        public string SkinName
-        {
-            get
-            {
-                return this.sSkinName;
-            }
-
-            set
-            {
-                this.sSkinName = value;
-            }
-        }
+        public string SkinName { get; set; } = "Default";
 
         /// <summary>
         /// Gets or sets TaxMode.
         /// </summary>
-        public string TaxMode
-        {
-            get
-            {
-                return this.sTaxMode;
-            }
-
-            set
-            {
-                this.sTaxMode = value;
-            }
-        }
+        public string TaxMode { get; set; } = "all";
 
         /// <summary>
         /// Gets or sets TaxVocabularies.
         /// </summary>
-        public string TaxVocabularies
-        {
-            get
-            {
-                return this.sTaxVocabularies;
-            }
-
-            set
-            {
-                this.sTaxVocabularies = value;
-            }
-        }
+        public string TaxVocabularies { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets Tax Terms.
         /// </summary>
-        public string TaxTerms
-        {
-            get
-            {
-                return this.sTaxTerms;
-            }
-
-            set
-            {
-                this.sTaxTerms = value;
-            }
-        }
+        public string TaxTerms { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets Unique.
         /// </summary>
-        public string Unique
-        {
-            get
-            {
-                return this.sUnique;
-            }
-
-            set
-            {
-                this.sUnique = value;
-            }
-        }
+        public string Unique { get; set; } = "true";
 
         #endregion
 
@@ -560,9 +227,9 @@ namespace WatchersNET.DNN.Modules
         {
             try
             {
-                if (!string.IsNullOrEmpty(this.sExclusionTabs))
+                if (!string.IsNullOrEmpty(this.ExclusionTabs))
                 {
-                    this.exclusionTabs = this.sExclusionTabs.Split(',');
+                    this.exclusionTabs = this.ExclusionTabs.Split(',');
                 }
             }
             catch (Exception)
@@ -572,9 +239,9 @@ namespace WatchersNET.DNN.Modules
 
             try
             {
-                if (!string.IsNullOrEmpty(this.sInclusionTabs))
+                if (!string.IsNullOrEmpty(this.InclusionTabs))
                 {
-                    this.inclusionTabs = this.sInclusionTabs.Split(',');
+                    this.inclusionTabs = this.InclusionTabs.Split(',');
                 }
             }
             catch (Exception)
@@ -584,9 +251,9 @@ namespace WatchersNET.DNN.Modules
 
             try
             {
-                if (!string.IsNullOrEmpty(this.sTaxVocabularies))
+                if (!string.IsNullOrEmpty(this.TaxVocabularies))
                 {
-                    this.taxVocabularies = this.sTaxVocabularies.Split(',');
+                    this.taxVocabularies = this.TaxVocabularies.Split(',');
                 }
             }
             catch (Exception)
@@ -596,9 +263,9 @@ namespace WatchersNET.DNN.Modules
 
             try
             {
-                if (!string.IsNullOrEmpty(this.sTaxTerms))
+                if (!string.IsNullOrEmpty(this.TaxTerms))
                 {
-                    this.terms = this.sTaxTerms.Split(',');
+                    this.terms = this.TaxTerms.Split(',');
                 }
             }
             catch (Exception)
@@ -606,7 +273,7 @@ namespace WatchersNET.DNN.Modules
                 this.terms = null;
             }
 
-            if (this.bIsSkinChanged/* || this.IsPostBack*/)
+            if (this.isSkinChanged/* || this.IsPostBack*/)
             {
                 return;
             }
@@ -616,7 +283,7 @@ namespace WatchersNET.DNN.Modules
                 this.LoadAllSkins();
             }
 
-            if (this.bDemoMode)
+            if (this.DemoMode)
             {
                 this.RenderDemoControls();
             }
@@ -636,15 +303,15 @@ namespace WatchersNET.DNN.Modules
                 return;
             }
 
-            this.sRenderMode = this.rBlRender.SelectedValue;
+            this.RenderMode = this.rBlRender.SelectedValue;
 
-            this.FillSkinList(this.sRenderMode);
+            this.FillSkinList(this.RenderMode);
 
-            this.sSkinName = this.dDlSkins.SelectedItem != null
+            this.SkinName = this.dDlSkins.SelectedItem != null
                                  ? this.dDlSkins.SelectedItem.Text
                                  : this.dDlSkins.Items[0].Text;
 
-            this.bIsSkinChanged = true;
+            this.isSkinChanged = true;
             this.RenderSiteMap();
         }
 
@@ -659,11 +326,11 @@ namespace WatchersNET.DNN.Modules
         /// </param>
         protected void SwitchSkin(object sender, EventArgs e)
         {
-            this.sSkinName = this.dDlSkins.SelectedItem.Text;
+            this.SkinName = this.dDlSkins.SelectedItem.Text;
 
-            this.sRenderMode = this.rBlRender.SelectedValue;
+            this.RenderMode = this.rBlRender.SelectedValue;
 
-            this.bIsSkinChanged = true;
+            this.isSkinChanged = true;
             this.RenderSiteMap();
         }
 
@@ -676,13 +343,13 @@ namespace WatchersNET.DNN.Modules
         /// <returns>
         /// true or false
         /// </returns>
-        private bool ExcludeByTax(TabInfo checkTab)
+        private bool ExcludeByTax(ContentItem checkTab)
         {
-            var bExclude = true;
+            var exclude = true;
 
-            if (!this.bFilterByTax)
+            if (!this.FilterByTax)
             {
-                return this.bFilterByTax;
+                return this.FilterByTax;
             }
 
             try
@@ -692,99 +359,92 @@ namespace WatchersNET.DNN.Modules
                     return true;
                 }
 
-                /*if (checkTab.Terms.Any(term => this.taxTerms.Where(tax => tax.Name.Equals(term.Name)).Count() == 0))
-                {
-                    return true;
-                }*/
-
                 if (checkTab.Terms.Any(term1 => this.taxTerms.Find(t => t.Name.Equals(term1.Name)) != null))
                 {
                     return false;
                 }
-
-                // bExclude = this.taxTerms.Find(tax => objTab.LocalizedTabName.ToLower().Contains(tax.Name.ToLower()) || checkTab.Title.ToLower().Contains(tax.Name.ToLower())) == null;
             }
             catch (Exception)
             {
-                bExclude = false;
+                exclude = false;
             }
 
-            return bExclude;
+            return exclude;
         }
 
         /// <summary>
         /// Checks if the Tab is in the Excluded List
         /// </summary>
-        /// <param name="iCheckTabId">
+        /// <param name="checkTabId">
         /// Tab to Check
         /// </param>
         /// <returns>
         /// true or false
         /// </returns>
-        private bool ExcludeTabId(IEquatable<int> iCheckTabId)
+        private bool ExcludeTabId(IEquatable<int> checkTabId)
         {
-            var bExclude = false;
+            var exclude = false;
 
             try
             {
                 if (this.exclusionTabs.Count > 0)
                 {
-                    if (this.exclusionTabs.Any(sExTabValue => iCheckTabId.Equals(int.Parse(sExTabValue))))
+                    if (this.exclusionTabs.Any(sExTabValue => checkTabId.Equals(int.Parse(sExTabValue))))
                     {
-                        bExclude = true;
+                        exclude = true;
                     }
                 }
             }
             catch (Exception)
             {
-                bExclude = false;
+                exclude = false;
             }
 
-            return bExclude;
+            return exclude;
         }
 
         /// <summary>
         /// Checks if the Tab is in the Include List
         /// </summary>
-        /// <param name="iCheckTabId">
+        /// <param name="checkTabId">
         /// Tab to Check
         /// </param>
         /// <returns>
         /// true or false
         /// </returns>
-        private bool IncludeTabId(IEquatable<int> iCheckTabId)
+        private bool IncludeTabId(IEquatable<int> checkTabId)
         {
-            var bInclude = false;
+            var include = false;
 
             try
             {
                 if (this.inclusionTabs.Count > 0)
                 {
-                    bInclude = this.inclusionTabs.ToList().Find(sInTabValue => iCheckTabId.Equals(int.Parse(sInTabValue))) == null;
+                    include = this.inclusionTabs.ToList().Find(sInTabValue => checkTabId.Equals(int.Parse(sInTabValue))) == null;
                 }
             }
             catch (Exception)
             {
-                bInclude = false;
+                include = false;
             }
 
-            return bInclude;
+            return include;
         }
 
         /// <summary>
         /// Loads the List of available Skins.
         /// </summary>
-        /// <param name="sRenderModus">
-        /// The s Render Modus.
+        /// <param name="renderModus">
+        /// The Render Modus.
         /// </param>
-        private void FillSkinList(IEquatable<string> sRenderModus)
+        private void FillSkinList(IEquatable<string> renderModus)
         {
             if (this.itemsTreeView == null || this.itemsSkins == null)
             {
                 this.LoadAllSkins();
             }
 
-            this.dDlSkins.DataSource = sRenderModus.Equals("treeview") ? this.itemsTreeView : this.itemsSkins;
+            this.dDlSkins.DataSource = renderModus.Equals("treeview") ? this.itemsTreeView : this.itemsSkins;
 
             this.dDlSkins.DataBind();
         }
@@ -797,10 +457,10 @@ namespace WatchersNET.DNN.Modules
         /// </returns>
         private List<TabInfo> FillTabs()
         {
-            var tiAllTabs = new List<TabInfo>();
+            var allTabs = new List<TabInfo>();
 
             // Add Portal Tabs
-            foreach (var objPortalTab in TabController.GetTabsBySortOrder(this.PortalSettings.PortalId).Select(objTab => objTab.Clone()))
+            TabController.GetTabsBySortOrder(this.PortalSettings.PortalId).ForEach(objPortalTab => 
             {
                 if (Null.IsNull(objPortalTab.StartDate))
                 {
@@ -812,21 +472,22 @@ namespace WatchersNET.DNN.Modules
                     objPortalTab.EndDate = DateTime.MaxValue;
                 }
 
-                tiAllTabs.Add(objPortalTab);
-            }
+                allTabs.Add(objPortalTab);
+            });
 
             // Add Host Tabs
-            foreach (var objHostTab in TabController.GetTabsBySortOrder(Null.NullInteger).Select(objTab => objTab.Clone()))
-            {
-                objHostTab.PortalID = this.PortalSettings.PortalId;
+            TabController.GetTabsBySortOrder(Null.NullInteger).ForEach(
+                objHostTab =>
+                {
+                    objHostTab.PortalID = this.PortalSettings.PortalId;
 
-                objHostTab.StartDate = DateTime.MinValue;
-                objHostTab.EndDate = DateTime.MaxValue;
+                    objHostTab.StartDate = DateTime.MinValue;
+                    objHostTab.EndDate = DateTime.MaxValue;
 
-                tiAllTabs.Add(objHostTab);
-            }
+                    allTabs.Add(objHostTab);
+                });
 
-            return tiAllTabs;
+            return allTabs;
         }
 
         /// <summary>
@@ -837,13 +498,13 @@ namespace WatchersNET.DNN.Modules
         /// </returns>
         private IEnumerable<Term> GetTerms()
         {
-            var termslist = new List<Term>();
+            var tabTerms = new List<Term>();
 
-            switch (this.sTaxMode)
+            switch (this.TaxMode)
             {
                 case "tab":
                     {
-                        termslist = this.PortalSettings.ActiveTab.Terms;
+                        tabTerms = this.PortalSettings.ActiveTab.Terms;
                     }
 
                     break;
@@ -853,25 +514,23 @@ namespace WatchersNET.DNN.Modules
 
                         var vocabRep = Util.GetVocabularyController();
 
-                        var vs = from v in vocabRep.GetVocabularies()
+                        var vocabulariesAll = from v in vocabRep.GetVocabularies()
                                                     where
                                                         v.ScopeType.ScopeType == "Application" ||
-                                                        (v.ScopeType.ScopeType == "Portal" &&
-                                                         v.ScopeId == this.PortalSettings.PortalId)
+                                                        v.ScopeType.ScopeType == "Portal" &&
+                                                        v.ScopeId == this.PortalSettings.PortalId
                                                     select v;
 
-                        foreach (var v in vs)
-                        {
-                            foreach (var t in termRep.GetTermsByVocabulary(v.VocabularyId))
+                        vocabulariesAll.AsEnumerable().ForEach(
+                            v => termRep.GetTermsByVocabulary(v.VocabularyId).AsEnumerable().ForEach(t =>
                             {
                                 if (v.Type == VocabularyType.Simple)
                                 {
                                     t.ParentTermId = -v.VocabularyId;
                                 }
 
-                                termslist.Add(t);
-                            }
-                        }
+                                tabTerms.Add(t);
+                            }));
                     }
 
                     break;
@@ -881,10 +540,8 @@ namespace WatchersNET.DNN.Modules
                         {
                             var termRep = Util.GetTermController();
 
-                            foreach (var sVocabularyId in this.taxVocabularies)
-                            {
-                                termslist.AddRange(termRep.GetTermsByVocabulary(int.Parse(sVocabularyId)));
-                            }
+                            this.taxVocabularies.ForEach(
+                                id => tabTerms.AddRange(termRep.GetTermsByVocabulary(int.Parse(id))));
                         }
                     }
 
@@ -898,24 +555,21 @@ namespace WatchersNET.DNN.Modules
                             var vs = from v in vocabRep.GetVocabularies()
                                                         where
                                                             v.ScopeType.ScopeType == "Application" ||
-                                                            (v.ScopeType.ScopeType == "Portal" && v.ScopeId == this.PortalSettings.PortalId)
+                                                            v.ScopeType.ScopeType == "Portal" && v.ScopeId == this.PortalSettings.PortalId
                                                         select v;
 
                             var allTerms = new List<Term>();
 
-                            foreach (var v in vs)
-                            {
-                                 allTerms.AddRange(v.Terms);
-                            }
+                            vs.AsEnumerable().ForEach(v => allTerms.AddRange(v.Terms));
 
-                            termslist.AddRange(this.terms.Select(term => allTerms.Find(t => t.Name.Equals(term))));
+                            tabTerms.AddRange(this.terms.Select(term => allTerms.Find(t => t.Name.Equals(term))));
                         }
                     }
 
                     break;
             }
 
-            return termslist;
+            return tabTerms;
         }
 
         /// <summary>
@@ -941,29 +595,29 @@ namespace WatchersNET.DNN.Modules
         /// </returns>
         private bool IsMaxLevel(TabInfo checkTab)
         {
-            bool bExclude;
+            bool exclude;
 
             try
             {
-                if (this.iMaxLevel.Equals(-1))
+                if (this.MaxLevel.Equals(-1))
                 {
-                    bExclude = false;
+                    exclude = false;
                 }
-                else if (checkTab.Level > this.iMaxLevel)
+                else if (checkTab.Level > this.MaxLevel)
                 {
-                    bExclude = true;
+                    exclude = true;
                 }
                 else
                 {
-                    bExclude = false;
+                    exclude = false;
                 }
             }
             catch (Exception)
             {
-                bExclude = false;
+                exclude = false;
             }
 
-            return bExclude;
+            return exclude;
         }
 
         /// <summary>
@@ -977,24 +631,24 @@ namespace WatchersNET.DNN.Modules
         /// </returns>
         private bool IsNotHidden(TabInfo checkTab)
         {
-            bool bNotHidden;
+            bool notHidden;
 
             // If Option Show Hidden Tabs is turned on always return true
-            if (this.bShowHidden)
+            if (this.ShowHidden)
             {
                 return true;
             }
 
             try
             {
-                bNotHidden = checkTab.IsVisible;
+                notHidden = checkTab.IsVisible;
             }
             catch (Exception)
             {
-                bNotHidden = true;
+                notHidden = true;
             }
 
-            return bNotHidden;
+            return notHidden;
         }
 
         /// <summary>
@@ -1009,7 +663,7 @@ namespace WatchersNET.DNN.Modules
             {
                 var objDir = new DirectoryInfo(this.MapPath(this.ResolveUrl("Skins")));
 
-                foreach (var objSubFolder in objDir.GetDirectories())
+                objDir.GetDirectories().ForEach(objSubFolder =>
                 {
                     if (Utility.IsSkinDirectory(objSubFolder.FullName))
                     {
@@ -1023,7 +677,7 @@ namespace WatchersNET.DNN.Modules
 
                         this.itemsTreeView.Add(skinItem);
                     }
-                }
+                });
             }
             catch (Exception)
             {
@@ -1046,24 +700,24 @@ namespace WatchersNET.DNN.Modules
         /// </summary>
         private void PlaceScriptLink()
         {
-            var csType = this.GetType();
+            var type = this.GetType();
 
             // JQuery JS
             if (HttpContext.Current.Items["jquery_registered"] == null)
             {
                 ScriptManager.RegisterClientScriptInclude(
-                    this, csType, "jquery", "http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js");
+                    this, type, "jquery", "http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js");
 
                 HttpContext.Current.Items.Add("jquery_registered", "true");
             }
 
             // jQuery Cookie Plugin
             ScriptManager.RegisterClientScriptInclude(
-                this, csType, "jqueryCookieScript", this.ResolveUrl("js/jquery.cookie.js"));
+                this, type, "jqueryCookieScript", this.ResolveUrl("js/jquery.cookie.js"));
 
-            // jQuery Treeview Plugin
+            // jQuery TreeView Plugin
             ScriptManager.RegisterClientScriptInclude(
-                this, csType, "jqueryTreeview", this.ResolveUrl("js/jquery.treeview.js"));
+                this, type, "jqueryTreeview", this.ResolveUrl("js/jquery.treeview.js"));
         }
 
         /// <summary>
@@ -1071,38 +725,35 @@ namespace WatchersNET.DNN.Modules
         /// </summary>
         private void PlaceScriptTag()
         {
-            var csType = this.GetType();
+            var type = this.GetType();
 
-            var sLitAnim = string.Empty;
-            var sLitPersist = string.Empty;
+            var anim = string.Empty;
+            var persist = string.Empty;
 
-            var sLitHeader =
-                string.Format(
-                    "jQuery(document).ready(function(){{ jQuery(\".{0}\").treeview({{collapsed: {1},unique: {2}", 
-                    this.sSkinName, 
-                    this.sCollapsed, 
-                    this.sUnique);
+            var header =
+                $"jQuery(document).ready(function(){{ jQuery(\".{this.SkinName}\").treeview({{collapsed: {this.Collapsed},unique: {this.Unique}";
 
-            if (this.sAnimated != "false")
+            if (this.Animated != "false")
             {
-                sLitAnim = string.Format(",animated: \"{0}\"", this.sAnimated);
+                anim = $",animated: \"{this.Animated}\"";
             }
 
-            if (this.sPersist.Equals("location"))
+            switch (this.Persist)
             {
-                sLitPersist = string.Format(",persist: \"{0}\"", this.sPersist);
+                case "location":
+                    persist = $",persist: \"{this.Persist}\"";
+                    break;
+                case "cookie":
+                    persist =
+                        $",persist: \"{this.Persist}\",cookieId: \"SiteMap{this.PortalSettings.ActiveTab.TabID}\"";
+                    break;
             }
-            else if (this.sPersist.Equals("cookie"))
-            {
-                sLitPersist = string.Format(
-                    ",persist: \"{0}\",cookieId: \"SiteMap{1}\"", this.sPersist, this.PortalSettings.ActiveTab.TabID);
-            }
 
-            var sCsName = string.Format("TreeViewScript{0}", Guid.NewGuid());
+            var name = $"TreeViewScript{Guid.NewGuid()}";
 
-            var sScript = string.Format("{0}{1}{2}}}); }});", sLitHeader, sLitAnim, sLitPersist);
+            var script = $"{header}{anim}{persist}}}); }});";
 
-            ScriptManager.RegisterStartupScript(this, csType, sCsName, sScript, true);
+            ScriptManager.RegisterStartupScript(this, type, name, script, true);
         }
 
         /// <summary>
@@ -1110,17 +761,18 @@ namespace WatchersNET.DNN.Modules
         /// </summary>
         private void PlaceSkinStyleLink()
         {
-            if (this.sRenderMode.Equals("normal"))
+            switch (this.RenderMode)
             {
-                ClientResourceManager.RegisterStyleSheet(
-                    this.Page,
-                    this.ResolveUrl(string.Format("{0}{1}/SiteMap.css", this.ResolveUrl("Skins/"), this.sSkinName)));
-            }
-            else if (this.sRenderMode.Equals("treeview"))
-            {
-                ClientResourceManager.RegisterStyleSheet(
-                    this.Page,
-                    this.ResolveUrl(string.Format("{0}{1}/SiteMapTree.css", this.ResolveUrl("Skins/"), this.sSkinName)));
+                case "normal":
+                    ClientResourceManager.RegisterStyleSheet(
+                        this.Page,
+                        this.ResolveUrl($"{this.ResolveUrl("Skins/")}{this.SkinName}/SiteMap.css"));
+                    break;
+                case "treeview":
+                    ClientResourceManager.RegisterStyleSheet(
+                        this.Page,
+                        this.ResolveUrl($"{this.ResolveUrl("Skins/")}{this.SkinName}/SiteMapTree.css"));
+                    break;
             }
         }
 
@@ -1136,11 +788,11 @@ namespace WatchersNET.DNN.Modules
                 return;
             }
 
-            this.rBlRender.Items.FindByValue(this.sRenderMode).Selected = true;
+            this.rBlRender.Items.FindByValue(this.RenderMode).Selected = true;
 
-            this.FillSkinList(this.sRenderMode);
+            this.FillSkinList(this.RenderMode);
 
-            this.dDlSkins.Items.FindByText(this.sSkinName).Selected = true;
+            this.dDlSkins.Items.FindByText(this.SkinName).Selected = true;
         }
 
         /// <summary>
@@ -1149,19 +801,19 @@ namespace WatchersNET.DNN.Modules
         /// <param name="ctlParentLi">
         /// Parent LI
         /// </param>
-        /// <param name="iParentTabId">
+        /// <param name="parentTabId">
         /// Parent TabID
         /// </param>
-        private void RenderLevel(Control ctlParentLi, int iParentTabId)
+        private void RenderLevel(Control ctlParentLi, int parentTabId)
         {
             HtmlGenericControl ctlUl = null;
 
-            foreach (var objTab in this.tiTabs)
+            foreach (var objTab in this.tabs)
             {
                 this.tabPermissions = TabPermissionController.GetTabPermissions(
                     objTab.TabID, this.PortalSettings.PortalId);
 
-                if (!objTab.ParentId.Equals(iParentTabId) || objTab.IsDeleted || objTab.IsDeleted ||
+                if (!objTab.ParentId.Equals(parentTabId) || objTab.IsDeleted || objTab.IsDeleted ||
                     !this.IsNotHidden(objTab) || !PortalSecurity.IsInRoles(this.tabPermissions.ToString("VIEW")) ||
                     objTab.StartDate >= DateTime.Now || objTab.EndDate <= DateTime.Now || this.IsMaxLevel(objTab) ||
                     this.ExcludeTabId(objTab.TabID) || this.ExcludeByTax(objTab) || this.IncludeTabId(objTab.TabID))
@@ -1188,11 +840,11 @@ namespace WatchersNET.DNN.Modules
                             }*/
                         var ctlMainDiv = new HtmlGenericControl("div");
 
-                        ctlMainDiv.Attributes["class"] = string.Format("SiteMap-{0}", this.sSkinName);
+                        ctlMainDiv.Attributes["class"] = $"SiteMap-{this.SkinName}";
 
                         this.siteMapPlaceHolder.Controls.Add(ctlMainDiv);
 
-                        ctlUl.Attributes["class"] = this.sSkinName;
+                        ctlUl.Attributes["class"] = this.SkinName;
 
                         // siteMapPlaceHolder.Controls.Add(ctlUl);
                         ctlMainDiv.Controls.Add(ctlUl);
@@ -1212,17 +864,17 @@ namespace WatchersNET.DNN.Modules
                 // Menu Tab Item (link)
                 var ctlAnchor = new HtmlAnchor();
 
-                var decodedTabName = Server.HtmlDecode(objTab.LocalizedTabName);
+                var decodedTabName = this.Server.HtmlDecode(objTab.LocalizedTabName);
 
                 if (!objTab.DisableLink)
                 {
                     ctlAnchor.HRef = objTab.FullUrl;
 
                     // Add Friendly URLS
-                    if (this.bHumanUrls)
+                    if (this.HumanUrls)
                     {
                         ctlAnchor.HRef = Globals.FriendlyUrl(
-                            objTab, Globals.ApplicationURL(objTab.TabID), this.PortalSettings);
+                            objTab, Globals.ApplicationURL(objTab.TabID), (IPortalSettings)this.PortalSettings);
                     }
                 }
 
@@ -1230,14 +882,10 @@ namespace WatchersNET.DNN.Modules
                 ctlAnchor.InnerText = decodedTabName;
 
                 // Menu Tab Icon
-                if (!string.IsNullOrEmpty(objTab.IconFile) && this.bShowTabIcons)
+                if (!string.IsNullOrEmpty(objTab.IconFile) && this.ShowTabIcons)
                 {
                     ctlAnchor.InnerHtml =
-                        string.Format(
-                            "<img src=\"{0}\" class=\"tabIcon\" alt=\"{1}\" width=\"16px\" height=\"16px\" />{2}", 
-                            this.SetIconPath(objTab),
-                            decodedTabName, 
-                            ctlAnchor.InnerText);
+                        $"<img src=\"{this.SetIconPath(objTab)}\" class=\"tabIcon\" alt=\"{decodedTabName}\" width=\"16px\" height=\"16px\" />{ctlAnchor.InnerText}";
 
                     if (objTab.HasChildren)
                     {
@@ -1248,14 +896,10 @@ namespace WatchersNET.DNN.Modules
                 }
                 else
                 {
-                    if (this.bShowTabIcons && !string.IsNullOrEmpty(this.sDefaultIcon))
+                    if (this.ShowTabIcons && !string.IsNullOrEmpty(this.DefaultIcon))
                     {
                         ctlAnchor.InnerHtml =
-                            string.Format(
-                                "<img src=\"{0}\" class=\"tabIcon\" alt=\"{1}\" width=\"16px\" height=\"16px\" />{2}", 
-                                this.ResolveUrl(Path.Combine(this.PortalSettings.HomeDirectory, this.sDefaultIcon)),
-                                decodedTabName, 
-                                ctlAnchor.InnerText);
+                            $"<img src=\"{this.ResolveUrl(Path.Combine(this.PortalSettings.HomeDirectory, this.DefaultIcon))}\" class=\"tabIcon\" alt=\"{decodedTabName}\" width=\"16px\" height=\"16px\" />{ctlAnchor.InnerText}";
 
                         ctlMenu.Attributes["class"] = " hasIcon";
                     }
@@ -1288,13 +932,13 @@ namespace WatchersNET.DNN.Modules
         {
             var ctlMainDiv = new HtmlGenericControl("div");
 
-            ctlMainDiv.Attributes["class"] = "SiteMap-" + this.sSkinName;
+            ctlMainDiv.Attributes["class"] = "SiteMap-" + this.SkinName;
 
             this.siteMapPlaceHolder.Controls.Add(ctlMainDiv);
 
             var ctlUl = new HtmlGenericControl("ul");
 
-            ctlUl.Attributes["class"] = this.sSkinName;
+            ctlUl.Attributes["class"] = this.SkinName;
 
             ctlMainDiv.Controls.Add(ctlUl);
 
@@ -1302,15 +946,14 @@ namespace WatchersNET.DNN.Modules
 
             ctlUl.Controls.Add(ctlMainMenu);
 
+            var aliasInfo = this.PortalSettings.PortalAlias as IPortalAliasInfo;
+
             var ctlAnchorWeb = new HtmlAnchor
                 {
                     Title = this.PortalSettings.PortalName, 
-                    InnerHtml = string.Format("<strong><em>{0}</em></strong>", this.PortalSettings.PortalName), 
+                    InnerHtml = $"<strong><em>{this.PortalSettings.PortalName}</em></strong>", 
                     HRef =
-                        string.Format(
-                            "{0}/{1}", 
-                            Globals.GetPortalDomainName(this.PortalSettings.PortalAlias.HTTPAlias, null, true), 
-                            Globals.glbDefaultPage)
+                        $"{Globals.GetPortalDomainName(aliasInfo.HttpAlias, null, true)}/{Globals.glbDefaultPage}"
                 };
 
             ctlMainMenu.Controls.Add(ctlAnchorWeb);
@@ -1326,11 +969,11 @@ namespace WatchersNET.DNN.Modules
             // Reset First
             this.siteMapPlaceHolder.Controls.Clear();
 
-            this.tiTabs = this.FillTabs();
+            this.tabs = this.FillTabs();
 
             this.PlaceSkinStyleLink();
 
-            if (this.sRenderMode.Equals("treeview"))
+            if (this.RenderMode.Equals("treeview"))
             {
                 this.PlaceScriptLink();
 
@@ -1339,7 +982,7 @@ namespace WatchersNET.DNN.Modules
 
             var tabActive = this.SetActiveTab();
 
-            if (this.bFilterByTax)
+            if (this.FilterByTax)
             {
                 this.taxTerms = this.GetTerms().ToList();
             }
@@ -1347,7 +990,7 @@ namespace WatchersNET.DNN.Modules
             ////////////////////////////////////////////////
             HtmlGenericControl ctlMain = null;
 
-            if (this.sRenderMode.Equals("treeview") && this.bRenderName)
+            if (this.RenderMode.Equals("treeview") && this.RenderName)
             {
                 ctlMain = this.RenderMainTree();
             }
@@ -1357,51 +1000,38 @@ namespace WatchersNET.DNN.Modules
             // Render Menu
             try
             {
-                if (this.sRootLevel.Equals("parent"))
+                switch (this.RootLevel)
                 {
-                    if (tabActive.ParentId.Equals(-1))
-                    {
+                    case "parent" when tabActive.ParentId.Equals(-1):
                         // Renders from Level : Root if No Parent
                         this.RenderLevel(ctlMain, -1);
-                    }
-                    else
-                    {
+                        break;
+                    case "parent":
                         // Renders from Level : Parent
-                        foreach (var objTestTab in
-                            this.tiTabs.Where(objTestTab => objTestTab.TabID.Equals(tabActive.ParentId)))
-                        {
-                            this.RenderLevel(ctlMain, objTestTab.ParentId);
-                        }
-                    }
-                }
-                else if (this.sRootLevel.Equals("current"))
-                {
-                    // Renders from Level : Same (current)
-                    this.RenderLevel(ctlMain, tabActive.ParentId);
-                }
-                else if (this.sRootLevel.Equals("children"))
-                {
+                        this.tabs.Where(objTestTab => objTestTab.TabID.Equals(tabActive.ParentId)).ForEach(
+                            objTestTab => this.RenderLevel(ctlMain, objTestTab.ParentId));
+                        break;
+                    case "current":
+                        // Renders from Level : Same (current)
+                        this.RenderLevel(ctlMain, tabActive.ParentId);
+                        break;
                     // Renders from Level : Children
-                    if (tabActive.HasChildren)
-                    {
+                    case "children" when tabActive.HasChildren:
                         this.RenderLevel(ctlMain, tabActive.TabID);
-                    }
-                    else
-                    {
-                        // Renders from Level : Root if No Childs
+                        break;
+                    case "children":
+                        // Renders from Level : Root if No Children
                         this.RenderLevel(ctlMain, -1);
-                    }
-                }
-                else if (this.sRootLevel.Equals("custom"))
-                {
-                    // Renders from Level : Custom
-                    this.RenderLevel(ctlMain, tabActive.ParentId.Equals(-1) ? tabActive.TabID : tabActive.ParentId);
-                }
-                else
-                {
-                    // Renders from Level : Root
-                    // RenderLevel(null, -1);
-                    this.RenderLevel(ctlMain, -1);
+                        break;
+                    case "custom":
+                        // Renders from Level : Custom
+                        this.RenderLevel(ctlMain, tabActive.ParentId.Equals(-1) ? tabActive.TabID : tabActive.ParentId);
+                        break;
+                    default:
+                        // Renders from Level : Root
+                        // RenderLevel(null, -1);
+                        this.RenderLevel(ctlMain, -1);
+                        break;
                 }
             }
             catch (Exception exc)
@@ -1422,15 +1052,11 @@ namespace WatchersNET.DNN.Modules
         {
             var activeTab = new TabInfo();
 
-            if (this.sRootLevel.Equals("custom"))
+            if (this.RootLevel.Equals("custom"))
             {
                 try
                 {
-                    foreach (var objTestTab in
-                        this.tiTabs.Where(objTestTab => objTestTab.TabID.ToString().Equals(this.sRootTab)))
-                    {
-                        activeTab = objTestTab;
-                    }
+                    activeTab = this.tabs.FirstOrDefault(objTestTab => objTestTab.TabID.ToString().Equals(this.RootTab));
                 }
                 catch (Exception)
                 {
@@ -1462,7 +1088,7 @@ namespace WatchersNET.DNN.Modules
             }
 
             return tab.IsSuperTab || tab.IsSecure
-                       ? this.ResolveUrl(string.Format("{0}/images/{1}", Globals.ApplicationPath, tab.IconFile))
+                       ? this.ResolveUrl($"{Globals.ApplicationPath}/images/{tab.IconFile}")
                        : this.ResolveUrl(Path.Combine(this.PortalSettings.HomeDirectory, tab.IconFile));
         }
 

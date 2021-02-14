@@ -1,0 +1,67 @@
+/*--- Basic TreeView Styles-- */
+.SiteMap-Vistatree ul a{
+	text-decoration: none;
+	color: black;
+	font-family:'Arial',sans-serif;
+	font-size: 12px;
+	line-height:120%;
+	margin-left:10px;
+}
+
+.SiteMap-Vistatree .SubItem  {font-weight:bold;}
+
+.SiteMap-Vistatree ul a:hover {color: red;}
+/*-- Vista Tree like Theme ---*/
+.SiteMap-Vistatree .treeview, .SiteMap-Vistatree .treeview ul { 
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+.SiteMap-Vistatree .treeview ul {margin-top: 4px;}
+
+.SiteMap-Vistatree .treeview .hitarea {
+	background: url(treeview-vista.gif) -64px -25px no-repeat;
+	height: 16px;
+	width: 16px;
+	margin-left: -16px;
+	float: left;
+	cursor: pointer;
+}
+/* fix for IE6 */
+* html .SiteMap-Vistatree .hitarea {
+	display: inline;
+	float:none;
+}
+
+.SiteMap-Vistatree .treeview li { 
+	margin: 0;
+	padding: 3px 0 3px 16px;
+	list-style: none;
+}
+
+.SiteMap-Vistatree .treeview a.selected {
+	color: blue;
+}
+
+.SiteMap-Vistatree #treecontrol { margin: 1em 0; display: none; }
+
+.SiteMap-Vistatree .treeview li { background: url(treeview-default-line.gif) 0 -1px no-repeat; }
+.SiteMap-Vistatree .treeview li.collapsable, .SiteMap-Vistatree .treeview li.expandable { background: url(treeview-default-line.gif) 0 -176px no-repeat; }
+
+.SiteMap-Vistatree .treeview li.last { background-position: 0 -1766px }
+.SiteMap-Vistatree .treeview li.lastCollapsable { background-position: 0 -111px }
+.SiteMap-Vistatree .treeview li.lastExpandable { background-position: -32px -67px }
+
+.SiteMap-Vistatree .treeview div.lastCollapsable-hitarea { background-position: 0; }
+
+
+.SiteMap-Vistatree .Vistatree li { background-image: url(treeview-default-line.gif) 0px 0px; }
+.SiteMap-Vistatree .Vistatree li a {margin-left:-1px; }
+.SiteMap-Vistatree .Vistatree .hitarea, .SiteMap-Vistatree .Vistatree li.lastCollapsable, .SiteMap-Vistatree .Vistatree li.lastExpandable { background-image: url(treeview-vista.gif); } 
+
+.SiteMap-Vistatree .Vistatree .expandable-hitarea { background-position: -80px -3px; }
+
+/* folder icons */
+.SiteMap-Vistatree .Vistatree strong { background: url(folder-closed.gif) 0px 0px no-repeat;padding-left:17px;padding-top:1px; }
+.SiteMap-Vistatree .Vistatree li.expandable strong { background: url(folder.gif) 0px 0 no-repeat; }

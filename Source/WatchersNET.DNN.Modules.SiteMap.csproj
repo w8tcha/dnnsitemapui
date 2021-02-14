@@ -45,7 +45,7 @@
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
@@ -54,6 +54,8 @@
     <IISExpressUseClassicPipelineMode />
     <Use64BitIISExpress />
     <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
@@ -116,29 +118,32 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DotNetNuke, Version=9.2.0.366, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dnn.Platform.9.2.0\lib\net40\DotNetNuke.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="DotNetNuke, Version=9.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetNuke.Core.9.8.0\lib\net45\DotNetNuke.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetNuke.Web, Version=9.2.0.366, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dnn.Platform.9.2.0\lib\net40\DotNetNuke.Web.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="DotNetNuke.Abstractions, Version=9.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetNuke.Abstractions.9.8.0\lib\netstandard2.0\DotNetNuke.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetNuke.Web.Client, Version=9.2.0.366, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dnn.Platform.9.2.0\lib\net40\DotNetNuke.Web.Client.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="DotNetNuke.DependencyInjection, Version=9.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetNuke.DependencyInjection.9.8.0\lib\netstandard2.0\DotNetNuke.DependencyInjection.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetNuke.Web.Razor, Version=9.2.0.366, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dnn.Platform.9.2.0\lib\net40\DotNetNuke.Web.Razor.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="DotNetNuke.Web, Version=9.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetNuke.Web.9.8.0\lib\net45\DotNetNuke.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetNuke.Web.Client, Version=9.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetNuke.Web.Client.9.8.0\lib\net45\DotNetNuke.Web.Client.dll</HintPath>
     </Reference>
     <Reference Include="DotNetNuke.WebUtility, Version=4.2.1.783, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dnn.Platform.9.2.0\lib\net40\DotNetNuke.WebUtility.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\DotNetNuke.Web.9.8.0\lib\net45\DotNetNuke.WebUtility.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ApplicationBlocks.Data, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dnn.Platform.9.2.0\lib\net40\Microsoft.ApplicationBlocks.Data.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\DotNetNuke.Core.9.8.0\lib\net45\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.2.1.1\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.1.1\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -214,6 +219,77 @@
     <Content Include="Installation\module.css" />
     <Content Include="Installation\readme.txt" />
     <Content Include="Installation\ReleaseNotes.html" />
+    <Content Include="Resources\ButtonActive.png" />
+    <Content Include="Resources\ButtonHover.png" />
+    <Content Include="Resources\HeaderBack.png" />
+    <Content Include="Resources\js\jquery.cookie.js" />
+    <Content Include="Resources\js\jquery.treeview.js" />
+    <Content Include="Resources\SiteMap.gif" />
+    <Content Include="Resources\Skins\Black-Blue\Preview.jpg" />
+    <Content Include="Resources\Skins\Black-Blue\SiteMap.css" />
+    <Content Include="Resources\Skins\BlacknWhite\Preview.jpg" />
+    <Content Include="Resources\Skins\BlacknWhite\SiteMap.css" />
+    <Content Include="Resources\Skins\Black\Preview.jpg" />
+    <Content Include="Resources\Skins\Black\SiteMap.css" />
+    <Content Include="Resources\Skins\Default\Preview.jpg" />
+    <Content Include="Resources\Skins\Default\SiteMap.css" />
+    <Content Include="Resources\Skins\Digg\link-line.gif" />
+    <Content Include="Resources\Skins\Digg\Preview.jpg" />
+    <Content Include="Resources\Skins\Digg\SiteMap.css" />
+    <Content Include="Resources\Skins\famfamfam\file.gif" />
+    <Content Include="Resources\Skins\famfamfam\folder-closed.gif" />
+    <Content Include="Resources\Skins\famfamfam\folder.gif" />
+    <Content Include="Resources\Skins\famfamfam\Preview.jpg" />
+    <Content Include="Resources\Skins\famfamfam\SiteMapTree.css" />
+    <Content Include="Resources\Skins\famfamfam\treeview-famfamfam-line.gif" />
+    <Content Include="Resources\Skins\famfamfam\treeview-famfamfam.gif" />
+    <Content Include="Resources\Skins\GlossyBlue\Preview.jpg" />
+    <Content Include="Resources\Skins\GlossyBlue\SiteMapTree.css" />
+    <Content Include="Resources\Skins\GlossyBlue\treeview-navigation-line.gif" />
+    <Content Include="Resources\Skins\GlossyBlue\treeview-navigation.gif" />
+    <Content Include="Resources\Skins\GlossyGreen\Preview.jpg" />
+    <Content Include="Resources\Skins\GlossyGreen\SiteMapTree.css" />
+    <Content Include="Resources\Skins\GlossyGreen\treeview-navigation-line.gif" />
+    <Content Include="Resources\Skins\GlossyGreen\treeview-navigation.gif" />
+    <Content Include="Resources\Skins\Minimum\Preview.jpg" />
+    <Content Include="Resources\Skins\Minimum\SiteMap.css" />
+    <Content Include="Resources\Skins\Mozilla\Preview.jpg" />
+    <Content Include="Resources\Skins\Mozilla\SiteMap.css" />
+    <Content Include="Resources\Skins\RoundArrowsBlue\Preview.jpg" />
+    <Content Include="Resources\Skins\RoundArrowsBlue\SiteMapTree.css" />
+    <Content Include="Resources\Skins\RoundArrowsBlue\treeview-navigation-line.gif" />
+    <Content Include="Resources\Skins\RoundArrowsBlue\treeview-navigation.gif" />
+    <Content Include="Resources\Skins\RoundArrowsGreen\Preview.jpg" />
+    <Content Include="Resources\Skins\RoundArrowsGreen\SiteMapTree.css" />
+    <Content Include="Resources\Skins\RoundArrowsGreen\treeview-navigation-line.gif" />
+    <Content Include="Resources\Skins\RoundArrowsGreen\treeview-navigation.gif" />
+    <Content Include="Resources\Skins\RoundArrowsNormal\Preview.jpg" />
+    <Content Include="Resources\Skins\RoundArrowsNormal\SiteMapTree.css" />
+    <Content Include="Resources\Skins\RoundArrowsNormal\treeview-navigation-line.gif" />
+    <Content Include="Resources\Skins\RoundArrowsNormal\treeview-navigation.gif" />
+    <Content Include="Resources\Skins\RoundArrowsOrange\Preview.jpg" />
+    <Content Include="Resources\Skins\RoundArrowsOrange\SiteMapTree.css" />
+    <Content Include="Resources\Skins\RoundArrowsOrange\treeview-navigation-line.gif" />
+    <Content Include="Resources\Skins\RoundArrowsOrange\treeview-navigation.gif" />
+    <Content Include="Resources\Skins\Shiny\Preview.jpg" />
+    <Content Include="Resources\Skins\Shiny\SiteMap.css" />
+    <Content Include="Resources\Skins\Simple\Preview.jpg" />
+    <Content Include="Resources\Skins\Simple\SiteMap.css" />
+    <Content Include="Resources\Skins\TreeView-Black\Preview.jpg" />
+    <Content Include="Resources\Skins\TreeView-Black\SiteMapTree.css" />
+    <Content Include="Resources\Skins\TreeView-Black\treeview-black-line.gif" />
+    <Content Include="Resources\Skins\TreeView-Black\treeview-black.gif" />
+    <Content Include="Resources\Skins\TreeView-Black\treeview-default.gif" />
+    <Content Include="Resources\Skins\TreeView-Red\Preview.jpg" />
+    <Content Include="Resources\Skins\TreeView-Red\SiteMapTree.css" />
+    <Content Include="Resources\Skins\TreeView-Red\treeview-red-line.gif" />
+    <Content Include="Resources\Skins\TreeView-Red\treeview-red.gif" />
+    <Content Include="Resources\Skins\Vistatree\folder-closed.gif" />
+    <Content Include="Resources\Skins\Vistatree\folder.gif" />
+    <Content Include="Resources\Skins\Vistatree\Preview.jpg" />
+    <Content Include="Resources\Skins\Vistatree\SiteMapTree.css" />
+    <Content Include="Resources\Skins\Vistatree\treeview-default-line.gif" />
+    <Content Include="Resources\Skins\Vistatree\treeview-vista.gif" />
     <Content Include="Settings.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
@@ -295,5 +371,12 @@
   </PropertyGroup>
   <Import Project="BuildScripts\ModulePackage.Targets" />
   <Target Name="AfterBuild" DependsOnTargets="PackageModule">
+  </Target>
+  <Import Project="..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets" Condition="Exists('..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets'))" />
   </Target>
 </Project>

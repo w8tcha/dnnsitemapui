@@ -3,7 +3,7 @@
 <%@ Register TagPrefix="dnn" TagName="SectionHead" Src="~/controls/SectionHeadControl.ascx" %>
 <%@ Register TagPrefix="dnn" TagName="URL" Src="~/controls/URLControl.ascx" %>
 <asp:panel id="pnlSettings" runat="server">
-  <img id="SiteMapLogo" src="<%= ResolveUrl("SiteMap.gif")%>" alt="SiteMap Logo" title="SiteMap Logo" />
+  <img id="SiteMapLogo" src="<%= this.ResolveUrl("SiteMap.gif")%>" alt="SiteMap Logo" title="SiteMap Logo" />
   <dnn:sectionhead id="dshVislOpt" runat="server" cssclass="Head" includerule="True" isExpanded="True" resourcekey="lVislOpt" section="tblVislOpt" />
     <table id="tblVislOpt" runat="server" cellspacing="0" cellpadding="0" style="margin-left:20px">
       <tr>

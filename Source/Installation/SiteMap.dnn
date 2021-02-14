@@ -1,12 +1,12 @@
 ﻿<dotnetnuke type="Package" version="5.0">
   <packages>
-    <package name="WatchersNET - SiteMap" type="Module" version="01.03.11">
+    <package name="WatchersNET - SiteMap" type="Module" version="01.03.12">
       <friendlyName>WatchersNET - SiteMap</friendlyName>
       <description>
         &lt;p&gt;&lt;strong&gt;WatchersNET.SiteMap - A Modern SiteMap / TreeView&lt;/strong&gt;&lt;/p&gt;<br />
         &lt;p&gt;Back in the old days, almost every website had a sitemap where they listed out all the pages. The purpose of the sitemap is to help visitors and search engine spiders to find information on the site. &lt;/p&gt;<br />
         &lt;p&gt;Now, a lot of modern websites have dropped the sitemap page, instead they place the sitemap in the footer area. &lt;/p&gt;<br />
-        &lt;p&gt;This Module creates such an SiteMap which automatically builds a site map based on the visitor's authorized permission level, you can define which Tabs schould be shown and which not. Also the Tab Icons can be displayed.&lt;/p&gt;
+        &lt;p&gt;This Module creates such an SiteMap which automatically builds a site map based on the visitor's authorized permission level, you can define which Tabs should be shown and which not. Also the Tab Icons can be displayed.&lt;/p&gt;
       </description>
       <iconFile>SiteMapLogo.png</iconFile>
       <owner>
@@ -18,7 +18,7 @@
       <license src="License.html" />
       <releaseNotes src="ReleaseNotes.html" />
       <dependencies>
-        <dependency type="CoreVersion">09.02.00</dependency>
+        <dependency type="CoreVersion">09.08.00</dependency>
       </dependencies>
       <components>
         <component type="Module">
@@ -108,9 +108,9 @@
         </component>
       </components>
     </package>
-<package name="WatchersNET - SiteMap SkinObject" type="SkinObject" version="01.03.11">
+<package name="WatchersNET - SiteMap SkinObject" type="SkinObject" version="01.03.12">
       <friendlyName>SiteMap SkinObject</friendlyName>
-      <description>WatchersNET.SiteMap as SkinObkect</description>
+      <description>WatchersNET.SiteMap as SkinObject</description>
       <owner>
         <name>Ingo Herbote</name>
         <organization>WatchersNET</organization>
@@ -120,7 +120,7 @@
       <license src="License.html" />
       <releaseNotes src="ReleaseNotes.html" />
       <dependencies>
-        <dependency type="CoreVersion">09.02.00</dependency>
+        <dependency type="CoreVersion">09.08.00</dependency>
       </dependencies>
       <components>
         <component type="SkinObject">

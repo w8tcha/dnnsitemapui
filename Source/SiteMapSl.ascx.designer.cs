@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WatchersNET.DNN.Modules {
-    
-    
-    public partial class SiteMapSl {
-        
+namespace WatchersNET.DNN.Modules
+{
+
+
+    public partial class SiteMapSl
+    {
+
         /// <summary>
         /// panDemoMode control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel panDemoMode;
-        
+
         /// <summary>
         /// lblSkin control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSkin;
-        
+
         /// <summary>
         /// dDlSkins control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList dDlSkins;
-        
+
         /// <summary>
         /// btnSwitch control.
         /// </summary>
@@ -47,7 +49,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSwitch;
-        
+
         /// <summary>
         /// lblRenderMode control.
         /// </summary>
@@ -56,7 +58,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblRenderMode;
-        
+
         /// <summary>
         /// rBlRender control.
         /// </summary>
@@ -65,7 +67,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList rBlRender;
-        
+
         /// <summary>
         /// siteMapPlaceHolder control.
         /// </summary>

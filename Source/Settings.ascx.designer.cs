@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WatchersNET.DNN.Modules {
-    
-    
-    public partial class Settings {
-        
+namespace WatchersNET.DNN.Modules
+{
+
+
+    public partial class Settings
+    {
+
         /// <summary>
         /// pnlSettings control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlSettings;
-        
+
         /// <summary>
         /// tblVislOpt control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTable tblVislOpt;
-        
+
         /// <summary>
         /// lblRender control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblRender;
-        
+
         /// <summary>
         /// rBlRender control.
         /// </summary>
@@ -47,7 +49,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList rBlRender;
-        
+
         /// <summary>
         /// lblSkin control.
         /// </summary>
@@ -56,7 +58,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblSkin;
-        
+
         /// <summary>
         /// dDlSkins control.
         /// </summary>
@@ -65,7 +67,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList dDlSkins;
-        
+
         /// <summary>
         /// lPreview control.
         /// </summary>
@@ -74,7 +76,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lPreview;
-        
+
         /// <summary>
         /// imgPreview control.
         /// </summary>
@@ -83,7 +85,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image imgPreview;
-        
+
         /// <summary>
         /// lblShowInfo control.
         /// </summary>
@@ -92,7 +94,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblShowInfo;
-        
+
         /// <summary>
         /// cBShowInfo control.
         /// </summary>
@@ -101,7 +103,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cBShowInfo;
-        
+
         /// <summary>
         /// lblDemoMode control.
         /// </summary>
@@ -110,7 +112,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblDemoMode;
-        
+
         /// <summary>
         /// cBDemoMode control.
         /// </summary>
@@ -119,7 +121,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cBDemoMode;
-        
+
         /// <summary>
         /// tblTreeOpt control.
         /// </summary>
@@ -128,7 +130,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTable tblTreeOpt;
-        
+
         /// <summary>
         /// lblAnimated control.
         /// </summary>
@@ -137,7 +139,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblAnimated;
-        
+
         /// <summary>
         /// rBlAnimated control.
         /// </summary>
@@ -146,7 +148,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList rBlAnimated;
-        
+
         /// <summary>
         /// lblCollapsed control.
         /// </summary>
@@ -155,7 +157,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblCollapsed;
-        
+
         /// <summary>
         /// rBlCollapsed control.
         /// </summary>
@@ -164,7 +166,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList rBlCollapsed;
-        
+
         /// <summary>
         /// lblUnique control.
         /// </summary>
@@ -173,7 +175,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblUnique;
-        
+
         /// <summary>
         /// rBlUnique control.
         /// </summary>
@@ -182,7 +184,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList rBlUnique;
-        
+
         /// <summary>
         /// lblPersist control.
         /// </summary>
@@ -191,7 +193,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblPersist;
-        
+
         /// <summary>
         /// rBlPersist control.
         /// </summary>
@@ -200,7 +202,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList rBlPersist;
-        
+
         /// <summary>
         /// lblRenderName control.
         /// </summary>
@@ -209,7 +211,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblRenderName;
-        
+
         /// <summary>
         /// rBlRenderName control.
         /// </summary>
@@ -218,7 +220,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList rBlRenderName;
-        
+
         /// <summary>
         /// tblRenderOpt control.
         /// </summary>
@@ -227,7 +229,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTable tblRenderOpt;
-        
+
         /// <summary>
         /// lblRootLevel control.
         /// </summary>
@@ -236,7 +238,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblRootLevel;
-        
+
         /// <summary>
         /// dDlRootLevel control.
         /// </summary>
@@ -245,7 +247,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList dDlRootLevel;
-        
+
         /// <summary>
         /// lblRootTab control.
         /// </summary>
@@ -254,7 +256,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblRootTab;
-        
+
         /// <summary>
         /// dDlRootTab control.
         /// </summary>
@@ -263,7 +265,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList dDlRootTab;
-        
+
         /// <summary>
         /// lblMaxLevel control.
         /// </summary>
@@ -272,7 +274,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblMaxLevel;
-        
+
         /// <summary>
         /// tbMaxLevel control.
         /// </summary>
@@ -281,7 +283,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox tbMaxLevel;
-        
+
         /// <summary>
         /// maxLevelValid control.
         /// </summary>
@@ -290,7 +292,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RangeValidator maxLevelValid;
-        
+
         /// <summary>
         /// lblShowTabIcons control.
         /// </summary>
@@ -299,7 +301,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblShowTabIcons;
-        
+
         /// <summary>
         /// cBShowTabIcons control.
         /// </summary>
@@ -308,7 +310,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cBShowTabIcons;
-        
+
         /// <summary>
         /// lblUseDefaultIcon control.
         /// </summary>
@@ -317,7 +319,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblUseDefaultIcon;
-        
+
         /// <summary>
         /// lblShowHidden control.
         /// </summary>
@@ -326,7 +328,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblShowHidden;
-        
+
         /// <summary>
         /// cBShowHidden control.
         /// </summary>
@@ -335,7 +337,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cBShowHidden;
-        
+
         /// <summary>
         /// lblHumanUrls control.
         /// </summary>
@@ -344,7 +346,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblHumanUrls;
-        
+
         /// <summary>
         /// cBHumanUrls control.
         /// </summary>
@@ -353,7 +355,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cBHumanUrls;
-        
+
         /// <summary>
         /// tblExlOpt control.
         /// </summary>
@@ -362,7 +364,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTable tblExlOpt;
-        
+
         /// <summary>
         /// lblExcludeLst control.
         /// </summary>
@@ -371,7 +373,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblExcludeLst;
-        
+
         /// <summary>
         /// btnSelectAll control.
         /// </summary>
@@ -380,7 +382,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSelectAll;
-        
+
         /// <summary>
         /// btnSelectNone control.
         /// </summary>
@@ -389,7 +391,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSelectNone;
-        
+
         /// <summary>
         /// cblExcludeLst control.
         /// </summary>
@@ -398,7 +400,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBoxList cblExcludeLst;
-        
+
         /// <summary>
         /// tblTaxOpt control.
         /// </summary>
@@ -407,7 +409,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTable tblTaxOpt;
-        
+
         /// <summary>
         /// lblFilterByTax control.
         /// </summary>
@@ -416,7 +418,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblFilterByTax;
-        
+
         /// <summary>
         /// cBFilterByTax control.
         /// </summary>
@@ -425,7 +427,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cBFilterByTax;
-        
+
         /// <summary>
         /// dDlTaxMode control.
         /// </summary>
@@ -434,7 +436,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList dDlTaxMode;
-        
+
         /// <summary>
         /// lblChooseVoc control.
         /// </summary>
@@ -443,7 +445,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblChooseVoc;
-        
+
         /// <summary>
         /// cBlVocabularies control.
         /// </summary>
@@ -452,7 +454,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBoxList cBlVocabularies;
-        
+
         /// <summary>
         /// lblChooseTerms control.
         /// </summary>
@@ -461,7 +463,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UserControl lblChooseTerms;
-        
+
         /// <summary>
         /// cBlTerms control.
         /// </summary>
@@ -470,7 +472,7 @@ namespace WatchersNET.DNN.Modules {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBoxList cBlTerms;
-        
+
         /// <summary>
         /// lblError control.
         /// </summary>

@@ -19,6 +19,8 @@ namespace WatchersNET.DNN.Modules
     using System.Linq;
     using System.Web.UI.WebControls;
 
+    using DotNetNuke.Abstractions;
+    using DotNetNuke.Collections;
     using DotNetNuke.Common;
     using DotNetNuke.Common.Utilities;
     using DotNetNuke.Entities.Content.Common;
@@ -30,6 +32,8 @@ namespace WatchersNET.DNN.Modules
     using DotNetNuke.Services.Exceptions;
     using DotNetNuke.Services.Localization;
     using DotNetNuke.UI.UserControls;
+
+    using Microsoft.Extensions.DependencyInjection;
 
     #endregion
 
@@ -71,11 +75,9 @@ namespace WatchersNET.DNN.Modules
         protected SectionHeadControl dshVislOpt;
 
         /// <summary>
-        ///    Gets or sets The pnl setting.
+        /// The navigation manager.
         /// </summary>
-        protected Panel pnlSetting;
-
-        #region Constants and Fields
+        private readonly INavigationManager navigationManager;
 
         /// <summary>
         ///   The exclusion tabs.
@@ -83,19 +85,14 @@ namespace WatchersNET.DNN.Modules
         private string[] exclusionTabs;
 
         /// <summary>
-        ///   The s skin.
-        /// </summary>
-        private string sSkin;
-
-        /// <summary>
         ///   The tab permissions.
         /// </summary>
         private TabPermissionCollection tabPermissions;
 
         /// <summary>
-        ///   The ti tabs.
+        ///   The tabs.
         /// </summary>
-        private List<TabInfo> tiTabs;
+        private List<TabInfo> tabs;
 
         /// <summary>
         ///   The vocabularies.
@@ -107,18 +104,27 @@ namespace WatchersNET.DNN.Modules
         /// </summary>
         private string[] terms;
 
+        #region Constants and Fields
+
+        /// <summary>
+        ///   The skin.
+        /// </summary>
+        private string skin;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Settings"/> class.
+        /// </summary>
+        protected Settings()
+        {
+            this.navigationManager = this.DependencyProvider.GetRequiredService<INavigationManager>();
+        }
+
         #endregion
 
         /// <summary>
         ///   Gets the DefaultIcon.
         /// </summary>
-        private UrlControl DefaultIcon
-        {
-            get
-            {
-                return this.ctlDefaultIcon;
-            }
-        }
+        private UrlControl DefaultIcon => this.ctlDefaultIcon;
 
         #endregion
 
@@ -150,7 +156,7 @@ namespace WatchersNET.DNN.Modules
             try
             {
                 this.SaveChanges();
-                this.Response.Redirect(Globals.NavigateURL(), true);
+                this.Response.Redirect(this.navigationManager.NavigateURL(), true);
             }
             catch (Exception exc)
             {
@@ -161,40 +167,6 @@ namespace WatchersNET.DNN.Modules
         #endregion
 
         #region Methods
-
-        /// <summary>
-        /// Select All Tabs for Excluding
-        /// </summary>
-        /// <param name="sender">
-        /// The sender object.
-        /// </param>
-        /// <param name="e">
-        /// The Event Args e.
-        /// </param>
-        protected void BtnSelectAllClick(object sender, EventArgs e)
-        {
-            foreach (ListItem item in this.cblExcludeLst.Items)
-            {
-                item.Selected = true;
-            }
-        }
-
-        /// <summary>
-        /// Deselect All Tabs from Excluding
-        /// </summary>
-        /// <param name="sender">
-        /// The sender object.
-        /// </param>
-        /// <param name="e">
-        /// The Event Args e.
-        /// </param>
-        protected void BtnSelectNoneClick(object sender, EventArgs e)
-        {
-            foreach (ListItem item in this.cblExcludeLst.Items)
-            {
-                item.Selected = false;
-            }
-        }
 
         /// <summary>
         /// Checks if Root Level is set to Custom
@@ -221,8 +193,7 @@ namespace WatchersNET.DNN.Modules
         /// </param>
         protected void DDlSkinsChanged(object sender, EventArgs e)
         {
-            this.imgPreview.ImageUrl = string.Format(
-                "{0}{1}/Preview.jpg", this.ResolveUrl("Skins/"), this.dDlSkins.SelectedItem.Text);
+            this.imgPreview.ImageUrl = $"{this.ResolveUrl("Skins/")}{this.dDlSkins.SelectedItem.Text}/Preview.jpg";
         }
 
         /// <summary>
@@ -236,37 +207,40 @@ namespace WatchersNET.DNN.Modules
         /// </param>
         protected void DDlTaxModeSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.dDlTaxMode.SelectedValue.Equals("custom"))
+            switch (this.dDlTaxMode.SelectedValue)
             {
-                this.cBlVocabularies.Enabled = true;
-
-                this.cBlTerms.Enabled = false;
-
-                if (this.vocabularies == null)
+                case "custom":
                 {
-                    return;
+                    this.cBlVocabularies.Enabled = true;
+
+                    this.cBlTerms.Enabled = false;
+
+                    if (this.vocabularies == null)
+                    {
+                        return;
+                    }
+
+                    this.vocabularies.ForEach(
+                        sVocabulary => this.cBlVocabularies.Items.FindByValue(sVocabulary).Selected = true);
+
+                    break;
                 }
 
-                foreach (var sVocabulary in this.vocabularies)
+                case "terms":
                 {
-                    this.cBlVocabularies.Items.FindByValue(sVocabulary).Selected = true;
-                }
-            }
-            else if (this.dDlTaxMode.SelectedValue.Equals("terms"))
-            {
-                this.cBlTerms.Enabled = true;
+                    this.cBlTerms.Enabled = true;
 
-                this.cBlVocabularies.Enabled = false;
+                    this.cBlVocabularies.Enabled = false;
 
-                foreach (var sTerm in this.terms)
-                {
-                    this.cBlTerms.Items.FindByValue(sTerm).Selected = true;
+                    this.terms.ForEach(term => this.cBlTerms.Items.FindByValue(term).Selected = true);
+
+                    break;
                 }
-            }
-            else
-            {
-                this.cBlTerms.Enabled = false;
-                this.cBlVocabularies.Enabled = false;
+
+                default:
+                    this.cBlTerms.Enabled = false;
+                    this.cBlVocabularies.Enabled = false;
+                    break;
             }
         }
 
@@ -285,32 +259,36 @@ namespace WatchersNET.DNN.Modules
             {
                 this.dDlTaxMode.Enabled = true;
 
-                if (this.dDlTaxMode.SelectedValue.Equals("custom"))
+                switch (this.dDlTaxMode.SelectedValue)
                 {
-                    this.cBlVocabularies.Enabled = true;
-
-                    this.cBlTerms.Enabled = false;
-
-                    if (this.vocabularies == null)
+                    case "custom":
                     {
-                        return;
+                        this.cBlVocabularies.Enabled = true;
+
+                        this.cBlTerms.Enabled = false;
+
+                        if (this.vocabularies == null)
+                        {
+                            return;
+                        }
+
+                        foreach (var sVocabulary in this.vocabularies)
+                        {
+                            this.cBlVocabularies.Items.FindByValue(sVocabulary).Selected = true;
+                        }
+
+                        break;
                     }
 
-                    foreach (var sVocabulary in this.vocabularies)
-                    {
-                        this.cBlVocabularies.Items.FindByValue(sVocabulary).Selected = true;
-                    }
-                }
-                else if (this.dDlTaxMode.SelectedValue.Equals("terms"))
-                {
-                    this.cBlTerms.Enabled = true;
+                    case "terms":
+                        this.cBlTerms.Enabled = true;
 
-                    this.cBlVocabularies.Enabled = false;
-                }
-                else
-                {
-                    this.cBlVocabularies.Enabled = false;
-                    this.cBlTerms.Enabled = false;
+                        this.cBlVocabularies.Enabled = false;
+                        break;
+                    default:
+                        this.cBlVocabularies.Enabled = false;
+                        this.cBlTerms.Enabled = false;
+                        break;
                 }
             }
             else
@@ -354,7 +332,7 @@ namespace WatchersNET.DNN.Modules
         /// </summary>
         private void FillExTabList()
         {
-            foreach (var objTab in this.tiTabs)
+            foreach (var objTab in this.tabs)
             {
                 this.tabPermissions = TabPermissionController.GetTabPermissions(objTab.TabID, this.PortalId);
 
@@ -376,21 +354,13 @@ namespace WatchersNET.DNN.Modules
         private void FillLevelList()
         {
             this.dDlRootLevel.Items.Add(
-                new ListItem(
-                    string.Format("< {0} >", Localization.GetString("Root.Text", this.LocalResourceFile)),
-                    "root"));
+                new ListItem($"< {Localization.GetString("Root.Text", this.LocalResourceFile)} >", "root"));
             this.dDlRootLevel.Items.Add(
-                new ListItem(
-                    string.Format("< {0} >", Localization.GetString("Parent.Text", this.LocalResourceFile)),
-                    "parent"));
+                new ListItem($"< {Localization.GetString("Parent.Text", this.LocalResourceFile)} >", "parent"));
             this.dDlRootLevel.Items.Add(
-                new ListItem(
-                    string.Format("< {0} >", Localization.GetString("Current.Text", this.LocalResourceFile)),
-                    "current"));
+                new ListItem($"< {Localization.GetString("Current.Text", this.LocalResourceFile)} >", "current"));
             this.dDlRootLevel.Items.Add(
-                new ListItem(
-                    string.Format("< {0} >", Localization.GetString("Child.Text", this.LocalResourceFile)),
-                    "children"));
+                new ListItem($"< {Localization.GetString("Child.Text", this.LocalResourceFile)} >", "children"));
             this.dDlRootLevel.Items.Add(
                 new ListItem(Localization.GetString("Custom.Text", this.LocalResourceFile), "custom"));
         }
@@ -400,29 +370,29 @@ namespace WatchersNET.DNN.Modules
         /// </summary>
         private void FillSettings()
         {
-            this.tiTabs = this.FillTabs();
+            this.tabs = this.FillTabs();
 
             this.FillLevelList();
 
             // Load Render Mode Setting
-            var sRenderMode = string.Empty;
+            var renderMode = string.Empty;
 
             try
             {
-                sRenderMode = (string)this.TabModuleSettings["sRenderMode"];
+                renderMode = (string)this.TabModuleSettings["sRenderMode"];
             }
             catch (Exception)
             {
-                sRenderMode = "normal";
+                renderMode = "normal";
             }
             finally
             {
-                if (string.IsNullOrEmpty(sRenderMode))
+                if (string.IsNullOrEmpty(renderMode))
                 {
-                    sRenderMode = "normal";
+                    renderMode = "normal";
                 }
 
-                this.rBlRender.SelectedValue = sRenderMode;
+                this.rBlRender.SelectedValue = renderMode;
             }
 
             // Load Skin List
@@ -433,138 +403,127 @@ namespace WatchersNET.DNN.Modules
             // Load Skin Name Setting
             try
             {
-                this.sSkin = (string)this.TabModuleSettings["sSkin"];
+                this.skin = (string)this.TabModuleSettings["sSkin"];
             }
             catch (Exception)
             {
-                this.sSkin = "Default";
+                this.skin = "Default";
             }
             finally
             {
-                if (string.IsNullOrEmpty(this.sSkin))
+                if (string.IsNullOrEmpty(this.skin))
                 {
-                    this.sSkin = "Default";
+                    this.skin = "Default";
                 }
 
                 // Load skin preview
-                this.imgPreview.ImageUrl = string.Format("{0}{1}/Preview.jpg", this.ResolveUrl("Skins/"), this.sSkin);
+                this.imgPreview.ImageUrl = $"{this.ResolveUrl("Skins/")}{this.skin}/Preview.jpg";
 
-                this.dDlSkins.SelectedValue = this.sSkin;
+                this.dDlSkins.SelectedValue = this.skin;
             }
 
             // Loads TreeView Options
-            var sAnimated = string.Empty;
+            var animated = string.Empty;
+
             try
             {
-                sAnimated = (string)this.TabModuleSettings["sAnimated"];
+                animated = (string)this.TabModuleSettings["sAnimated"];
             }
             catch (Exception)
             {
-                sAnimated = "normal";
+                animated = "normal";
             }
             finally
             {
-                if (string.IsNullOrEmpty(sAnimated))
+                if (string.IsNullOrEmpty(animated))
                 {
-                    sAnimated = "normal";
+                    animated = "normal";
                 }
 
-                foreach (var item in this.rBlAnimated.Items.Cast<ListItem>().Where(item => item.Value.Equals(sAnimated)))
+                foreach (var item in this.rBlAnimated.Items.Cast<ListItem>().Where(item => item.Value.Equals(animated)))
                 {
                     item.Selected = true;
                 }
             }
 
-            var sCollapsed = string.Empty;
+            var collapsed = string.Empty;
             try
             {
-                sCollapsed = (string)this.TabModuleSettings["bCollapsed"];
+                collapsed = (string)this.TabModuleSettings["bCollapsed"];
             }
             catch (Exception)
             {
-                sCollapsed = "true";
+                collapsed = "true";
             }
             finally
             {
-                if (string.IsNullOrEmpty(sCollapsed))
+                if (string.IsNullOrEmpty(collapsed))
                 {
-                    sCollapsed = "true";
+                    collapsed = "true";
                 }
 
-                foreach (var item in
-                    this.rBlCollapsed.Items.Cast<ListItem>().Where(item => item.Value.Equals(sCollapsed)))
-                {
-                    item.Selected = true;
-                }
+                this.rBlCollapsed.Items.Cast<ListItem>().Where(item => item.Value.Equals(collapsed)).ForEach(
+                    item => item.Selected = true);
             }
 
-            var sUnique = string.Empty;
+            var unique = string.Empty;
             try
             {
-                sUnique = (string)this.TabModuleSettings["bUnique"];
+                unique = (string)this.TabModuleSettings["bUnique"];
             }
             catch (Exception)
             {
-                sUnique = "true";
+                unique = "true";
             }
             finally
             {
-                if (string.IsNullOrEmpty(sUnique))
+                if (string.IsNullOrEmpty(unique))
                 {
-                    sUnique = "true";
+                    unique = "true";
                 }
 
-                foreach (
-                    var item in this.rBlUnique.Items.Cast<ListItem>().Where(item => item.Value.Equals(sUnique)))
-                {
-                    item.Selected = true;
-                }
+                this.rBlUnique.Items.Cast<ListItem>().Where(item => item.Value.Equals(unique))
+                    .ForEach(item => item.Selected = true);
             }
 
-            var sPersist = string.Empty;
+            var persist = string.Empty;
             try
             {
-                sPersist = (string)this.TabModuleSettings["sPersist"];
+                persist = (string)this.TabModuleSettings["sPersist"];
             }
             catch (Exception)
             {
-                sPersist = "location";
+                persist = "location";
             }
             finally
             {
-                if (string.IsNullOrEmpty(sPersist))
+                if (string.IsNullOrEmpty(persist))
                 {
-                    sPersist = "location";
+                    persist = "location";
                 }
 
-                foreach (
-                    var item in this.rBlPersist.Items.Cast<ListItem>().Where(item => item.Value.Equals(sPersist)))
-                {
-                    item.Selected = true;
-                }
+                this.rBlPersist.Items.Cast<ListItem>().Where(item => item.Value.Equals(persist))
+                    .ForEach(item => item.Selected = true);
             }
 
-            var sRenderName = string.Empty;
+            var renderName = string.Empty;
             try
             {
-                sRenderName = (string)this.TabModuleSettings["bRenderName"];
+                renderName = (string)this.TabModuleSettings["bRenderName"];
             }
             catch (Exception)
             {
-                sRenderName = "true";
+                renderName = "true";
             }
             finally
             {
-                if (string.IsNullOrEmpty(sRenderName))
+                if (string.IsNullOrEmpty(renderName))
                 {
-                    sRenderName = "true";
+                    renderName = "true";
                 }
 
-                foreach (var item in
-                    this.rBlRenderName.Items.Cast<ListItem>().Where(item => item.Value.Equals(sRenderName)))
-                {
-                    item.Selected = true;
-                }
+                this.rBlRenderName.Items.Cast<ListItem>().Where(item => item.Value.Equals(renderName))
+                    .ForEach(item => item.Selected = true);
             }
 
             // Load Tabs
@@ -572,32 +531,29 @@ namespace WatchersNET.DNN.Modules
             this.FillExTabList();
 
             // Load Excluded Tabs
-            string sExlTabLst;
+            string exlTabLst;
 
             try
             {
-                sExlTabLst = (string)this.TabModuleSettings["exclusTabsLst"];
+                exlTabLst = (string)this.TabModuleSettings["exclusTabsLst"];
             }
             catch (Exception)
             {
-                sExlTabLst = null;
+                exlTabLst = null;
             }
 
             try
             {
-                if (sExlTabLst != string.Empty)
+                if (exlTabLst != string.Empty)
                 {
-                    this.exclusionTabs = sExlTabLst.Split(',');
+                    this.exclusionTabs = exlTabLst.Split(',');
 
                     if (this.exclusionTabs.Length != 0)
                     {
-                        foreach (var item in from sExTabValue in this.exclusionTabs
-                                                  from ListItem item in this.cblExcludeLst.Items
-                                                  where item.Value.Equals(sExTabValue)
-                                                  select item)
-                        {
-                            item.Selected = true;
-                        }
+                        (from sExTabValue in this.exclusionTabs
+                            from ListItem item in this.cblExcludeLst.Items
+                            where item.Value.Equals(sExTabValue)
+                            select item).ForEach(item => item.Selected = true);
                     }
                 }
             }
@@ -609,8 +565,8 @@ namespace WatchersNET.DNN.Modules
             // Load Max Render Level Setting
             try
             {
-                var sMaxLevel = (string)this.TabModuleSettings["sMaxLevel"];
-                this.tbMaxLevel.Text = sMaxLevel;
+                var maxLevel = (string)this.TabModuleSettings["sMaxLevel"];
+                this.tbMaxLevel.Text = maxLevel;
             }
             catch (Exception)
             {
@@ -625,43 +581,43 @@ namespace WatchersNET.DNN.Modules
             }
 
             // Load Render Level Setting
-            var sRootLevel = string.Empty;
+            var rootLevel = string.Empty;
             try
             {
-                sRootLevel = (string)this.TabModuleSettings["sRootLevel"];
+                rootLevel = (string)this.TabModuleSettings["sRootLevel"];
             }
             catch (Exception)
             {
-                sRootLevel = string.Empty;
+                rootLevel = string.Empty;
             }
             finally
             {
-                this.dDlRootLevel.SelectedValue = string.IsNullOrEmpty(sRootLevel) ? "root" : sRootLevel;
+                this.dDlRootLevel.SelectedValue = string.IsNullOrEmpty(rootLevel) ? "root" : rootLevel;
 
                 this.dDlRootTab.Enabled = this.dDlRootLevel.SelectedValue.Equals("custom");
             }
 
             // Load Render Tab Setting
-            var sRootTab = string.Empty;
+            var rootTab = string.Empty;
             try
             {
-                sRootTab = (string)this.TabModuleSettings["sRootTab"];
+                rootTab = (string)this.TabModuleSettings["sRootTab"];
             }
             catch (Exception)
             {
-                sRootTab = string.Empty;
+                rootTab = string.Empty;
             }
             finally
             {
-                this.dDlRootTab.SelectedValue = string.IsNullOrEmpty(sRootTab) ? "-1" : sRootTab;
+                this.dDlRootTab.SelectedValue = string.IsNullOrEmpty(rootTab) ? "-1" : rootTab;
             }
 
             // Load Show Hidden Tabs Setting
             try
             {
-                var sShowHidden = (string)this.TabModuleSettings["bShowHidden"];
+                var showHidden = (string)this.TabModuleSettings["bShowHidden"];
 
-                this.cBShowHidden.Checked = bool.Parse(sShowHidden);
+                this.cBShowHidden.Checked = bool.Parse(showHidden);
             }
             catch (Exception)
             {
@@ -671,8 +627,8 @@ namespace WatchersNET.DNN.Modules
             // Load Show Tab Icons Setting
             try
             {
-                var sShowTabIcons = (string)this.TabModuleSettings["bShowTabIcons"];
-                this.cBShowTabIcons.Checked = bool.Parse(sShowTabIcons);
+                var showTabIcons = (string)this.TabModuleSettings["bShowTabIcons"];
+                this.cBShowTabIcons.Checked = bool.Parse(showTabIcons);
             }
             catch (Exception)
             {
@@ -682,9 +638,9 @@ namespace WatchersNET.DNN.Modules
             // Load Default Icon Setting
             try
             {
-                var sDefaultIcon = (string)this.TabModuleSettings["sDefaultIcon"];
+                var defaultIcon = (string)this.TabModuleSettings["sDefaultIcon"];
 
-                this.DefaultIcon.Url = sDefaultIcon;
+                this.DefaultIcon.Url = defaultIcon;
             }
             catch (Exception)
             {
@@ -694,8 +650,8 @@ namespace WatchersNET.DNN.Modules
             // Load Show Info Setting
             try
             {
-                var sShowInfo = (string)this.TabModuleSettings["bShowInfo"];
-                this.cBShowInfo.Checked = bool.Parse(sShowInfo);
+                var showInfo = (string)this.TabModuleSettings["bShowInfo"];
+                this.cBShowInfo.Checked = bool.Parse(showInfo);
             }
             catch (Exception)
             {
@@ -705,10 +661,9 @@ namespace WatchersNET.DNN.Modules
             // Load Demo Mode Setting
             if (!string.IsNullOrEmpty((string)this.TabModuleSettings["bDemoMode"]))
             {
-                bool bResult;
-                if (bool.TryParse((string)this.TabModuleSettings["bDemoMode"], out bResult))
+                if (bool.TryParse((string)this.TabModuleSettings["bDemoMode"], out var result))
                 {
-                    this.cBDemoMode.Checked = bResult;
+                    this.cBDemoMode.Checked = result;
                 }
             }
             else
@@ -719,10 +674,9 @@ namespace WatchersNET.DNN.Modules
             // Load Human Friendly Urls Setting
             if (!string.IsNullOrEmpty((string)this.TabModuleSettings["bHumanUrls"]))
             {
-                bool bResult;
-                if (bool.TryParse((string)this.TabModuleSettings["bHumanUrls"], out bResult))
+                if (bool.TryParse((string)this.TabModuleSettings["bHumanUrls"], out var result))
                 {
-                    this.cBHumanUrls.Checked = bResult;
+                    this.cBHumanUrls.Checked = result;
                 }
             }
             else
@@ -749,10 +703,9 @@ namespace WatchersNET.DNN.Modules
 
             if (!string.IsNullOrEmpty((string)this.TabModuleSettings["FilterByTax"]))
             {
-                bool bResult;
-                if (bool.TryParse((string)this.TabModuleSettings["FilterByTax"], out bResult))
+                if (bool.TryParse((string)this.TabModuleSettings["FilterByTax"], out var result))
                 {
-                    this.cBFilterByTax.Checked = bResult;
+                    this.cBFilterByTax.Checked = result;
                 }
             }
             else
@@ -765,40 +718,43 @@ namespace WatchersNET.DNN.Modules
                 this.dDlTaxMode.Enabled = true;
             }
 
-            if (this.dDlTaxMode.SelectedValue.Equals("custom") && this.cBFilterByTax.Checked)
+            switch (this.dDlTaxMode.SelectedValue)
             {
-                this.cBlVocabularies.Enabled = true;
-                this.cBlTerms.Enabled = false;
-
-                // Setting TaxMode Vocabularies
-                if (!string.IsNullOrEmpty((string)this.TabModuleSettings["TaxVocabularies"]))
+                case "custom" when this.cBFilterByTax.Checked:
                 {
-                    var sVocabularies = (string)this.TabModuleSettings["TaxVocabularies"];
+                    this.cBlVocabularies.Enabled = true;
+                    this.cBlTerms.Enabled = false;
 
-                    this.vocabularies = sVocabularies.Split(';');
-
-                    foreach (var sVocabulary in this.vocabularies)
+                    // Setting TaxMode Vocabularies
+                    if (!string.IsNullOrEmpty((string)this.TabModuleSettings["TaxVocabularies"]))
                     {
-                        this.cBlVocabularies.Items.FindByValue(sVocabulary).Selected = true;
+                        var taxVocabularies = (string)this.TabModuleSettings["TaxVocabularies"];
+
+                        this.vocabularies = taxVocabularies.Split(';');
+
+                        this.vocabularies.ForEach(
+                            sVocabulary => this.cBlVocabularies.Items.FindByValue(sVocabulary).Selected = true);
                     }
+
+                    break;
                 }
-            }
-            else if (this.dDlTaxMode.SelectedValue.Equals("terms") && this.cBFilterByTax.Checked)
-            {
-                this.cBlVocabularies.Enabled = false;
-                this.cBlTerms.Enabled = true;
 
-                // Setting TaxMode Terms
-                if (!string.IsNullOrEmpty((string)this.TabModuleSettings["TaxTerms"]))
+                case "terms" when this.cBFilterByTax.Checked:
                 {
-                    var sTerms = (string)this.TabModuleSettings["TaxTerms"];
+                    this.cBlVocabularies.Enabled = false;
+                    this.cBlTerms.Enabled = true;
 
-                    this.terms = sTerms.Split(';');
-
-                    foreach (var sTerm in this.terms)
+                    // Setting TaxMode Terms
+                    if (!string.IsNullOrEmpty((string)this.TabModuleSettings["TaxTerms"]))
                     {
-                        this.cBlTerms.Items.FindByValue(sTerm).Selected = true;
+                        var taxTerms = (string)this.TabModuleSettings["TaxTerms"];
+
+                        this.terms = taxTerms.Split(';');
+
+                        this.terms.ForEach(sTerm => this.cBlTerms.Items.FindByValue(sTerm).Selected = true);
                     }
+
+                    break;
                 }
             }
         }
@@ -816,24 +772,32 @@ namespace WatchersNET.DNN.Modules
 
                 foreach (var objSubFolder in objDir.GetDirectories())
                 {
-                    if (this.rBlRender.SelectedValue.Equals("normal"))
+                    switch (this.rBlRender.SelectedValue)
                     {
-                        // Load Normal SiteMap Skins
-                        if (Utility.IsSkinDirectory(objSubFolder.FullName))
+                        case "normal":
                         {
-                            var skinItem = new ListItem { Text = objSubFolder.Name, Value = objSubFolder.Name };
+                            // Load Normal SiteMap Skins
+                            if (Utility.IsSkinDirectory(objSubFolder.FullName))
+                            {
+                                var skinItem = new ListItem { Text = objSubFolder.Name, Value = objSubFolder.Name };
 
-                            this.dDlSkins.Items.Add(skinItem);
+                                this.dDlSkins.Items.Add(skinItem);
+                            }
+
+                            break;
                         }
-                    }
-                    else if (this.rBlRender.SelectedValue.Equals("treeview"))
-                    {
-                        // Load TreeView Skins
-                        if (Utility.IsSkinTreeDirectory(objSubFolder.FullName))
-                        {
-                            var skinItem = new ListItem { Text = objSubFolder.Name, Value = objSubFolder.Name };
 
-                            this.dDlSkins.Items.Add(skinItem);
+                        case "treeview":
+                        {
+                            // Load TreeView Skins
+                            if (Utility.IsSkinTreeDirectory(objSubFolder.FullName))
+                            {
+                                var skinItem = new ListItem { Text = objSubFolder.Name, Value = objSubFolder.Name };
+
+                                this.dDlSkins.Items.Add(skinItem);
+                            }
+
+                            break;
                         }
                     }
                 }
@@ -841,10 +805,9 @@ namespace WatchersNET.DNN.Modules
             catch (Exception)
             {
                 var skinItem = new ListItem
-                                        {
-                                            Text = Localization.GetString("None.Text", this.LocalResourceFile),
-                                            Value = "None"
-                                        };
+                {
+                    Text = Localization.GetString("None.Text", this.LocalResourceFile), Value = "None"
+                };
 
                 this.lblError.Text = Localization.GetString("lblError.Text", this.LocalResourceFile);
                 this.lblError.ForeColor = Color.Red;
@@ -861,7 +824,7 @@ namespace WatchersNET.DNN.Modules
         /// </summary>
         private void FillTabList()
         {
-            foreach (var objTab in this.tiTabs)
+            foreach (var objTab in this.tabs)
             {
                 this.tabPermissions = TabPermissionController.GetTabPermissions(objTab.TabID, this.PortalId);
 
@@ -873,25 +836,23 @@ namespace WatchersNET.DNN.Modules
 
                 var lstTab = new ListItem();
 
-                if (objTab.Level.Equals(1))
+                switch (objTab.Level)
                 {
-                    lstTab.Text = string.Format("|->{0}", objTab.LocalizedTabName);
-                }
-                else if (objTab.Level.Equals(2))
-                {
-                    lstTab.Text = string.Format("|-->{0}", objTab.LocalizedTabName);
-                }
-                else if (objTab.Level.Equals(3))
-                {
-                    lstTab.Text = string.Format("|--->{0}", objTab.LocalizedTabName);
-                }
-                else if (objTab.Level.Equals(4))
-                {
-                    lstTab.Text = string.Format("|---->{0}", objTab.LocalizedTabName);
-                }
-                else
-                {
-                    lstTab.Text = string.Format("|-{0}", objTab.LocalizedTabName);
+                    case 1:
+                        lstTab.Text = $"|->{objTab.LocalizedTabName}";
+                        break;
+                    case 2:
+                        lstTab.Text = $"|-->{objTab.LocalizedTabName}";
+                        break;
+                    case 3:
+                        lstTab.Text = $"|--->{objTab.LocalizedTabName}";
+                        break;
+                    case 4:
+                        lstTab.Text = $"|---->{objTab.LocalizedTabName}";
+                        break;
+                    default:
+                        lstTab.Text = $"|-{objTab.LocalizedTabName}";
+                        break;
                 }
 
                 lstTab.Value = objTab.TabID.ToString();
@@ -908,36 +869,38 @@ namespace WatchersNET.DNN.Modules
         /// </returns>
         private List<TabInfo> FillTabs()
         {
-            var tiAllTabs = new List<TabInfo>();
+            var allTabs = new List<TabInfo>();
 
             // Add Portal Tabs
-            foreach (var objPortalTab in TabController.GetTabsBySortOrder(this.PortalId).Select(objTab => objTab.Clone()))
-            {
-                if (Null.IsNull(objPortalTab.StartDate))
+            TabController.GetTabsBySortOrder(this.PortalId).ForEach(
+                objPortalTab =>
                 {
-                    objPortalTab.StartDate = DateTime.MinValue;
-                }
+                    if (Null.IsNull(objPortalTab.StartDate))
+                    {
+                        objPortalTab.StartDate = DateTime.MinValue;
+                    }
 
-                if (Null.IsNull(objPortalTab.EndDate))
-                {
-                    objPortalTab.EndDate = DateTime.MaxValue;
-                }
+                    if (Null.IsNull(objPortalTab.EndDate))
+                    {
+                        objPortalTab.EndDate = DateTime.MaxValue;
+                    }
 
-                tiAllTabs.Add(objPortalTab);
-            }
+                    allTabs.Add(objPortalTab);
+                });
 
             // Add Host Tabs
-            foreach (var objHostTab in TabController.GetTabsBySortOrder(Null.NullInteger).Select(objTab => objTab.Clone()))
-            {
-                objHostTab.PortalID = this.PortalId;
+            TabController.GetTabsBySortOrder(Null.NullInteger).ForEach(
+                objHostTab =>
+                {
+                    objHostTab.PortalID = this.PortalId;
 
-                objHostTab.StartDate = DateTime.MinValue;
-                objHostTab.EndDate = DateTime.MaxValue;
+                    objHostTab.StartDate = DateTime.MinValue;
+                    objHostTab.EndDate = DateTime.MaxValue;
 
-                tiAllTabs.Add(objHostTab);
-            }
+                    allTabs.Add(objHostTab);
+                });
 
-            return tiAllTabs;
+            return allTabs;
         }
 
         /// <summary>
@@ -946,30 +909,29 @@ namespace WatchersNET.DNN.Modules
         private void FillTaxOptions()
         {
             var itemTab = new ListItem
-                {
-                   Text = Localization.GetString("TabTerms.Text", this.LocalResourceFile), Value = "tab" 
-                };
+            {
+                Text = Localization.GetString("TabTerms.Text", this.LocalResourceFile), Value = "tab"
+            };
 
             this.dDlTaxMode.Items.Add(itemTab);
 
             var itemAll = new ListItem
-                {
-                   Text = Localization.GetString("AllTerms.Text", this.LocalResourceFile), Value = "all" 
-                };
+            {
+                Text = Localization.GetString("AllTerms.Text", this.LocalResourceFile), Value = "all"
+            };
 
             this.dDlTaxMode.Items.Add(itemAll);
 
             var itemCustom = new ListItem
-                {
-                   Text = Localization.GetString("CustomVocabulary.Text", this.LocalResourceFile), Value = "custom" 
-                };
+            {
+                Text = Localization.GetString("CustomVocabulary.Text", this.LocalResourceFile), Value = "custom"
+            };
 
             this.dDlTaxMode.Items.Add(itemCustom);
 
             var itemTerms = new ListItem
             {
-                Text = Localization.GetString("CustomTerms.Text", this.LocalResourceFile),
-                Value = "terms"
+                Text = Localization.GetString("CustomTerms.Text", this.LocalResourceFile), Value = "terms"
             };
 
             this.dDlTaxMode.Items.Add(itemTerms);
@@ -985,10 +947,9 @@ namespace WatchersNET.DNN.Modules
                 var vocabRep = Util.GetVocabularyController();
 
                 var vs = from v in vocabRep.GetVocabularies()
-                                            where
-                                                v.ScopeType.ScopeType == "Application" ||
-                                                (v.ScopeType.ScopeType == "Portal" && v.ScopeId == this.PortalId)
-                                            select v;
+                    where v.ScopeType.ScopeType == "Application" ||
+                          v.ScopeType.ScopeType == "Portal" && v.ScopeId == this.PortalId
+                    select v;
 
                 foreach (var v in vs)
                 {
@@ -1047,21 +1008,18 @@ namespace WatchersNET.DNN.Modules
         /// </summary>
         private void SaveChanges()
         {
-            var sExlTabLst =
-                this.cblExcludeLst.Items.Cast<ListItem>().Where(item => item.Selected).Aggregate(
-                    string.Empty, (current, item) => current + string.Format("{0},", item.Value));
+            var exlTabLst = this.cblExcludeLst.Items.Cast<ListItem>().Where(item => item.Selected).Aggregate(
+                string.Empty,
+                (current, item) => current + $"{item.Value},");
 
             var objModules = new ModuleController();
 
-            if (sExlTabLst != string.Empty && sExlTabLst.EndsWith(","))
+            if (exlTabLst != string.Empty && exlTabLst.EndsWith(","))
             {
-                sExlTabLst = sExlTabLst.Remove(sExlTabLst.Length - 1, 1);
+                exlTabLst = exlTabLst.Remove(exlTabLst.Length - 1, 1);
             }
 
-            foreach (var item in this.dDlSkins.Items.Cast<ListItem>().Where(item => item.Selected))
-            {
-                this.sSkin = item.Text;
-            }
+            this.dDlSkins.Items.Cast<ListItem>().Where(item => item.Selected).ForEach(item => this.skin = item.Text);
 
             // Save TreeView Options
             objModules.UpdateTabModuleSetting(this.TabModuleId, "sAnimated", this.rBlAnimated.SelectedValue);
@@ -1070,9 +1028,12 @@ namespace WatchersNET.DNN.Modules
             objModules.UpdateTabModuleSetting(this.TabModuleId, "sPersist", this.rBlPersist.SelectedValue);
             objModules.UpdateTabModuleSetting(this.TabModuleId, "bRenderName", this.rBlRenderName.SelectedValue);
 
-            objModules.UpdateTabModuleSetting(this.TabModuleId, "sSkin", this.sSkin);
-            objModules.UpdateTabModuleSetting(this.TabModuleId, "exclusTabsLst", sExlTabLst);
-            objModules.UpdateTabModuleSetting(this.TabModuleId, "bShowTabIcons", this.cBShowTabIcons.Checked.ToString());
+            objModules.UpdateTabModuleSetting(this.TabModuleId, "sSkin", this.skin);
+            objModules.UpdateTabModuleSetting(this.TabModuleId, "exclusTabsLst", exlTabLst);
+            objModules.UpdateTabModuleSetting(
+                this.TabModuleId,
+                "bShowTabIcons",
+                this.cBShowTabIcons.Checked.ToString());
             objModules.UpdateTabModuleSetting(this.TabModuleId, "bShowHidden", this.cBShowHidden.Checked.ToString());
             objModules.UpdateTabModuleSetting(this.TabModuleId, "bShowInfo", this.cBShowInfo.Checked.ToString());
             objModules.UpdateTabModuleSetting(this.TabModuleId, "bDemoMode", this.cBDemoMode.Checked.ToString());
@@ -1103,37 +1064,43 @@ namespace WatchersNET.DNN.Modules
 
             objModules.UpdateTabModuleSetting(this.TabModuleId, "TaxMode", this.dDlTaxMode.SelectedValue);
 
-            if (this.dDlTaxMode.SelectedValue.Equals("custom"))
+            switch (this.dDlTaxMode.SelectedValue)
             {
-                // Setting TaxMode Vocabularies
-                var sVocabularies = string.Empty;
-
-                sVocabularies =
-                    this.cBlVocabularies.Items.Cast<ListItem>().Where(item => item.Selected).Aggregate(
-                        sVocabularies, (current, item) => current + string.Format("{0};", item.Value));
-
-                if (sVocabularies.EndsWith(";"))
+                case "custom":
                 {
-                    sVocabularies = sVocabularies.Remove(sVocabularies.Length - 1);
+                    // Setting TaxMode Vocabularies
+                    var sVocabularies = string.Empty;
+
+                    sVocabularies = this.cBlVocabularies.Items.Cast<ListItem>().Where(item => item.Selected).Aggregate(
+                        sVocabularies,
+                        (current, item) => current + string.Format("{0};", item.Value));
+
+                    if (sVocabularies.EndsWith(";"))
+                    {
+                        sVocabularies = sVocabularies.Remove(sVocabularies.Length - 1);
+                    }
+
+                    objModules.UpdateTabModuleSetting(this.TabModuleId, "TaxVocabularies", sVocabularies);
+                    break;
                 }
 
-                objModules.UpdateTabModuleSetting(this.TabModuleId, "TaxVocabularies", sVocabularies);
-            }
-            else if (this.dDlTaxMode.SelectedValue.Equals("terms"))
-            {
-               var sTerms = string.Empty;
-
-               sTerms =
-                    this.cBlTerms.Items.Cast<ListItem>().Where(item => item.Selected).Aggregate(
-                        sTerms, (current, item) => current + string.Format("{0};", item.Value));
-
-               if (sTerms.EndsWith(";"))
+                case "terms":
                 {
-                    sTerms = sTerms.Remove(sTerms.Length - 1);
-                }
+                    var sTerms = string.Empty;
 
-               // Setting TaxMode Terms
-               objModules.UpdateTabModuleSetting(this.TabModuleId, "TaxTerms", sTerms);
+                    sTerms = this.cBlTerms.Items.Cast<ListItem>().Where(item => item.Selected).Aggregate(
+                        sTerms,
+                        (current, item) => current + string.Format("{0};", item.Value));
+
+                    if (sTerms.EndsWith(";"))
+                    {
+                        sTerms = sTerms.Remove(sTerms.Length - 1);
+                    }
+
+                    // Setting TaxMode Terms
+                    objModules.UpdateTabModuleSetting(this.TabModuleId, "TaxTerms", sTerms);
+                    break;
+                }
             }
         }
 
@@ -1198,8 +1165,7 @@ namespace WatchersNET.DNN.Modules
                 this.rBlPersist.Enabled = true;
                 this.rBlRenderName.Enabled = true;
 
-                this.imgPreview.ImageUrl = string.Format(
-                    "{0}{1}/Preview.jpg", this.ResolveUrl("Skins/"), this.dDlSkins.SelectedItem.Text);
+                this.imgPreview.ImageUrl = $"{this.ResolveUrl("Skins/")}{this.dDlSkins.SelectedItem.Text}/Preview.jpg";
             }
             else
             {
@@ -1209,8 +1175,41 @@ namespace WatchersNET.DNN.Modules
                 this.rBlPersist.Enabled = false;
                 this.rBlRenderName.Enabled = false;
 
-                this.imgPreview.ImageUrl = string.Format(
-                    "{0}{1}/Preview.jpg", this.ResolveUrl("Skins/"), this.dDlSkins.SelectedItem.Text);
+                this.imgPreview.ImageUrl = $"{this.ResolveUrl("Skins/")}{this.dDlSkins.SelectedItem.Text}/Preview.jpg";
+            }
+        }
+
+        /// <summary>
+        /// Select All Tabs for Excluding
+        /// </summary>
+        /// <param name="sender">
+        /// The sender object.
+        /// </param>
+        /// <param name="e">
+        /// The Event Args e.
+        /// </param>
+        private void BtnSelectAllClick(object sender, EventArgs e)
+        {
+            foreach (ListItem item in this.cblExcludeLst.Items)
+            {
+                item.Selected = true;
+            }
+        }
+
+        /// <summary>
+        /// Deselect All Tabs from Excluding
+        /// </summary>
+        /// <param name="sender">
+        /// The sender object.
+        /// </param>
+        /// <param name="e">
+        /// The Event Args e.
+        /// </param>
+        private void BtnSelectNoneClick(object sender, EventArgs e)
+        {
+            foreach (ListItem item in this.cblExcludeLst.Items)
+            {
+                item.Selected = false;
             }
         }
 

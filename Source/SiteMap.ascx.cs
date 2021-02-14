@@ -20,8 +20,12 @@ namespace WatchersNET.DNN.Modules
     using System.Web.UI.HtmlControls;
     using System.Web.UI.WebControls;
 
+    using DotNetNuke.Abstractions;
+    using DotNetNuke.Abstractions.Portals;
+    using DotNetNuke.Collections;
     using DotNetNuke.Common;
     using DotNetNuke.Common.Utilities;
+    using DotNetNuke.Entities.Content;
     using DotNetNuke.Entities.Content.Common;
     using DotNetNuke.Entities.Content.Taxonomy;
     using DotNetNuke.Entities.Modules;
@@ -33,6 +37,8 @@ namespace WatchersNET.DNN.Modules
     using DotNetNuke.Services.Localization;
     using DotNetNuke.Web.Client.ClientResourceManagement;
 
+    using Microsoft.Extensions.DependencyInjection;
+
     #endregion
 
     /// <summary>
@@ -43,6 +49,11 @@ namespace WatchersNET.DNN.Modules
         #region Constants and Fields
 
         /// <summary>
+        /// The navigation manager.
+        /// </summary>
+        private readonly INavigationManager navigationManager;
+
+        /// <summary>
         /// The tax terms.
         /// </summary>
         private List<Term> taxTerms;
@@ -50,42 +61,42 @@ namespace WatchersNET.DNN.Modules
         /// <summary>
         /// The demo mode.
         /// </summary>
-        private bool bDemoMode;
+        private bool demoMode;
 
         /// <summary>
         /// The filter by tax.
         /// </summary>
-        private bool bFilterByTax;
+        private bool filterByTax;
 
         /// <summary>
         /// The human URLs.
         /// </summary>
-        private bool bHumanUrls;
+        private bool humanUrls;
 
         /// <summary>
         /// The is skin changed.
         /// </summary>
-        private bool bIsSkinChanged;
+        private bool isSkinChanged;
 
         /// <summary>
         /// The render name.
         /// </summary>
-        private bool bRenderName;
+        private bool renderName;
 
         /// <summary>
         /// The show hidden.
         /// </summary>
-        private bool bShowHidden;
+        private bool showHidden;
 
         /// <summary>
         /// The show info.
         /// </summary>
-        private bool bShowInfo;
+        private bool showInfo;
 
         /// <summary>
         /// The show tab icons.
         /// </summary>
-        private bool bShowTabIcons;
+        private bool showTabIcons;
 
         /// <summary>
         /// The exclusion tabs.
@@ -93,9 +104,9 @@ namespace WatchersNET.DNN.Modules
         private string[] exclusionTabs;
 
         /// <summary>
-        /// The i max level.
+        /// The max level.
         /// </summary>
-        private int iMaxLevel;
+        private int maxLevel;
 
         /// <summary>
         /// The items skins.
@@ -108,54 +119,54 @@ namespace WatchersNET.DNN.Modules
         private ListItemCollection itemsTreeView;
 
         /// <summary>
-        /// The s animated.
+        /// The animated.
         /// </summary>
-        private string sAnimated;
+        private string animated;
 
         /// <summary>
-        /// The s collapsed.
+        /// The collapsed.
         /// </summary>
-        private string sCollapsed;
+        private string collapsed;
 
         /// <summary>
-        /// The s default icon.
+        /// The default icon.
         /// </summary>
-        private string sDefaultIcon;
+        private string defaultIcon;
 
         /// <summary>
         /// The s persist.
         /// </summary>
-        private string sPersist;
+        private string persist;
 
         /// <summary>
-        /// The s render mode.
+        /// The render mode.
         /// </summary>
-        private string sRenderMode;
+        private string renderMode;
 
         /// <summary>
-        /// The s root level.
+        /// The root level.
         /// </summary>
-        private string sRootLevel;
+        private string rootLevel;
 
         /// <summary>
-        /// The s root tab.
+        /// The root tab.
         /// </summary>
-        private string sRootTab;
+        private string rootTab;
 
         /// <summary>
-        /// The s skin name.
+        /// The skin name.
         /// </summary>
-        private string sSkinName;
+        private string skinName;
 
         /// <summary>
-        /// The s tax mode.
+        /// The tax mode.
         /// </summary>
-        private string sTaxMode;
+        private string taxMode;
 
         /// <summary>
-        /// The s unique.
+        /// The unique.
         /// </summary>
-        private string sUnique;
+        private string unique;
 
         /// <summary>
         /// The tab permissions.
@@ -163,9 +174,9 @@ namespace WatchersNET.DNN.Modules
         private TabPermissionCollection tabPermissions;
 
         /// <summary>
-        /// The ti tabs.
+        /// The tabs.
         /// </summary>
-        private List<TabInfo> tiTabs;
+        private List<TabInfo> tabs;
 
         /// <summary>
         /// The vocabularies.
@@ -182,6 +193,14 @@ namespace WatchersNET.DNN.Modules
         #region Methods
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="SiteMap"/> class.
+        /// </summary>
+        protected SiteMap()
+        {
+            this.navigationManager = this.DependencyProvider.GetRequiredService<INavigationManager>();
+        }
+
+        /// <summary>
         /// The page_ load.
         /// </summary>
         /// <param name="sender">
@@ -194,7 +213,7 @@ namespace WatchersNET.DNN.Modules
         {
             this.LoadSettings();
 
-            if (this.bShowInfo)
+            if (this.showInfo)
             {
                 this.ShowInfo();
             }
@@ -203,7 +222,7 @@ namespace WatchersNET.DNN.Modules
                 this.lblInfo.Visible = false;
             }
 
-            if (this.bIsSkinChanged/* || this.IsPostBack*/)
+            if (this.isSkinChanged/* || this.IsPostBack*/)
             {
                 return;
             }
@@ -213,7 +232,7 @@ namespace WatchersNET.DNN.Modules
                 this.LoadAllSkins();
             }
 
-            if (this.bDemoMode)
+            if (this.demoMode)
             {
                 this.RenderDemoControls();
             }
@@ -233,15 +252,15 @@ namespace WatchersNET.DNN.Modules
                 return;
             }
 
-            this.sRenderMode = this.rBlRender.SelectedValue;
+            this.renderMode = this.rBlRender.SelectedValue;
 
-            this.FillSkinList(this.sRenderMode);
+            this.FillSkinList(this.renderMode);
 
-            this.sSkinName = this.dDlSkins.SelectedItem != null
+            this.skinName = this.dDlSkins.SelectedItem != null
                                  ? this.dDlSkins.SelectedItem.Text
                                  : this.dDlSkins.Items[0].Text;
 
-            this.bIsSkinChanged = true;
+            this.isSkinChanged = true;
             this.RenderSiteMap();
         }
 
@@ -256,11 +275,11 @@ namespace WatchersNET.DNN.Modules
         /// </param>
         protected void SwitchSkin(object sender, EventArgs e)
         {
-            this.sSkinName = this.dDlSkins.SelectedItem.Text;
+            this.skinName = this.dDlSkins.SelectedItem.Text;
 
-            this.sRenderMode = this.rBlRender.SelectedValue;
+            this.renderMode = this.rBlRender.SelectedValue;
 
-            this.bIsSkinChanged = true;
+            this.isSkinChanged = true;
             this.RenderSiteMap();
         }
 
@@ -273,13 +292,13 @@ namespace WatchersNET.DNN.Modules
         /// <returns>
         /// true or false
         /// </returns>
-        private bool ExcludeByTax(TabInfo checkTab)
+        private bool ExcludeByTax(ContentItem checkTab)
         {
-            var bExclude = true;
+            var exclude = true;
 
-            if (!this.bFilterByTax)
+            if (!this.filterByTax)
             {
-                return this.bFilterByTax;
+                return this.filterByTax;
             }
 
             try
@@ -293,68 +312,60 @@ namespace WatchersNET.DNN.Modules
                 {
                     return false;
                 }
-
-                // bExclude = this.taxTerms.Find(tax => checkTab.LocalizedTabName.ToLower().Contains(tax.Name.ToLower()) || checkTab.Title.ToLower().Contains(tax.Name.ToLower())) == null;
             }
             catch (Exception)
             {
-                bExclude = false;
+                exclude = false;
             }
 
-            return bExclude;
+            return exclude;
         }
 
         /// <summary>
         /// Checks if the Tab is in the Excluded List
         /// </summary>
-        /// <param name="iCheckTabId">
+        /// <param name="checkTabId">
         /// Tab to Check
         /// </param>
         /// <returns>
         /// true or false
         /// </returns>
-        private bool ExcludeTabId(IEquatable<int> iCheckTabId)
+        private bool ExcludeTabId(IEquatable<int> checkTabId)
         {
-            var bExclude = false;
+            var exclude = false;
 
             try
             {
                 if (this.exclusionTabs.Length != 0)
                 {
-                    if (this.exclusionTabs.Any(sExTabValue => iCheckTabId.Equals(int.Parse(sExTabValue))))
+                    if (this.exclusionTabs.Any(sExTabValue => checkTabId.Equals(int.Parse(sExTabValue))))
                     {
-                        bExclude = true;
+                        exclude = true;
                     }
-
-                    /*foreach (string sExTabValue in
-                        this.exclusionTabs.Where(sExTabValue => iCheckTabId.Equals(int.Parse(sExTabValue))))
-                    {
-                        bExclude = true;
-                    }*/
                 }
             }
             catch (Exception)
             {
-                bExclude = false;
+                exclude = false;
             }
 
-            return bExclude;
+            return exclude;
         }
 
         /// <summary>
         /// Loads the List of available Skins.
         /// </summary>
-        /// <param name="sRenderModus">
-        /// The s Render Modus.
+        /// <param name="renderModus">
+        /// The Render Modus.
         /// </param>
-        private void FillSkinList(IEquatable<string> sRenderModus)
+        private void FillSkinList(IEquatable<string> renderModus)
         {
             if (this.itemsTreeView == null || this.itemsSkins == null)
             {
                 this.LoadAllSkins();
             }
 
-            this.dDlSkins.DataSource = sRenderModus.Equals("treeview") ? this.itemsTreeView : this.itemsSkins;
+            this.dDlSkins.DataSource = renderModus.Equals("treeview") ? this.itemsTreeView : this.itemsSkins;
 
             this.dDlSkins.DataBind();
         }
@@ -367,36 +378,38 @@ namespace WatchersNET.DNN.Modules
         /// </returns>
         private List<TabInfo> FillTabs()
         {
-            var tiAllTabs = new List<TabInfo>();
+            var allTabs = new List<TabInfo>();
 
             // Add Portal Tabs
-            foreach (var objPortalTab in TabController.GetTabsBySortOrder(this.PortalId).Select(objTab => objTab.Clone()))
-            {
-                if (Null.IsNull(objPortalTab.StartDate))
+            TabController.GetTabsBySortOrder(this.PortalId).ForEach(
+                objPortalTab =>
                 {
-                    objPortalTab.StartDate = DateTime.MinValue;
-                }
+                    if (Null.IsNull(objPortalTab.StartDate))
+                    {
+                        objPortalTab.StartDate = DateTime.MinValue;
+                    }
 
-                if (Null.IsNull(objPortalTab.EndDate))
-                {
-                    objPortalTab.EndDate = DateTime.MaxValue;
-                }
+                    if (Null.IsNull(objPortalTab.EndDate))
+                    {
+                        objPortalTab.EndDate = DateTime.MaxValue;
+                    }
 
-                tiAllTabs.Add(objPortalTab);
-            }
+                    allTabs.Add(objPortalTab);
+                });
 
             // Add Host Tabs
-            foreach (var objHostTab in TabController.GetTabsBySortOrder(Null.NullInteger).Select(objTab => objTab.Clone()))
-            {
-                objHostTab.PortalID = this.PortalId;
+            TabController.GetTabsBySortOrder(Null.NullInteger).ForEach(
+                objHostTab =>
+                {
+                    objHostTab.PortalID = this.PortalId;
 
-                objHostTab.StartDate = DateTime.MinValue;
-                objHostTab.EndDate = DateTime.MaxValue;
+                    objHostTab.StartDate = DateTime.MinValue;
+                    objHostTab.EndDate = DateTime.MaxValue;
 
-                tiAllTabs.Add(objHostTab);
-            }
+                    allTabs.Add(objHostTab);
+                });
 
-            return tiAllTabs;
+            return allTabs;
         }
 
         /// <summary>
@@ -409,7 +422,7 @@ namespace WatchersNET.DNN.Modules
         {
             var terms = new List<Term>();
 
-            switch (this.sTaxMode)
+            switch (this.taxMode)
             {
                 case "tab":
                     {
@@ -423,24 +436,23 @@ namespace WatchersNET.DNN.Modules
 
                         var vocabRep = Util.GetVocabularyController();
 
-                        var vs = from v in vocabRep.GetVocabularies()
+                        var vocabulariesAll = from v in vocabRep.GetVocabularies()
                                                     where
                                                         v.ScopeType.ScopeType == "Application" ||
-                                                        (v.ScopeType.ScopeType == "Portal" && v.ScopeId == this.PortalId)
+                                                        v.ScopeType.ScopeType == "Portal" && v.ScopeId == this.PortalId
                                                     select v;
 
-                        foreach (var v in vs)
-                        {
-                            foreach (var t in termRep.GetTermsByVocabulary(v.VocabularyId))
-                            {
-                                if (v.Type == VocabularyType.Simple)
+                        vocabulariesAll.AsEnumerable().ForEach(
+                            v => termRep.GetTermsByVocabulary(v.VocabularyId).AsEnumerable().ForEach(
+                                t =>
                                 {
-                                    t.ParentTermId = -v.VocabularyId;
-                                }
+                                    if (v.Type == VocabularyType.Simple)
+                                    {
+                                        t.ParentTermId = -v.VocabularyId;
+                                    }
 
-                                terms.Add(t);
-                            }
-                        }
+                                    terms.Add(t);
+                                }));
                     }
 
                     break;
@@ -450,10 +462,7 @@ namespace WatchersNET.DNN.Modules
                         {
                             var termRep = Util.GetTermController();
 
-                            foreach (var sVocabularyId in this.vocabularies)
-                            {
-                                terms.AddRange(termRep.GetTermsByVocabulary(int.Parse(sVocabularyId)));
-                            }
+                            this.vocabularies.ForEach(id => terms.AddRange(termRep.GetTermsByVocabulary(int.Parse(id))));
                         }
                     }
 
@@ -485,29 +494,29 @@ namespace WatchersNET.DNN.Modules
         /// </returns>
         private bool IsMaxLevel(TabInfo checkTab)
         {
-            bool bExclude;
+            bool exclude;
 
             try
             {
-                if (this.iMaxLevel.Equals(-1))
+                if (this.maxLevel.Equals(-1))
                 {
-                    bExclude = false;
+                    exclude = false;
                 }
-                else if (checkTab.Level > this.iMaxLevel)
+                else if (checkTab.Level > this.maxLevel)
                 {
-                    bExclude = true;
+                    exclude = true;
                 }
                 else
                 {
-                    bExclude = false;
+                    exclude = false;
                 }
             }
             catch (Exception)
             {
-                bExclude = false;
+                exclude = false;
             }
 
-            return bExclude;
+            return exclude;
         }
 
         /// <summary>
@@ -521,24 +530,24 @@ namespace WatchersNET.DNN.Modules
         /// </returns>
         private bool IsNotHidden(TabInfo checkTab)
         {
-            bool bNotHidden;
+            bool notHidden;
 
             // If Option Show Hidden Tabs is turned on always return true
-            if (this.bShowHidden)
+            if (this.showHidden)
             {
                 return true;
             }
 
             try
             {
-                bNotHidden = checkTab.IsVisible;
+                notHidden = checkTab.IsVisible;
             }
             catch (Exception)
             {
-                bNotHidden = true;
+                notHidden = true;
             }
 
-            return bNotHidden;
+            return notHidden;
         }
 
         /// <summary>
@@ -553,21 +562,22 @@ namespace WatchersNET.DNN.Modules
             {
                 var objDir = new DirectoryInfo(this.MapPath(this.ResolveUrl("Skins")));
 
-                foreach (var objSubFolder in objDir.GetDirectories())
-                {
-                    if (Utility.IsSkinDirectory(objSubFolder.FullName))
+                objDir.GetDirectories().ForEach(
+                    objSubFolder =>
                     {
-                        var skinItem = new ListItem { Text = objSubFolder.Name, Value = objSubFolder.Name };
+                        if (Utility.IsSkinDirectory(objSubFolder.FullName))
+                        {
+                            var skinItem = new ListItem { Text = objSubFolder.Name, Value = objSubFolder.Name };
 
-                        this.itemsSkins.Add(skinItem);
-                    }
-                    else if (Utility.IsSkinTreeDirectory(objSubFolder.FullName))
-                    {
-                        var skinItem = new ListItem { Text = objSubFolder.Name, Value = objSubFolder.Name };
+                            this.itemsSkins.Add(skinItem);
+                        }
+                        else if (Utility.IsSkinTreeDirectory(objSubFolder.FullName))
+                        {
+                            var skinItem = new ListItem { Text = objSubFolder.Name, Value = objSubFolder.Name };
 
-                        this.itemsTreeView.Add(skinItem);
-                    }
-                }
+                            this.itemsTreeView.Add(skinItem);
+                        }
+                    });
             }
             catch (Exception)
             {
@@ -587,64 +597,57 @@ namespace WatchersNET.DNN.Modules
         /// </summary>
         private void LoadSettings()
         {
-            this.tiTabs = this.FillTabs();
+            this.tabs = this.FillTabs();
 
-            var objModuleController = new ModuleController();
-
-            var tabModuleSettings = objModuleController.GetTabModuleSettings(this.TabModuleId);
+            var tabModuleSettings = this.ModuleConfiguration.TabModuleSettings;
 
             try
             {
-                var sMaxLevel = (string)tabModuleSettings["sMaxLevel"];
-                this.iMaxLevel = int.Parse(sMaxLevel);
+                this.maxLevel = int.Parse(tabModuleSettings["sMaxLevel"].ToString());
             }
             catch (Exception)
             {
-                this.iMaxLevel = -1;
+                this.maxLevel = -1;
             }
 
             try
             {
-                var sShowInfo = (string)tabModuleSettings["bShowInfo"];
-                this.bShowInfo = bool.Parse(sShowInfo);
+                this.showInfo = bool.Parse(tabModuleSettings["bShowInfo"].ToString());
             }
             catch (Exception)
             {
-                this.bShowInfo = true;
+                this.showInfo = true;
             }
 
             // Demo Mode Setting
             if (!string.IsNullOrEmpty((string)tabModuleSettings["bDemoMode"]))
             {
-                bool bResult;
-                if (bool.TryParse((string)tabModuleSettings["bDemoMode"], out bResult))
+                if (bool.TryParse((string)tabModuleSettings["bDemoMode"], out var result))
                 {
-                    this.bDemoMode = bResult;
+                    this.demoMode = result;
                 }
             }
             else
             {
-                this.bDemoMode = false;
+                this.demoMode = false;
             }
 
             try
             {
-                var sShowHidden = (string)tabModuleSettings["bShowHidden"];
-                this.bShowHidden = bool.Parse(sShowHidden);
+                this.showHidden = bool.Parse(tabModuleSettings["bShowHidden"].ToString());
             }
             catch (Exception)
             {
-                this.bShowHidden = false;
+                this.showHidden = false;
             }
 
             try
             {
-                var sShowTabIcons = (string)tabModuleSettings["bShowTabIcons"];
-                this.bShowTabIcons = bool.Parse(sShowTabIcons);
+                this.showTabIcons = bool.Parse(tabModuleSettings["bShowTabIcons"].ToString());
             }
             catch (Exception)
             {
-                this.bShowTabIcons = false;
+                this.showTabIcons = false;
             }
 
             // Load Default Icon Setting
@@ -652,36 +655,36 @@ namespace WatchersNET.DNN.Modules
             {
                 if (!string.IsNullOrEmpty((string)tabModuleSettings["sDefaultIcon"]))
                 {
-                    this.sDefaultIcon = (string)tabModuleSettings["sDefaultIcon"];
+                    this.defaultIcon = (string)tabModuleSettings["sDefaultIcon"];
 
-                    var iFileId = int.Parse(this.sDefaultIcon.Substring(7));
+                    var fileId = int.Parse(this.defaultIcon.Substring(7));
 
-                    var fileInfo = FileManager.Instance.GetFile(iFileId);
+                    var fileInfo = FileManager.Instance.GetFile(fileId);
 
-                    this.sDefaultIcon = this.PortalSettings.HomeDirectory + fileInfo.Folder + fileInfo.FileName;
+                    this.defaultIcon = this.PortalSettings.HomeDirectory + fileInfo.Folder + fileInfo.FileName;
                 }
             }
             catch (Exception)
             {
-                this.sDefaultIcon = string.Empty;
+                this.defaultIcon = string.Empty;
             }
 
-            string sExlTabLst;
+            string excludeTabList;
 
             try
             {
-                sExlTabLst = (string)tabModuleSettings["exclusTabsLst"];
+                excludeTabList = (string)tabModuleSettings["exclusTabsLst"];
             }
             catch (Exception)
             {
-                sExlTabLst = null;
+                excludeTabList = null;
             }
 
             try
             {
-                if (!string.IsNullOrEmpty(sExlTabLst))
+                if (!string.IsNullOrEmpty(excludeTabList))
                 {
-                    this.exclusionTabs = sExlTabLst.Split(',');
+                    this.exclusionTabs = excludeTabList.Split(',');
                 }
             }
             catch (Exception)
@@ -692,17 +695,17 @@ namespace WatchersNET.DNN.Modules
             // Load RenderMode
             try
             {
-                this.sRenderMode = (string)tabModuleSettings["sRenderMode"];
+                this.renderMode = (string)tabModuleSettings["sRenderMode"];
             }
             catch (Exception)
             {
-                this.sRenderMode = "normal";
+                this.renderMode = "normal";
             }
             finally
             {
-                if (string.IsNullOrEmpty(this.sRenderMode))
+                if (string.IsNullOrEmpty(this.renderMode))
                 {
-                    this.sRenderMode = "normal";
+                    this.renderMode = "normal";
                 }
             }
 
@@ -711,194 +714,186 @@ namespace WatchersNET.DNN.Modules
             // {
             try
             {
-                this.sAnimated = (string)tabModuleSettings["sAnimated"];
+                this.animated = (string)tabModuleSettings["sAnimated"];
             }
             catch (Exception)
             {
-                this.sAnimated = "normal";
+                this.animated = "normal";
             }
             finally
             {
-                if (string.IsNullOrEmpty(this.sAnimated))
+                if (string.IsNullOrEmpty(this.animated))
                 {
-                    this.sAnimated = "normal";
+                    this.animated = "normal";
                 }
             }
 
             try
             {
-                this.sCollapsed = (string)tabModuleSettings["bCollapsed"];
+                this.collapsed = (string)tabModuleSettings["bCollapsed"];
             }
             catch (Exception)
             {
-                this.sCollapsed = "true";
+                this.collapsed = "true";
             }
             finally
             {
-                if (string.IsNullOrEmpty(this.sCollapsed))
+                if (string.IsNullOrEmpty(this.collapsed))
                 {
-                    this.sCollapsed = "true";
+                    this.collapsed = "true";
                 }
             }
 
             try
             {
-                this.sUnique = (string)tabModuleSettings["bUnique"];
+                this.unique = (string)tabModuleSettings["bUnique"];
             }
             catch (Exception)
             {
-                this.sUnique = "true";
+                this.unique = "true";
             }
             finally
             {
-                if (string.IsNullOrEmpty(this.sUnique))
+                if (string.IsNullOrEmpty(this.unique))
                 {
-                    this.sUnique = "true";
+                    this.unique = "true";
                 }
             }
 
             try
             {
-                this.sPersist = (string)tabModuleSettings["sPersist"];
+                this.persist = (string)tabModuleSettings["sPersist"];
             }
             catch (Exception)
             {
-                this.sPersist = "location";
+                this.persist = "location";
             }
             finally
             {
-                if (string.IsNullOrEmpty(this.sPersist))
+                if (string.IsNullOrEmpty(this.persist))
                 {
-                    this.sPersist = "location";
+                    this.persist = "location";
                 }
             }
 
             try
             {
-                var sRenderName = (string)tabModuleSettings["bRenderName"];
-                this.bRenderName = bool.Parse(sRenderName);
+                this.renderName = bool.Parse(tabModuleSettings["bRenderName"].ToString());
             }
             catch (Exception)
             {
-                this.bRenderName = true;
+                this.renderName = true;
             }
-
-            // }
 
             // Load Skin
             try
             {
-                this.sSkinName = (string)tabModuleSettings["sSkin"];
+                this.skinName = (string)tabModuleSettings["sSkin"];
             }
             catch (Exception)
             {
-                this.sSkinName = "Default";
+                this.skinName = "Default";
             }
             finally
             {
-                if (string.IsNullOrEmpty(this.sSkinName))
+                if (string.IsNullOrEmpty(this.skinName))
                 {
-                    this.sSkinName = "Default";
+                    this.skinName = "Default";
                 }
             }
 
             // Load Root Level
             try
             {
-                this.sRootLevel = (string)tabModuleSettings["sRootLevel"];
+                this.rootLevel = (string)tabModuleSettings["sRootLevel"];
             }
             catch (Exception)
             {
-                this.sRootLevel = "root";
+                this.rootLevel = "root";
             }
             finally
             {
-                if (string.IsNullOrEmpty(this.sRootLevel))
+                if (string.IsNullOrEmpty(this.rootLevel))
                 {
-                    this.sRootLevel = "root";
+                    this.rootLevel = "root";
                 }
             }
 
             // Load Root Tab
             try
             {
-                this.sRootTab = (string)tabModuleSettings["sRootTab"];
+                this.rootTab = (string)tabModuleSettings["sRootTab"];
             }
             catch (Exception)
             {
-                this.sRootTab = "-1";
+                this.rootTab = "-1";
             }
             finally
             {
-                if (string.IsNullOrEmpty(this.sRootLevel))
+                if (string.IsNullOrEmpty(this.rootLevel))
                 {
-                    this.sRootLevel = "-1";
+                    this.rootLevel = "-1";
                 }
             }
 
             // Load Human Friendly Urls Setting
             if (!string.IsNullOrEmpty((string)tabModuleSettings["bHumanUrls"]))
             {
-                bool bResult;
-                if (bool.TryParse((string)tabModuleSettings["bHumanUrls"], out bResult))
+                if (bool.TryParse((string)tabModuleSettings["bHumanUrls"], out var result))
                 {
-                    this.bHumanUrls = bResult;
+                    this.humanUrls = result;
                 }
             }
             else
             {
-                this.bHumanUrls = true;
+                this.humanUrls = true;
             }
 
             // Load Tax Settings
             if (!string.IsNullOrEmpty((string)tabModuleSettings["bHumanUrls"]))
             {
-                bool bResult;
-                if (bool.TryParse((string)tabModuleSettings["bHumanUrls"], out bResult))
+                if (bool.TryParse((string)tabModuleSettings["bHumanUrls"], out var result))
                 {
-                    this.bHumanUrls = bResult;
+                    this.humanUrls = result;
                 }
             }
             else
             {
-                this.bHumanUrls = true;
+                this.humanUrls = true;
             }
 
             if (!string.IsNullOrEmpty((string)tabModuleSettings["FilterByTax"]))
             {
-                bool bResult;
-                if (bool.TryParse((string)tabModuleSettings["FilterByTax"], out bResult))
+                if (bool.TryParse((string)tabModuleSettings["FilterByTax"], out var result))
                 {
-                    this.bFilterByTax = bResult;
+                    this.filterByTax = result;
                 }
             }
             else
             {
-                this.bFilterByTax = false;
+                this.filterByTax = false;
             }
 
             if (!string.IsNullOrEmpty((string)tabModuleSettings["TaxMode"]))
             {
                 try
                 {
-                    this.sTaxMode = (string)tabModuleSettings["TaxMode"];
+                    this.taxMode = (string)tabModuleSettings["TaxMode"];
                 }
                 catch (Exception)
                 {
-                    this.bFilterByTax = false;
+                    this.filterByTax = false;
                 }
             }
             else
             {
-                this.bFilterByTax = false;
+                this.filterByTax = false;
             }
 
             // Setting TaxMode Vocabularies
             if (!string.IsNullOrEmpty((string)tabModuleSettings["TaxVocabularies"]))
             {
-                var sVocabularies = (string)tabModuleSettings["TaxVocabularies"];
-
-                this.vocabularies = sVocabularies.Split(';');
+                this.vocabularies = tabModuleSettings["TaxVocabularies"].ToString().Split(';');
             }
 
             // Setting TaxMode Terms
@@ -907,9 +902,7 @@ namespace WatchersNET.DNN.Modules
                 return;
             }
 
-            var sTerms = (string)tabModuleSettings["TaxTerms"];
-
-            this.termsList = sTerms.Split(';');
+            this.termsList = tabModuleSettings["TaxTerms"].ToString().Split(';');
         }
 
         /// <summary>
@@ -917,15 +910,15 @@ namespace WatchersNET.DNN.Modules
         /// </summary>
         private void PlaceScriptLink()
         {
-            var csType = this.GetType();
+            var type = this.GetType();
 
             // jQuery Cookie Plugin
             ScriptManager.RegisterClientScriptInclude(
-                this, csType, "jqueryCookieScript", this.ResolveUrl("js/jquery.cookie.js"));
+                this, type, "jqueryCookieScript", this.ResolveUrl("js/jquery.cookie.js"));
 
-            // jQuery Treeview Plugin
+            // jQuery TreeView Plugin
             ScriptManager.RegisterClientScriptInclude(
-                this, csType, "jqueryTreeview", this.ResolveUrl("js/jquery.treeview.js"));
+                this, type, "jqueryTreeview", this.ResolveUrl("js/jquery.treeview.js"));
         }
 
         /// <summary>
@@ -933,36 +926,33 @@ namespace WatchersNET.DNN.Modules
         /// </summary>
         private void PlaceScriptTag()
         {
-            var csType = this.GetType();
+            var type = this.GetType();
 
-            var sLitAnim = string.Empty;
-            var sLitPersist = string.Empty;
+            var anim = string.Empty;
+            var litPersist = string.Empty;
 
-            var sLitHeader =
-                string.Format(
-                    "jQuery(document).ready(function(){{ jQuery(\".{0}\").treeview({{collapsed: {1},unique: {2}", 
-                    this.sSkinName, 
-                    this.sCollapsed, 
-                    this.sUnique);
+            var header =
+                $"jQuery(document).ready(function(){{ jQuery(\".{this.skinName}\").treeview({{collapsed: {this.collapsed},unique: {this.unique}";
 
-            if (this.sAnimated != "false")
+            if (this.animated != "false")
             {
-                sLitAnim = string.Format(",animated: \"{0}\"", this.sAnimated);
+                anim = $",animated: \"{this.animated}\"";
             }
 
-            if (this.sPersist.Equals("location"))
+            switch (this.persist)
             {
-                sLitPersist = string.Format(",persist: \"{0}\"", this.sPersist);
-            }
-            else if (this.sPersist.Equals("cookie"))
-            {
-                sLitPersist = string.Format(",persist: \"{0}\",cookieId: \"SiteMap{1}\"", this.sPersist, this.TabId);
+                case "location":
+                    litPersist = $",persist: \"{this.persist}\"";
+                    break;
+                case "cookie":
+                    litPersist = $",persist: \"{this.persist}\",cookieId: \"SiteMap{this.TabId}\"";
+                    break;
             }
 
-            var sCsName = string.Format("TreeViewScript{0}", Guid.NewGuid());
-            var sScript = string.Format("{0}{1}{2}}}); }});", sLitHeader, sLitAnim, sLitPersist);
+            var name = $"TreeViewScript{Guid.NewGuid()}";
+            var script = $"{header}{anim}{litPersist}}}); }});";
 
-            ScriptManager.RegisterStartupScript(this, csType, sCsName, sScript, true);
+            ScriptManager.RegisterStartupScript(this, type, name, script, true);
         }
 
         /// <summary>
@@ -970,17 +960,18 @@ namespace WatchersNET.DNN.Modules
         /// </summary>
         private void PlaceSkinStyleLink()
         {
-            if (this.sRenderMode.Equals("normal"))
+            switch (this.renderMode)
             {
-                ClientResourceManager.RegisterStyleSheet(
-                    this.Page,
-                    this.ResolveUrl(string.Format("{0}{1}/SiteMap.css", this.ResolveUrl("Skins/"), this.sSkinName)));
-            }
-            else if (this.sRenderMode.Equals("treeview"))
-            {
-                ClientResourceManager.RegisterStyleSheet(
-                    this.Page,
-                    this.ResolveUrl(string.Format("{0}{1}/SiteMapTree.css", this.ResolveUrl("Skins/"), this.sSkinName)));
+                case "normal":
+                    ClientResourceManager.RegisterStyleSheet(
+                        this.Page,
+                        this.ResolveUrl($"{this.ResolveUrl("Skins/")}{this.skinName}/SiteMap.css"));
+                    break;
+                case "treeview":
+                    ClientResourceManager.RegisterStyleSheet(
+                        this.Page,
+                        this.ResolveUrl($"{this.ResolveUrl("Skins/")}{this.skinName}/SiteMapTree.css"));
+                    break;
             }
         }
 
@@ -991,16 +982,16 @@ namespace WatchersNET.DNN.Modules
         {
             this.panDemoMode.Visible = true;
 
-            if (this.IsPostBack || this.bIsSkinChanged)
+            if (this.IsPostBack || this.isSkinChanged)
             {
                 return;
             }
 
-            this.rBlRender.Items.FindByValue(this.sRenderMode).Selected = true;
+            this.rBlRender.Items.FindByValue(this.renderMode).Selected = true;
 
-            this.FillSkinList(this.sRenderMode);
+            this.FillSkinList(this.renderMode);
 
-            this.dDlSkins.Items.FindByText(this.sSkinName).Selected = true;
+            this.dDlSkins.Items.FindByText(this.skinName).Selected = true;
         }
 
         /// <summary>
@@ -1009,18 +1000,18 @@ namespace WatchersNET.DNN.Modules
         /// <param name="ctlParentLi">
         /// Parent LI
         /// </param>
-        /// <param name="iParentTabId">
+        /// <param name="parentTabId">
         /// Parent TabID
         /// </param>
-        private void RenderLevel(Control ctlParentLi, int iParentTabId)
+        private void RenderLevel(Control ctlParentLi, int parentTabId)
         {
             HtmlGenericControl ctlUl = null;
 
-            foreach (var objTab in this.tiTabs)
+            foreach (var objTab in this.tabs)
             {
                 this.tabPermissions = TabPermissionController.GetTabPermissions(objTab.TabID, this.PortalId);
 
-                if (!objTab.ParentId.Equals(iParentTabId) || objTab.IsDeleted || !this.IsNotHidden(objTab) ||
+                if (!objTab.ParentId.Equals(parentTabId) || objTab.IsDeleted || !this.IsNotHidden(objTab) ||
                     objTab.IsDeleted || !PortalSecurity.IsInRoles(this.tabPermissions.ToString("VIEW")) ||
                     objTab.StartDate >= DateTime.Now || objTab.EndDate <= DateTime.Now || this.IsMaxLevel(objTab) ||
                     this.ExcludeTabId(objTab.TabID) || this.ExcludeByTax(objTab))
@@ -1040,18 +1031,13 @@ namespace WatchersNET.DNN.Modules
                     }
                     else
                     {
-                        // Add Skin Name to Main List
-                        /*if (sRenderMode.Equals("treeview"))
-                                {
-                                    ctlUl.Attributes["class"] = sSkinName;
-                                }*/
                         var ctlMainDiv = new HtmlGenericControl("div");
 
-                        ctlMainDiv.Attributes["class"] = string.Format("SiteMap-{0}", this.sSkinName);
+                        ctlMainDiv.Attributes["class"] = $"SiteMap-{this.skinName}";
 
                         this.siteMapPlaceHolder.Controls.Add(ctlMainDiv);
 
-                        ctlUl.Attributes["class"] = this.sSkinName;
+                        ctlUl.Attributes["class"] = this.skinName;
 
                         // siteMapPlaceHolder.Controls.Add(ctlUl);
                         ctlMainDiv.Controls.Add(ctlUl);
@@ -1071,17 +1057,17 @@ namespace WatchersNET.DNN.Modules
                 // Menu Tab Item (link)
                 var ctlAnchor = new HtmlAnchor();
 
-                var decodedTabName = Server.HtmlDecode(objTab.LocalizedTabName);
+                var decodedTabName = this.Server.HtmlDecode(objTab.LocalizedTabName);
 
                 if (!objTab.DisableLink)
                 {
                     ctlAnchor.HRef = objTab.FullUrl;
 
                     // Add Friendly URLS
-                    if (this.bHumanUrls)
+                    if (this.humanUrls)
                     {
                         ctlAnchor.HRef = Globals.FriendlyUrl(
-                            objTab, Globals.ApplicationURL(objTab.TabID), this.PortalSettings);
+                            objTab, Globals.ApplicationURL(objTab.TabID), (IPortalSettings)this.PortalSettings);
                     }
                 }
 
@@ -1090,14 +1076,10 @@ namespace WatchersNET.DNN.Modules
                 ctlAnchor.InnerText = decodedTabName;
 
                 // Menu Tab Icon
-                if (!string.IsNullOrEmpty(objTab.IconFile) && this.bShowTabIcons)
+                if (!string.IsNullOrEmpty(objTab.IconFile) && this.showTabIcons)
                 {
                     ctlAnchor.InnerHtml =
-                        string.Format(
-                            "<img src=\"{0}\" class=\"tabIcon\" alt=\"{1}\" width=\"16px\" height=\"16px\" />{2}", 
-                            this.SetIconPath(objTab),
-                            decodedTabName, 
-                            ctlAnchor.InnerText);
+                        $"<img src=\"{this.SetIconPath(objTab)}\" class=\"tabIcon\" alt=\"{decodedTabName}\" width=\"16px\" height=\"16px\" />{ctlAnchor.InnerText}";
 
                     if (objTab.HasChildren)
                     {
@@ -1108,14 +1090,10 @@ namespace WatchersNET.DNN.Modules
                 }
                 else
                 {
-                    if (this.bShowTabIcons && !string.IsNullOrEmpty(this.sDefaultIcon))
+                    if (this.showTabIcons && !string.IsNullOrEmpty(this.defaultIcon))
                     {
                         ctlAnchor.InnerHtml =
-                            string.Format(
-                                "<img src=\"{0}\" class=\"tabIcon\" alt=\"{1}\" width=\"16px\" height=\"16px\" />{2}", 
-                                this.ResolveUrl(this.sDefaultIcon),
-                                decodedTabName,
-                                ctlAnchor.InnerText);
+                            $"<img src=\"{this.ResolveUrl(this.defaultIcon)}\" class=\"tabIcon\" alt=\"{decodedTabName}\" width=\"16px\" height=\"16px\" />{ctlAnchor.InnerText}";
 
                         ctlMenu.Attributes["class"] = " hasIcon";
                     }
@@ -1148,13 +1126,13 @@ namespace WatchersNET.DNN.Modules
         {
             var ctlMainDiv = new HtmlGenericControl("div");
 
-            ctlMainDiv.Attributes["class"] = "SiteMap-" + this.sSkinName;
+            ctlMainDiv.Attributes["class"] = "SiteMap-" + this.skinName;
 
             this.siteMapPlaceHolder.Controls.Add(ctlMainDiv);
 
             var ctlUl = new HtmlGenericControl("ul");
 
-            ctlUl.Attributes["class"] = this.sSkinName;
+            ctlUl.Attributes["class"] = this.skinName;
 
             ctlMainDiv.Controls.Add(ctlUl);
 
@@ -1162,15 +1140,14 @@ namespace WatchersNET.DNN.Modules
 
             ctlUl.Controls.Add(ctlMainMenu);
 
+            var aliasInfo = this.PortalSettings.PortalAlias as IPortalAliasInfo;
+
             var ctlAnchorWeb = new HtmlAnchor
                 {
                     Title = this.PortalSettings.PortalName, 
-                    InnerHtml = string.Format("<strong><em>{0}</em></strong>", this.PortalSettings.PortalName), 
+                    InnerHtml = $"<strong><em>{this.PortalSettings.PortalName}</em></strong>", 
                     HRef =
-                        string.Format(
-                            "{0}/{1}", 
-                            Globals.GetPortalDomainName(this.PortalSettings.PortalAlias.HTTPAlias, null, true), 
-                            Globals.glbDefaultPage)
+                        $"{Globals.GetPortalDomainName(aliasInfo.HttpAlias, null, true)}/{Globals.glbDefaultPage}"
                 };
 
             ctlMainMenu.Controls.Add(ctlAnchorWeb);
@@ -1188,7 +1165,7 @@ namespace WatchersNET.DNN.Modules
 
             this.PlaceSkinStyleLink();
 
-            if (this.sRenderMode.Equals("treeview"))
+            if (this.renderMode.Equals("treeview"))
             {
                 this.PlaceScriptLink();
 
@@ -1197,7 +1174,7 @@ namespace WatchersNET.DNN.Modules
 
             var tabActive = this.SetActiveTab();
 
-            if (this.bFilterByTax)
+            if (this.filterByTax)
             {
                 this.taxTerms = this.GetTerms().ToList();
             }
@@ -1205,7 +1182,7 @@ namespace WatchersNET.DNN.Modules
             ////////////////////////////////////////////////
             HtmlGenericControl ctlMain = null;
 
-            if (this.sRenderMode.Equals("treeview") && this.bRenderName)
+            if (this.renderMode.Equals("treeview") && this.renderName)
             {
                 ctlMain = this.RenderMainTree();
             }
@@ -1215,51 +1192,38 @@ namespace WatchersNET.DNN.Modules
             // Render Menu
             try
             {
-                if (this.sRootLevel.Equals("parent"))
+                switch (this.rootLevel)
                 {
-                    if (tabActive.ParentId.Equals(-1))
-                    {
+                    case "parent" when tabActive.ParentId.Equals(-1):
                         // Renders from Level : Root if No Parent
                         this.RenderLevel(ctlMain, -1);
-                    }
-                    else
-                    {
+                        break;
+                    case "parent":
                         // Renders from Level : Parent
-                        foreach (var objTestTab in
-                            this.tiTabs.Where(objTestTab => objTestTab.TabID.Equals(tabActive.ParentId)))
-                        {
-                            this.RenderLevel(ctlMain, objTestTab.ParentId);
-                        }
-                    }
-                }
-                else if (this.sRootLevel.Equals("current"))
-                {
-                    // Renders from Level : Same (current)
-                    this.RenderLevel(ctlMain, tabActive.ParentId);
-                }
-                else if (this.sRootLevel.Equals("children"))
-                {
+                        this.tabs.Where(objTestTab => objTestTab.TabID.Equals(tabActive.ParentId)).ForEach(
+                            objTestTab => this.RenderLevel(ctlMain, objTestTab.ParentId));
+                        break;
+                    case "current":
+                        // Renders from Level : Same (current)
+                        this.RenderLevel(ctlMain, tabActive.ParentId);
+                        break;
                     // Renders from Level : Children
-                    if (tabActive.HasChildren)
-                    {
+                    case "children" when tabActive.HasChildren:
                         this.RenderLevel(ctlMain, tabActive.TabID);
-                    }
-                    else
-                    {
-                        // Renders from Level : Root if No Childs
+                        break;
+                    case "children":
+                        // Renders from Level : Root if No Children
                         this.RenderLevel(ctlMain, -1);
-                    }
-                }
-                else if (this.sRootLevel.Equals("custom"))
-                {
-                    // Renders from Level : Custom
-                    this.RenderLevel(ctlMain, tabActive.ParentId.Equals(-1) ? tabActive.TabID : tabActive.ParentId);
-                }
-                else
-                {
-                    // Renders from Level : Root
-                    // RenderLevel(null, -1);
-                    this.RenderLevel(ctlMain, -1);
+                        break;
+                    case "custom":
+                        // Renders from Level : Custom
+                        this.RenderLevel(ctlMain, tabActive.ParentId.Equals(-1) ? tabActive.TabID : tabActive.ParentId);
+                        break;
+                    default:
+                        // Renders from Level : Root
+                        // RenderLevel(null, -1);
+                        this.RenderLevel(ctlMain, -1);
+                        break;
                 }
             }
             catch (Exception exc)
@@ -1278,17 +1242,13 @@ namespace WatchersNET.DNN.Modules
         /// </returns>
         private TabInfo SetActiveTab()
         {
-            var activeTab = new TabInfo();
+            TabInfo activeTab;
 
-            if (this.sRootLevel.Equals("custom"))
+            if (this.rootLevel.Equals("custom"))
             {
                 try
                 {
-                    foreach (var objTestTab in
-                        this.tiTabs.Where(objTestTab => objTestTab.TabID.ToString().Equals(this.sRootTab)))
-                    {
-                        activeTab = objTestTab;
-                    }
+                    activeTab = this.tabs.FirstOrDefault(objTestTab => objTestTab.TabID.ToString().Equals(this.rootTab));
                 }
                 catch (Exception)
                 {
@@ -1320,7 +1280,7 @@ namespace WatchersNET.DNN.Modules
             }
 
             return tab.IsSuperTab || tab.IsSecure
-                       ? this.ResolveUrl(string.Format("{0}/images/{1}", Globals.ApplicationPath, tab.IconFile))
+                       ? this.ResolveUrl($"{Globals.ApplicationPath}/images/{tab.IconFile}")
                        : this.ResolveUrl(Path.Combine(this.PortalSettings.HomeDirectory, tab.IconFile));
         }
 

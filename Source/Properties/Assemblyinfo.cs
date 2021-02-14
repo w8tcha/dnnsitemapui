@@ -18,6 +18,6 @@ using System.Reflection;
 [assembly: AssemblyCopyright("(C) Ingo Herbote")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("01.03.1.1")]
+[assembly: AssemblyVersion("01.03.1.2")]
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyName("")]

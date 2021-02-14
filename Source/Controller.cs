@@ -249,7 +249,7 @@ namespace WatchersNET.DNN.Modules
 
                 var objModule = objModules.GetModule(moduleId, this.TabId);
 
-                objModules.GetTabModuleSettings(objModule.TabModuleID);
+                //objModules.GetTabModuleSettings(objModule.TabModuleID);
 
                 foreach (XmlNode xmlContent in xmlTagCloud.SelectNodes("Settings"))
                 {

@@ -37,84 +37,70 @@ namespace WatchersNET.DNN.Modules
         /// </returns>
         public static bool IsNumeric(object valueToCheck)
         {
-            double dummy;
             var inputValue = Convert.ToString(valueToCheck);
 
-            var bNumeric = double.TryParse(inputValue, NumberStyles.Any, null, out dummy);
-
-            return bNumeric;
+            return double.TryParse(inputValue, NumberStyles.Any, null, out _);
         }
 
         /// <summary>
         /// Checks if the Directory contains a CSS to valid if its a Skin Folder
         /// </summary>
-        /// <param name="sDirectory">
+        /// <param name="directory">
         /// Directory to check
         /// </param>
         /// <returns>
         /// Returns true or false
         /// </returns>
-        public static bool IsSkinDirectory(string sDirectory)
+        public static bool IsSkinDirectory(string directory)
         {
-            var objDir = new DirectoryInfo(sDirectory);
+            var objDir = new DirectoryInfo(directory);
 
-            var bSkinDir = false;
+            var isSkinDir = false;
 
             try
             {
                 if (objDir.GetFiles().Any(objFile => objFile.Name.EndsWith("SiteMap.css")))
                 {
-                    bSkinDir = true;
+                    isSkinDir = true;
                 }
-
-               /* foreach (FileInfo objFile in objDir.GetFiles().Where(objFile => objFile.Name.EndsWith("SiteMap.css")))
-                {
-                    bSkinDir = true;
-                }*/
             }
             catch (Exception)
             {
-                bSkinDir = false;
+                isSkinDir = false;
             }
 
-            return bSkinDir;
+            return isSkinDir;
         }
 
         /// <summary>
         /// Checks if the Directory contains a CSS to valid if its a Skin 
         ///   Folder (TreeView)
         /// </summary>
-        /// <param name="sDirectory">
+        /// <param name="directory">
         /// Directory to check
         /// </param>
         /// <returns>
         /// Returns true or false
         /// </returns>
-        public static bool IsSkinTreeDirectory(string sDirectory)
+        public static bool IsSkinTreeDirectory(string directory)
         {
-            var objDir = new DirectoryInfo(sDirectory);
+            var objDir = new DirectoryInfo(directory);
 
-            var bSkinDir = false;
+            var isSkinDir = false;
 
             try
             {
                 if (objDir.GetFiles().Any(objFile => objFile.Name.EndsWith("SiteMapTree.css")))
                 {
-                    bSkinDir = true;
+                    isSkinDir = true;
                 }
-
-                /*foreach (FileInfo objFile in
-                    objDir.GetFiles().Where(objFile => objFile.Name.EndsWith("SiteMapTree.css")))
-                {
-                    bSkinDir = true;
-                }*/
             }
             catch (Exception)
             {
-                bSkinDir = false;
+                isSkinDir = false;
             }
 
-            return bSkinDir;
+            return isSkinDir;
         }
 
         #endregion
