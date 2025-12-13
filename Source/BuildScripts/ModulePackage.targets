@@ -28,7 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <InstallInclude Include="$(MSBuildProjectDirectory)\..\Resources\**\*.*" Exclude="$(MSBuildProjectDirectory)\..\Resources\**\Thumbs.db;$(MSBuildProjectDirectory)\..\Resources\**\*.zip;" />
+      <InstallInclude Include="$(MSBuildProjectDirectory)\Resources\**\*.*" Exclude="$(MSBuildProjectDirectory)\Resources\**\Thumbs.db;$(MSBuildProjectDirectory)\..\Resources\**\*.zip;" />
       <InstallInclude Include="**\App_LocalResources\*.*" />
     </ItemGroup>
 

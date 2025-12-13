@@ -8,6 +8,7 @@
 *   Internet: http://www.watchersnet.de/SiteMap              *
 *                                                            *
 *************************************************************/
+
 using System.Reflection;
 
 [assembly: AssemblyTitle("WatchersNET.SiteMap")]

@@ -1,0 +1,8 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Deploy" />
+    <BuildType Name="Release" />
+  </Configurations>
+  <Project Path="Source/WatchersNET.DNN.Modules.SiteMap.csproj" Id="f813604c-3594-4c46-81bb-602c3790f9a7" />
+</Solution>

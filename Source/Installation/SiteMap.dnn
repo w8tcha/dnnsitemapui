@@ -18,7 +18,7 @@
       <license src="License.html" />
       <releaseNotes src="ReleaseNotes.html" />
       <dependencies>
-        <dependency type="CoreVersion">09.08.00</dependency>
+        <dependency type="CoreVersion">09.13.00</dependency>
       </dependencies>
       <components>
         <component type="Module">
@@ -120,7 +120,7 @@
       <license src="License.html" />
       <releaseNotes src="ReleaseNotes.html" />
       <dependencies>
-        <dependency type="CoreVersion">09.08.00</dependency>
+        <dependency type="CoreVersion">09.13.00</dependency>
       </dependencies>
       <components>
         <component type="SkinObject">
