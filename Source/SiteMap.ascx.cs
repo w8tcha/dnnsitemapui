@@ -8,17 +8,11 @@
 *                                                            *
 *************************************************************/
 
+using DotNetNuke.Services.ClientDependency;
+
 namespace WatchersNET.DNN.Modules;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-
-using DotNetNuke.Abstractions;
+using DotNetNuke.Abstractions.ClientResources;
 using DotNetNuke.Abstractions.Portals;
 using DotNetNuke.Collections;
 using DotNetNuke.Common;
@@ -33,9 +27,16 @@ using DotNetNuke.Security.Permissions;
 using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Services.FileSystem;
 using DotNetNuke.Services.Localization;
-using DotNetNuke.Web.Client.ClientResourceManagement;
 
 using Microsoft.Extensions.DependencyInjection;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
 /// <summary>
 /// SiteMap Module
@@ -43,9 +44,9 @@ using Microsoft.Extensions.DependencyInjection;
 public partial class SiteMap : PortalModuleBase
 {
     /// <summary>
-    /// The navigation manager.
+    /// The client resource controller
     /// </summary>
-    private readonly INavigationManager navigationManager;
+    private readonly IClientResourceController clientResourceController;
 
     /// <summary>
     /// The tax terms.
@@ -187,7 +188,7 @@ public partial class SiteMap : PortalModuleBase
     /// </summary>
     protected SiteMap()
     {
-        this.navigationManager = this.DependencyProvider.GetRequiredService<INavigationManager>();
+        this.clientResourceController = this.DependencyProvider.GetRequiredService<IClientResourceController>();
     }
 
     /// <summary>
@@ -212,7 +213,7 @@ public partial class SiteMap : PortalModuleBase
             this.lblInfo.Visible = false;
         }
 
-        if (this.isSkinChanged/* || this.IsPostBack*/)
+        if (this.isSkinChanged /* || this.IsPostBack*/)
         {
             return;
         }
@@ -247,8 +248,8 @@ public partial class SiteMap : PortalModuleBase
         this.FillSkinList(this.renderMode);
 
         this.skinName = this.dDlSkins.SelectedItem != null
-                            ? this.dDlSkins.SelectedItem.Text
-                            : this.dDlSkins.Items[0].Text;
+            ? this.dDlSkins.SelectedItem.Text
+            : this.dDlSkins.Items[0].Text;
 
         this.isSkinChanged = true;
         this.RenderSiteMap();
@@ -324,13 +325,19 @@ public partial class SiteMap : PortalModuleBase
     {
         var exclude = false;
 
+        if (exclusionTabs is null)
+        {
+            return false;
+        }
+
         try
         {
-			if (this.exclusionTabs.Length != 0 && Array.Exists(this.exclusionTabs, sExTabValue => checkTabId.Equals(int.Parse(sExTabValue))))
-			{
-				exclude = true;
-			}
-		}
+            if (this.exclusionTabs.Length != 0 && Array.Exists(this.exclusionTabs,
+                    sExTabValue => checkTabId.Equals(int.Parse(sExTabValue))))
+            {
+                exclude = true;
+            }
+        }
         catch (Exception)
         {
             exclude = false;
@@ -343,7 +350,7 @@ public partial class SiteMap : PortalModuleBase
     /// Loads the List of available Skins.
     /// </summary>
     /// <param name="renderModus">
-    /// The Render Modus.
+    /// The Render modus.
     /// </param>
     private void FillSkinList(IEquatable<string> renderModus)
     {
@@ -368,33 +375,31 @@ public partial class SiteMap : PortalModuleBase
         var allTabs = new List<TabInfo>();
 
         // Add Portal Tabs
-        TabController.GetTabsBySortOrder(this.PortalId).ForEach(
-            objPortalTab =>
-                {
-                    if (Null.IsNull(objPortalTab.StartDate))
-                    {
-                        objPortalTab.StartDate = DateTime.MinValue;
-                    }
+        TabController.GetTabsBySortOrder(this.PortalId).ForEach(objPortalTab =>
+        {
+            if (Null.IsNull(objPortalTab.StartDate))
+            {
+                objPortalTab.StartDate = DateTime.MinValue;
+            }
 
-                    if (Null.IsNull(objPortalTab.EndDate))
-                    {
-                        objPortalTab.EndDate = DateTime.MaxValue;
-                    }
+            if (Null.IsNull(objPortalTab.EndDate))
+            {
+                objPortalTab.EndDate = DateTime.MaxValue;
+            }
 
-                    allTabs.Add(objPortalTab);
-                });
+            allTabs.Add(objPortalTab);
+        });
 
         // Add Host Tabs
-        TabController.GetTabsBySortOrder(Null.NullInteger).ForEach(
-            objHostTab =>
-                {
-                    objHostTab.PortalID = this.PortalId;
+        TabController.GetTabsBySortOrder(Null.NullInteger).ForEach(objHostTab =>
+        {
+            objHostTab.PortalID = this.PortalId;
 
-                    objHostTab.StartDate = DateTime.MinValue;
-                    objHostTab.EndDate = DateTime.MaxValue;
+            objHostTab.StartDate = DateTime.MinValue;
+            objHostTab.EndDate = DateTime.MaxValue;
 
-                    allTabs.Add(objHostTab);
-                });
+            allTabs.Add(objHostTab);
+        });
 
         return allTabs;
     }
@@ -412,57 +417,56 @@ public partial class SiteMap : PortalModuleBase
         switch (this.taxMode)
         {
             case "tab":
-                {
-                    terms = this.PortalSettings.ActiveTab.Terms;
-                }
+            {
+                terms = this.PortalSettings.ActiveTab.Terms;
+            }
 
                 break;
             case "all":
-                {
-                    var termRep = Util.GetTermController();
+            {
+                var termRep = Util.GetTermController();
 
-                    var vocabRep = Util.GetVocabularyController();
+                var vocabRep = Util.GetVocabularyController();
 
-                    var vocabulariesAll = from v in vocabRep.GetVocabularies()
-                                          where
-                                              v.ScopeType.ScopeType == "Application" ||
-                                              v.ScopeType.ScopeType == "Portal" && v.ScopeId == this.PortalId
-                                          select v;
+                var vocabulariesAll = from v in vocabRep.GetVocabularies()
+                    where
+                        v.ScopeType.ScopeType == "Application" ||
+                        v.ScopeType.ScopeType == "Portal" && v.ScopeId == this.PortalId
+                    select v;
 
-                    vocabulariesAll.AsEnumerable().ForEach(
-                        v => termRep.GetTermsByVocabulary(v.VocabularyId).AsEnumerable().ForEach(
-                            t =>
-                                {
-                                    if (v.Type == VocabularyType.Simple)
-                                    {
-                                        t.ParentTermId = -v.VocabularyId;
-                                    }
+                vocabulariesAll.AsEnumerable().ForEach(v => termRep.GetTermsByVocabulary(v.VocabularyId).AsEnumerable()
+                    .ForEach(t =>
+                    {
+                        if (v.Type == VocabularyType.Simple)
+                        {
+                            t.ParentTermId = -v.VocabularyId;
+                        }
 
-                                    terms.Add(t);
-                                }));
-                }
+                        terms.Add(t);
+                    }));
+            }
 
                 break;
             case "custom":
+            {
+                if (this.vocabularies != null)
                 {
-                    if (this.vocabularies != null)
-                    {
-                        var termRep = Util.GetTermController();
+                    var termRep = Util.GetTermController();
 
-                        this.vocabularies.ForEach(id => terms.AddRange(termRep.GetTermsByVocabulary(int.Parse(id))));
-                    }
+                    this.vocabularies.ForEach(id => terms.AddRange(termRep.GetTermsByVocabulary(int.Parse(id))));
                 }
+            }
 
                 break;
             case "terms":
+            {
+                if (this.termsList != null)
                 {
-                    if (this.termsList != null)
-                    {
-                        var termRep = Util.GetTermController();
+                    var termRep = Util.GetTermController();
 
-                        terms.AddRange(this.termsList.Select(sTermId => termRep.GetTerm(int.Parse(sTermId))));
-                    }
+                    terms.AddRange(this.termsList.Select(sTermId => termRep.GetTerm(int.Parse(sTermId))));
                 }
+            }
 
                 break;
         }
@@ -507,7 +511,7 @@ public partial class SiteMap : PortalModuleBase
     }
 
     /// <summary>
-    /// Checks if Tab is a Invisible Tab
+    /// Checks if Tab is an Invisible Tab
     /// </summary>
     /// <param name="checkTab">
     /// Tab to Check
@@ -549,30 +553,29 @@ public partial class SiteMap : PortalModuleBase
         {
             var objDir = new DirectoryInfo(this.MapPath(this.ResolveUrl("Skins")));
 
-            objDir.GetDirectories().ForEach(
-                objSubFolder =>
-                    {
-                        if (Utility.IsSkinDirectory(objSubFolder.FullName))
-                        {
-                            var skinItem = new ListItem { Text = objSubFolder.Name, Value = objSubFolder.Name };
+            objDir.GetDirectories().ForEach(objSubFolder =>
+            {
+                if (Utility.IsSkinDirectory(objSubFolder.FullName))
+                {
+                    var skinItem = new ListItem { Text = objSubFolder.Name, Value = objSubFolder.Name };
 
-                            this.itemsSkins.Add(skinItem);
-                        }
-                        else if (Utility.IsSkinTreeDirectory(objSubFolder.FullName))
-                        {
-                            var skinItem = new ListItem { Text = objSubFolder.Name, Value = objSubFolder.Name };
+                    this.itemsSkins.Add(skinItem);
+                }
+                else if (Utility.IsSkinTreeDirectory(objSubFolder.FullName))
+                {
+                    var skinItem = new ListItem { Text = objSubFolder.Name, Value = objSubFolder.Name };
 
-                            this.itemsTreeView.Add(skinItem);
-                        }
-                    });
+                    this.itemsTreeView.Add(skinItem);
+                }
+            });
         }
         catch (Exception)
         {
             var skinItem = new ListItem
-                               {
-                                   Text = Localization.GetString("None.Text", this.LocalResourceFile),
-                                   Value = "None"
-                               };
+            {
+                Text = Localization.GetString("None.Text", this.LocalResourceFile),
+                Value = "None"
+            };
 
             this.itemsSkins.Add(skinItem);
             this.itemsTreeView.Add(skinItem);
@@ -898,10 +901,10 @@ public partial class SiteMap : PortalModuleBase
     private void PlaceScriptLink()
     {
         // jQuery Cookie Plugin
-        ClientResourceManager.RegisterScript(this.Page, this.ResolveUrl("js/jquery.cookie.js"));
+        this.clientResourceController.RegisterScript(this.ResolveUrl("js/jquery.cookie.js"));
 
         // jQuery TreeView Plugin
-        ClientResourceManager.RegisterScript(this.Page, this.ResolveUrl("js/jquery.treeview.js"));
+        this.clientResourceController.RegisterScript(this.ResolveUrl("js/jquery.treeview.js"));
     }
 
     /// <summary>
@@ -946,13 +949,11 @@ public partial class SiteMap : PortalModuleBase
         switch (this.renderMode)
         {
             case "normal":
-                ClientResourceManager.RegisterStyleSheet(
-                    this.Page,
+                this.clientResourceController.RegisterStylesheet(
                     this.ResolveUrl($"{this.ResolveUrl("Skins/")}{this.skinName}/SiteMap.css"));
                 break;
             case "treeview":
-                ClientResourceManager.RegisterStyleSheet(
-                    this.Page,
+                this.clientResourceController.RegisterStylesheet(
                     this.ResolveUrl($"{this.ResolveUrl("Skins/")}{this.skinName}/SiteMapTree.css"));
                 break;
         }
@@ -1126,12 +1127,12 @@ public partial class SiteMap : PortalModuleBase
         var aliasInfo = this.PortalSettings.PortalAlias as IPortalAliasInfo;
 
         var ctlAnchorWeb = new HtmlAnchor
-                               {
-                                   Title = this.PortalSettings.PortalName,
-                                   InnerHtml = $"<strong><em>{this.PortalSettings.PortalName}</em></strong>",
-                                   HRef =
-                                       $"{Globals.GetPortalDomainName(aliasInfo.HttpAlias, null, true)}/{Globals.glbDefaultPage}"
-                               };
+        {
+            Title = this.PortalSettings.PortalName,
+            InnerHtml = $"<strong><em>{this.PortalSettings.PortalName}</em></strong>",
+            HRef =
+                $"{Globals.GetPortalDomainName(aliasInfo.HttpAlias, null, true)}/{Globals.glbDefaultPage}"
+        };
 
         ctlMainMenu.Controls.Add(ctlAnchorWeb);
 
@@ -1183,8 +1184,8 @@ public partial class SiteMap : PortalModuleBase
                     break;
                 case "parent":
                     // Renders from Level : Parent
-                    this.tabs.Where(objTestTab => objTestTab.TabID.Equals(tabActive.ParentId)).ForEach(
-                        objTestTab => this.RenderLevel(ctlMain, objTestTab.ParentId));
+                    this.tabs.Where(objTestTab => objTestTab.TabID.Equals(tabActive.ParentId))
+                        .ForEach(objTestTab => this.RenderLevel(ctlMain, objTestTab.ParentId));
                     break;
                 case "current":
                     // Renders from Level : Same (current)
@@ -1263,8 +1264,8 @@ public partial class SiteMap : PortalModuleBase
         }
 
         return tab.IsSuperTab || tab.IsSecure
-                   ? this.ResolveUrl($"{Globals.ApplicationPath}/images/{tab.IconFile}")
-                   : this.ResolveUrl(Path.Combine(this.PortalSettings.HomeDirectory, tab.IconFile));
+            ? this.ResolveUrl($"{Globals.ApplicationPath}/images/{tab.IconFile}")
+            : this.ResolveUrl(Path.Combine(this.PortalSettings.HomeDirectory, tab.IconFile));
     }
 
     /// <summary>

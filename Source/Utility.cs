@@ -66,7 +66,7 @@ using System;
         }
 
         /// <summary>
-        /// Checks if the Directory contains a CSS to valid if its a Skin
+        /// Checks if the Directory contains a CSS to valid if it's a Skin
         ///   Folder (TreeView)
         /// </summary>
         /// <param name="directory">

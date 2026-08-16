@@ -194,3 +194,8 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+/deploy
+SiteMap.psd
+SiteMapLogo.psd
+/UserGuide
+WatchersNET.SiteMap.sln.GhostDoc.xml

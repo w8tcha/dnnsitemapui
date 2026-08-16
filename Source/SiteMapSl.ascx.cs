@@ -8,8 +8,14 @@
 *                                                            *
 *************************************************************/
 
+using DotNetNuke.Common.Extensions;
+using DotNetNuke.Services.ClientDependency;
+
+using Microsoft.Extensions.DependencyInjection;
+
 namespace WatchersNET.DNN.Modules;
 
+using DotNetNuke.Abstractions.ClientResources;
 using DotNetNuke.Abstractions.Portals;
 using DotNetNuke.Collections;
 using DotNetNuke.Common;
@@ -24,12 +30,12 @@ using DotNetNuke.Security.Permissions;
 using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.UI.Skins;
-using DotNetNuke.Web.Client.ClientResourceManagement;
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -89,7 +95,15 @@ public partial class SiteMapSl : SkinObjectBase
     /// </summary>
     private List<TabInfo> tabs;
 
+    /// <summary>
+    /// The java script
+    /// </summary>
     private readonly IJavaScriptLibraryHelper javaScript;
+
+    /// <summary>
+    /// The client resource controller
+    /// </summary>
+    private readonly IClientResourceController clientResourceController;
 
     /// <summary>
     /// Gets or sets Animated.
@@ -198,7 +212,11 @@ public partial class SiteMapSl : SkinObjectBase
 
     public SiteMapSl()
     {
-        this.javaScript = this.DependencyProvider.GetRequiredService<IJavaScriptLibraryHelper>();
+        var scope = HttpContext.Current.GetScope();
+        var serviceProvider = scope.ServiceProvider;
+
+        this.javaScript = serviceProvider.GetRequiredService<IJavaScriptLibraryHelper>();
+        this.clientResourceController = serviceProvider.GetRequiredService<IClientResourceController>();
     }
 
     /// <summary>
@@ -377,6 +395,11 @@ public partial class SiteMapSl : SkinObjectBase
     private bool ExcludeTabId(IEquatable<int> checkTabId)
     {
         var exclude = false;
+
+        if (exclusionTabs is null)
+        {
+            return false;
+        }
 
         try
         {
@@ -694,10 +717,10 @@ public partial class SiteMapSl : SkinObjectBase
         this.javaScript.RequestRegistration(CommonJs.jQuery);
 
         // jQuery Cookie Plugin
-        ClientResourceManager.RegisterScript(this.Page, this.ResolveUrl("js/jquery.cookie.js"));
+        this.clientResourceController.RegisterScript(this.ResolveUrl("js/jquery.cookie.js"));
 
         // jQuery TreeView Plugin
-        ClientResourceManager.RegisterScript(this.Page, this.ResolveUrl("js/jquery.treeview.js"));
+        this.clientResourceController.RegisterScript(this.ResolveUrl("js/jquery.treeview.js"));
     }
 
     /// <summary>
@@ -744,13 +767,11 @@ public partial class SiteMapSl : SkinObjectBase
         switch (this.RenderMode)
         {
             case "normal":
-                ClientResourceManager.RegisterStyleSheet(
-                    this.Page,
+                this.clientResourceController.RegisterStylesheet(
                     this.ResolveUrl($"{this.ResolveUrl("Skins/")}{this.SkinName}/SiteMap.css"));
                 break;
             case "treeview":
-                ClientResourceManager.RegisterStyleSheet(
-                    this.Page,
+                this.clientResourceController.RegisterStylesheet(
                     this.ResolveUrl($"{this.ResolveUrl("Skins/")}{this.SkinName}/SiteMapTree.css"));
                 break;
         }
@@ -1030,7 +1051,7 @@ public partial class SiteMapSl : SkinObjectBase
     /// </returns>
     private TabInfo SetActiveTab()
     {
-        var activeTab = new TabInfo();
+        TabInfo activeTab;
 
         if (this.RootLevel.Equals("custom"))
         {

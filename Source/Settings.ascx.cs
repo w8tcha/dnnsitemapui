@@ -526,7 +526,7 @@ public partial class Settings : ModuleSettingsBase
 
         try
         {
-            if (exlTabLst != string.Empty)
+            if (!string.IsNullOrEmpty(exlTabLst))
             {
                 this.exclusionTabs = exlTabLst.Split(',');
 
