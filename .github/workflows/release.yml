@@ -1,0 +1,95 @@
+name: Release
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "Source/Installation/SiteMap.dnn"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine version and release status
+        id: version
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [xml]$dnn = Get-Content "Source/Installation/SiteMap.dnn"
+          $version = $dnn.dotnetnuke.packages.package[0].version
+          $tag = "v$version"
+          Write-Host "Package version: $version (tag: $tag)"
+
+          $existingTags = @(gh release list --limit 200 --json tagName --jq ".[].tagName")
+
+          $alreadyReleased = $existingTags -contains $tag
+
+          $currentVer = [version]$version
+          $maxVer = $null
+          foreach ($t in $existingTags) {
+            $clean = $t.TrimStart("v")
+            try {
+              $v = [version]$clean
+              if (-not $maxVer -or $v -gt $maxVer) { $maxVer = $v }
+            } catch {
+              Write-Host "Skipping non-version tag: $t"
+            }
+          }
+
+          $isNewer = (-not $maxVer) -or ($currentVer -gt $maxVer)
+          $shouldRelease = (-not $alreadyReleased) -and $isNewer
+
+          Write-Host "Already released: $alreadyReleased"
+          Write-Host "Latest existing release version: $maxVer"
+          Write-Host "Is newer: $isNewer"
+          Write-Host "Should release: $shouldRelease"
+
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "tag=$tag" >> $env:GITHUB_OUTPUT
+          "should_release=$($shouldRelease.ToString().ToLower())" >> $env:GITHUB_OUTPUT
+
+      - name: Setup MSBuild
+        if: steps.version.outputs.should_release == 'true'
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        if: steps.version.outputs.should_release == 'true'
+        uses: NuGet/setup-nuget@v2
+
+      - name: Restore NuGet packages
+        if: steps.version.outputs.should_release == 'true'
+        run: nuget restore Source/SiteMap.csproj -PackagesDirectory packages
+
+      - name: Build Deploy package
+        if: steps.version.outputs.should_release == 'true'
+        run: msbuild Source/SiteMap.csproj /p:Configuration=Deploy /p:Platform=AnyCPU /m
+
+      - name: Verify deploy artifacts
+        if: steps.version.outputs.should_release == 'true'
+        shell: pwsh
+        run: |
+          $zips = Get-ChildItem -Path deploy -Filter "*_$($env:VERSION).zip" -ErrorAction SilentlyContinue
+          if (-not $zips) {
+            Write-Error "No deploy zip files found for version $($env:VERSION) in the deploy folder."
+            exit 1
+          }
+          $zips | ForEach-Object { Write-Host "Found artifact: $($_.FullName)" }
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+
+      - name: Create GitHub release
+        if: steps.version.outputs.should_release == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" deploy/*_${{ steps.version.outputs.version }}*.zip --title "${{ steps.version.outputs.tag }}" --generate-notes

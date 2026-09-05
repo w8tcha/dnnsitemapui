@@ -16,7 +16,7 @@
       <license src="License.html" />
       <releaseNotes src="ReleaseNotes.html" />
       <dependencies>
-        <dependency type="CoreVersion">09.13.00</dependency>
+        <dependency type="CoreVersion">10.03.03</dependency>
       </dependencies>
       <components>
         <component type="Module">
@@ -117,7 +117,7 @@
       <license src="License.html" />
       <releaseNotes src="ReleaseNotes.html" />
       <dependencies>
-        <dependency type="CoreVersion">09.13.00</dependency>
+        <dependency type="CoreVersion">10.03.03</dependency>
       </dependencies>
       <components>
         <component type="SkinObject">
