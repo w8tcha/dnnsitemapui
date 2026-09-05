@@ -1,6 +1,6 @@
 ﻿<dotnetnuke type="Package" version="5.0">
   <packages>
-    <package name="SiteMap" type="Module" version="01.03.12">
+    <package name="SiteMap" type="Module" version="01.03.13">
       <friendlyName>SiteMap</friendlyName>
       <description>
         &lt;p&gt;&lt;strong&gt;SiteMap - A Modern SiteMap / TreeView&lt;/strong&gt;&lt;/p&gt;<br />
@@ -106,7 +106,7 @@
         </component>
       </components>
     </package>
-<package name="SiteMap SkinObject" type="SkinObject" version="01.03.12">
+<package name="SiteMap SkinObject" type="SkinObject" version="01.03.13">
       <friendlyName>SiteMap SkinObject</friendlyName>
       <description>SiteMap as SkinObject</description>
       <owner>
