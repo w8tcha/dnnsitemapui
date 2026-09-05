@@ -1,9 +1,7 @@
 # dnnsitemapui
-WatchersNET.SiteMap - A Modern SiteMap / TreeView Module and Skin Object for DNN®
+SiteMap - A Modern SiteMap / TreeView Module and Skin Object for DNN®
 
-![prview](http://www.watchersnet.de/Portals/0/SiteMapSkinsCollage.png)
-
-[DEMO](http://www.watchersnet.de/DotNetNuke/Module/SiteMap.aspx)
+![preview](https://github.com/w8tcha/dnnsitemapui/blob/master/SiteMapSkinsCollage.png?raw=true)
 
 Back in the old days, almost every web site had a sitemap where they listed out all the pages. The purpose of the sitemap is to help visitors and search engine spiders to find information on the site.
 

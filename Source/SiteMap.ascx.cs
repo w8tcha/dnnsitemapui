@@ -1,17 +1,22 @@
 ﻿/*  **********************************************************
 *                                                            *
-*   WatchersNET.SiteMap - A Modern SiteMap / TreeView        *
+*   SiteMap - A Modern SiteMap / TreeView                    *
 *   Copyright(c) Ingo Herbote                                *
 *   All rights reserved.                                     *
-*   Ingo Herbote (thewatcher@watchersnet.de)                 *
-*   Internet: http://www.watchersnet.de/SiteMap              *
+*   Ingo Herbote                                             *
+*   Internet: https://github.com/w8tcha/dnnsitemapui         *
 *                                                            *
 *************************************************************/
 
-using DotNetNuke.Services.ClientDependency;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
-namespace WatchersNET.DNN.Modules;
-
+using DotNetNuke.Abstractions.Application;
 using DotNetNuke.Abstractions.ClientResources;
 using DotNetNuke.Abstractions.Portals;
 using DotNetNuke.Collections;
@@ -24,19 +29,14 @@ using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Security;
 using DotNetNuke.Security.Permissions;
+using DotNetNuke.Services.ClientDependency;
 using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Services.FileSystem;
 using DotNetNuke.Services.Localization;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
+namespace DNN.Modules;
 
 /// <summary>
 /// SiteMap Module
@@ -424,9 +424,11 @@ public partial class SiteMap : PortalModuleBase
                 break;
             case "all":
             {
-                var termRep = Util.GetTermController();
+                var hostSettings = this.DependencyProvider.GetRequiredService<IHostSettings>();
 
-                var vocabRep = Util.GetVocabularyController();
+                var termRep = new TermController(null, hostSettings);
+
+                var vocabRep = new VocabularyController(null, hostSettings);
 
                 var vocabulariesAll = from v in vocabRep.GetVocabularies()
                     where
@@ -451,7 +453,7 @@ public partial class SiteMap : PortalModuleBase
             {
                 if (this.vocabularies != null)
                 {
-                    var termRep = Util.GetTermController();
+                    var termRep = new TermController(null, this.DependencyProvider.GetRequiredService<IHostSettings>());
 
                     this.vocabularies.ForEach(id => terms.AddRange(termRep.GetTermsByVocabulary(int.Parse(id))));
                 }
@@ -462,7 +464,7 @@ public partial class SiteMap : PortalModuleBase
             {
                 if (this.termsList != null)
                 {
-                    var termRep = Util.GetTermController();
+                    var termRep = new TermController(null, this.DependencyProvider.GetRequiredService<IHostSettings>());
 
                     terms.AddRange(this.termsList.Select(sTermId => termRep.GetTerm(int.Parse(sTermId))));
                 }
@@ -1274,7 +1276,8 @@ public partial class SiteMap : PortalModuleBase
     private void ShowInfo()
     {
         var objDesktopModule =
-            DesktopModuleController.GetDesktopModuleByModuleName("WatchersNET - SiteMap", this.PortalId);
+            DesktopModuleController.GetDesktopModuleByModuleName(
+                this.DependencyProvider.GetRequiredService<IHostSettings>(), "SiteMap", this.PortalId);
 
         this.lblInfo.Text = string.Format(
             Localization.GetString("Copyright.Text", this.LocalResourceFile),

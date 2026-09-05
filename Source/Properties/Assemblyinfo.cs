@@ -1,21 +1,20 @@
 ﻿/*  **********************************************************
 *                                                            *
-*   WatchersNET.SiteMap - A Modern SiteMap / TreeView        *
+*   SiteMap - A Modern SiteMap / TreeView                    *
 *   Extension for DNN                                     *
 *   Copyright(c) Ingo Herbote                                *
 *   All rights reserved.                                     *
-*   Ingo Herbote (thewatcher@watchersnet.de)                 *
-*   Internet: http://www.watchersnet.de/SiteMap              *
+*   Ingo Herbote                                             *
+*   Internet: https://github.com/w8tcha/dnnsitemapui         *
 *                                                            *
 *************************************************************/
 
 using System.Reflection;
 
-[assembly: AssemblyTitle("WatchersNET.SiteMap")]
-[assembly: AssemblyDescription("WatchersNET.SiteMap - A Modern SiteMap")]
+[assembly: AssemblyTitle("SiteMap")]
+[assembly: AssemblyDescription("SiteMap - A Modern SiteMap")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("WatchersNET")]
-[assembly: AssemblyProduct("WatchersNET.SiteMap - A Modern SiteMap")]
+[assembly: AssemblyProduct("SiteMap - A Modern SiteMap")]
 [assembly: AssemblyCopyright("(C) Ingo Herbote")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

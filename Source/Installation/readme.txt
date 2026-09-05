@@ -1,9 +1,9 @@
 ﻿-------------------------------------------------------
-| WatchersNET.SiteMap - A Modern SiteMap / TreeView   | 
+| SiteMap - A Modern SiteMap / TreeView   | 
 | Copyright(c) Ingo Herbote                           |
 | All rights reserved.                                |
-| Ingo Herbote (thewatcher@watchersnet.de)            |
-| Internet: http://www.watchersnet.de/SiteMap         |
+| Ingo Herbote            |
+| Internet: https://github.com/w8tcha/dnnsitemapui         |
 -------------------------------------------------------
 
 Description

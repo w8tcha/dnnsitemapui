@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WatchersNET.DNN.Modules
+namespace DNN.Modules
 {
 
 

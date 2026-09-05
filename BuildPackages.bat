@@ -17,4 +17,4 @@ Rem VS2019 => ~\MsBuild\Current\Bin\MSBuild.exe
 If "%Current%" NEQ "15.0" set Current=Current
 
 @set $MSBUILDPATH="%$MSBUILDROOT%\MsBuild\%Current%\Bin\MSBuild.exe"
-%$MSBUILDPATH% WatchersNET.SiteMap.sln /p:Configuration=Deploy /t:Clean;Build /p:WarningLevel=0
+%$MSBUILDPATH% SiteMap.slnx /p:Configuration=Deploy /t:Clean;Build /p:WarningLevel=0

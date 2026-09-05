@@ -1,22 +1,25 @@
 ﻿/*  **********************************************************
 *                                                            *
-*   WatchersNET.SiteMap - A Modern SiteMap / TreeView        *
+*   SiteMap - A Modern SiteMap / TreeView                    *
 *   Copyright(c) Ingo Herbote                                *
 *   All rights reserved.                                     *
-*   Ingo Herbote (thewatcher@watchersnet.de)                 *
-*   Internet: http://www.watchersnet.de/SiteMap              *
+*   Ingo Herbote                                             *
+*   Internet: https://github.com/w8tcha/dnnsitemapui         *
 *                                                            *
 *************************************************************/
-
-namespace WatchersNET.DNN.Modules;
 
 using System;
 using System.IO;
 using System.Xml;
 
+using DotNetNuke.Abstractions.Application;
 using DotNetNuke.Common;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Services.Exceptions;
+
+using Microsoft.Extensions.DependencyInjection;
+
+namespace DNN.Modules;
 
 /// <summary>
 /// Controller for the SiteMap for IPortable and ISearchable
@@ -36,7 +39,7 @@ public class SiteMapController : ModuleSettingsBase, IPortable
     {
         try
         {
-            var moduleController = new ModuleController();
+            var moduleController = new ModuleController(null, null, this.DependencyProvider.GetRequiredService<IHostSettings>());
 
             var moduleInfo = moduleController.GetModule(moduleID);
             var tabModuleSettings = moduleInfo.TabModuleSettings;
@@ -237,7 +240,7 @@ public class SiteMapController : ModuleSettingsBase, IPortable
         {
             var xmlTagCloud = Globals.GetContent(content, "SiteMap");
 
-            var objModules = new ModuleController();
+            var objModules = new ModuleController(null, null, this.DependencyProvider.GetRequiredService<IHostSettings>());
 
             var objModule = objModules.GetModule(moduleID, this.TabId);
 

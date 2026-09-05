@@ -1,14 +1,12 @@
 ﻿/*  **********************************************************
 *                                                            *
-*   WatchersNET.SiteMap - A Modern SiteMap / TreeView        *
+*   SiteMap - A Modern SiteMap / TreeView                    *
 *   Copyright(c) Ingo Herbote                                *
 *   All rights reserved.                                     *
-*   Ingo Herbote (thewatcher@watchersnet.de)                 *
-*   Internet: http://www.watchersnet.de/SiteMap              *
+*   Ingo Herbote                                             *
+*   Internet: https://github.com/w8tcha/dnnsitemapui         *
 *                                                            *
 *************************************************************/
-
-namespace WatchersNET.DNN.Modules;
 
 using System;
 using System.Collections.Generic;
@@ -18,10 +16,11 @@ using System.Linq;
 using System.Web.UI.WebControls;
 
 using DotNetNuke.Abstractions;
+using DotNetNuke.Abstractions.Application;
 using DotNetNuke.Collections;
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
-using DotNetNuke.Entities.Content.Common;
+using DotNetNuke.Entities.Content.Taxonomy;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Framework;
@@ -32,6 +31,8 @@ using DotNetNuke.Services.Localization;
 using DotNetNuke.UI.UserControls;
 
 using Microsoft.Extensions.DependencyInjection;
+
+namespace DNN.Modules;
 
 /// <summary>
 /// Module Settings page
@@ -916,7 +917,7 @@ public partial class Settings : ModuleSettingsBase
     {
         try
         {
-            var vocabRep = Util.GetVocabularyController();
+            var vocabRep = new VocabularyController(null, this.DependencyProvider.GetRequiredService<IHostSettings>());
 
             var vs = from v in vocabRep.GetVocabularies()
                      where v.ScopeType.ScopeType == "Application" ||
@@ -984,7 +985,7 @@ public partial class Settings : ModuleSettingsBase
             string.Empty,
             (current, item) => current + $"{item.Value},");
 
-        var objModules = new ModuleController();
+        var objModules = new ModuleController(null, null, this.DependencyProvider.GetRequiredService<IHostSettings>());
 
         if (exlTabLst != string.Empty && exlTabLst.EndsWith(","))
         {

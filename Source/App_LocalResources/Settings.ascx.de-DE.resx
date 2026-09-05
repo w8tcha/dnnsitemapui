@@ -265,7 +265,7 @@ To disable persistence, remove this option entirely.</value>
     <value>Menschen Freundliche Urls Erstellen</value>
   </data>
   <data name="ControlTitle_settings.Text" xml:space="preserve">
-    <value>WatchersNET.SiteMap Einstellungen</value>
+    <value>SiteMap Einstellungen</value>
   </data>
   <data name="lblError.Text" xml:space="preserve">
     <value>Skins Ordner Nicht gefunden, Bitte Re-Installieren Sie das Modul.</value>

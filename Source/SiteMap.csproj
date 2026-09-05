@@ -13,7 +13,7 @@
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>WatchersNET.DNN.Modules.SiteMap</AssemblyName>
+    <AssemblyName>SiteMap</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
@@ -21,7 +21,7 @@
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
     <OutputType>Library</OutputType>
-    <RootNamespace>WatchersNET.DNN.Modules</RootNamespace>
+    <RootNamespace>DNN.Modules</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>
     </StartupObject>
@@ -30,7 +30,6 @@
     <OldToolsVersion>4.0</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <PublishUrl>http://localhost/Infolink.Intrapharm.UserManager/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -123,33 +122,43 @@
   <ItemGroup>
     <Reference Include="DotNetNuke, Version=10.3.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetNuke.Core.10.3.3\lib\net48\DotNetNuke.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DotNetNuke.Abstractions, Version=10.3.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetNuke.Abstractions.10.3.3\lib\netstandard2.0\DotNetNuke.Abstractions.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DotNetNuke.DependencyInjection, Version=10.3.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetNuke.DependencyInjection.10.3.3\lib\netstandard2.0\DotNetNuke.DependencyInjection.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DotNetNuke.Instrumentation, Version=10.3.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetNuke.Instrumentation.10.3.3\lib\net48\DotNetNuke.Instrumentation.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DotNetNuke.Log4Net, Version=3.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetNuke.Instrumentation.10.3.3\lib\net48\DotNetNuke.Log4Net.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DotNetNuke.Web.Client, Version=10.3.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetNuke.Web.Client.10.3.3\lib\net48\DotNetNuke.Web.Client.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.ApplicationBlocks.Data, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetNuke.Core.10.3.3\lib\net48\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=10.0.0.11, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.10.0.11\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Extensions.DependencyInjection, Version=10.0.0.11, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.10.0.11\lib\net462\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=10.0.0.11, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.10.0.11\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -310,10 +319,18 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_LocalResources\Settings.ascx.de-DE.resx" />
-    <Content Include="App_LocalResources\Settings.ascx.resx" />
-    <Content Include="App_LocalResources\SiteMap.ascx.de-DE.resx" />
-    <Content Include="App_LocalResources\SiteMap.ascx.resx" />
+    <Content Include="App_LocalResources\Settings.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="App_LocalResources\Settings.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="App_LocalResources\SiteMap.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="App_LocalResources\SiteMap.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="App_LocalResources\SiteMapSl.ascx.de-DE.resx" />
     <Content Include="App_LocalResources\SiteMapSl.ascx.resx" />
     <EmbeddedResource Include="Settings.ascx.resx">
@@ -336,7 +353,6 @@
     <Content Include="web.Release.config">
       <DependentUpon>web.config</DependentUpon>
     </Content>
-    <Content Include="libman.json" />
     <Content Include="Installation\SiteMap.dnn" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -376,10 +392,17 @@
   <PropertyGroup>
     <Extension>zip</Extension>
     <DNNFileName>SiteMap</DNNFileName>
-    <PackageName>WatchersNET.SiteMap</PackageName>
+    <PackageName>SiteMap</PackageName>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\BuildScripts</MSBuildCommunityTasksPath>
   </PropertyGroup>
   <Import Project="BuildScripts\ModulePackage.Targets" />
   <Target Name="AfterBuild" DependsOnTargets="PackageModule">
+  </Target>
+  <Import Project="..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets" Condition="Exists('..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets'))" />
   </Target>
 </Project>

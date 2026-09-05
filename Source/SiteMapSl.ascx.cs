@@ -1,35 +1,12 @@
 ﻿/*  **********************************************************
 *                                                            *
-*   WatchersNET.SiteMap - A Modern SiteMap / TreeView        *
+*   SiteMap - A Modern SiteMap / TreeView                    *
 *   Copyright(c) Ingo Herbote                                *
 *   All rights reserved.                                     *
-*   Ingo Herbote (thewatcher@watchersnet.de)                 *
-*   Internet: http://www.watchersnet.de/SiteMap              *
+*   Ingo Herbote                                             *
+*   Internet: https://github.com/w8tcha/dnnsitemapui         *
 *                                                            *
 *************************************************************/
-
-using DotNetNuke.Common.Extensions;
-using DotNetNuke.Services.ClientDependency;
-
-using Microsoft.Extensions.DependencyInjection;
-
-namespace WatchersNET.DNN.Modules;
-
-using DotNetNuke.Abstractions.ClientResources;
-using DotNetNuke.Abstractions.Portals;
-using DotNetNuke.Collections;
-using DotNetNuke.Common;
-using DotNetNuke.Common.Utilities;
-using DotNetNuke.Entities.Content;
-using DotNetNuke.Entities.Content.Common;
-using DotNetNuke.Entities.Content.Taxonomy;
-using DotNetNuke.Entities.Tabs;
-using DotNetNuke.Framework.JavaScriptLibraries;
-using DotNetNuke.Security;
-using DotNetNuke.Security.Permissions;
-using DotNetNuke.Services.Exceptions;
-using DotNetNuke.Services.Localization;
-using DotNetNuke.UI.Skins;
 
 using System;
 using System.Collections.Generic;
@@ -39,6 +16,29 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+
+using DotNetNuke.Abstractions.Application;
+using DotNetNuke.Abstractions.ClientResources;
+using DotNetNuke.Abstractions.Portals;
+using DotNetNuke.Collections;
+using DotNetNuke.Common;
+using DotNetNuke.Common.Extensions;
+using DotNetNuke.Common.Utilities;
+using DotNetNuke.Entities.Content;
+using DotNetNuke.Entities.Content.Common;
+using DotNetNuke.Entities.Content.Taxonomy;
+using DotNetNuke.Entities.Tabs;
+using DotNetNuke.Framework.JavaScriptLibraries;
+using DotNetNuke.Security;
+using DotNetNuke.Security.Permissions;
+using DotNetNuke.Services.ClientDependency;
+using DotNetNuke.Services.Exceptions;
+using DotNetNuke.Services.Localization;
+using DotNetNuke.UI.Skins;
+
+using Microsoft.Extensions.DependencyInjection;
+
+namespace DNN.Modules;
 
 /// <summary>
 /// SiteMap Skin Object
@@ -104,6 +104,11 @@ public partial class SiteMapSl : SkinObjectBase
     /// The client resource controller
     /// </summary>
     private readonly IClientResourceController clientResourceController;
+
+    /// <summary>
+    /// The host settings.
+    /// </summary>
+    private readonly IHostSettings hostSettings;
 
     /// <summary>
     /// Gets or sets Animated.
@@ -217,6 +222,7 @@ public partial class SiteMapSl : SkinObjectBase
 
         this.javaScript = serviceProvider.GetRequiredService<IJavaScriptLibraryHelper>();
         this.clientResourceController = serviceProvider.GetRequiredService<IClientResourceController>();
+        this.hostSettings = serviceProvider.GetRequiredService<IHostSettings>();
     }
 
     /// <summary>
@@ -523,9 +529,9 @@ public partial class SiteMapSl : SkinObjectBase
                 break;
             case "all":
                 {
-                    var termRep = Util.GetTermController();
+                    var termRep = new TermController(null, this.hostSettings);
 
-                    var vocabRep = Util.GetVocabularyController();
+                    var vocabRep = new VocabularyController(null, this.hostSettings);
 
                     var vocabulariesAll = from v in vocabRep.GetVocabularies()
                                           where
@@ -551,7 +557,7 @@ public partial class SiteMapSl : SkinObjectBase
                 {
                     if (this.taxVocabularies != null)
                     {
-                        var termRep = Util.GetTermController();
+                        var termRep = new TermController(null, this.hostSettings);
 
                         this.taxVocabularies.ForEach(
                             id => tabTerms.AddRange(termRep.GetTermsByVocabulary(int.Parse(id))));
@@ -563,7 +569,7 @@ public partial class SiteMapSl : SkinObjectBase
                 {
                     if (this.terms != null)
                     {
-                        var vocabRep = Util.GetVocabularyController();
+                        var vocabRep = new VocabularyController(null, this.hostSettings);
 
                         var vs = from v in vocabRep.GetVocabularies()
                                  where

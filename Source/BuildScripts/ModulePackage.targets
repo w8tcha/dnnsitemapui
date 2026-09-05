@@ -4,7 +4,7 @@
   <Target Name="PackageModule" Condition=" '$(Configuration)|$(Platform)' == 'Deploy|AnyCPU' ">
     <XmlRead Prefix="n"
                     Namespace="http://schemas.microsoft.com/developer/msbuild/2003"
-                    XPath="dotnetnuke/packages/package[starts-with(@name,'WatchersNET - SiteMap SkinObject')]/@version"
+                    XPath="dotnetnuke/packages/package[starts-with(@name,'SiteMap SkinObject')]/@version"
                     XmlFileName="$(MSBuildProjectDirectory)\Installation\$(DNNFileName).dnn">
       <Output TaskParameter="Value" PropertyName="Version" />
     </XmlRead>

@@ -1,4 +1,4 @@
-<%@ Control Language="c#" AutoEventWireup="True" CodeBehind="SiteMap.ascx.cs" Inherits="WatchersNET.DNN.Modules.SiteMap" %>
+<%@ Control Language="c#" AutoEventWireup="True" CodeBehind="SiteMap.ascx.cs" Inherits="DNN.Modules.SiteMap" %>
 
 <asp:Panel id="panDemoMode" runat="server"  CssClass="SiteMapSkinSelector" Visible="false">
   <asp:Label id="lblSkin" runat="server" ResourceKey="lblSkin"></asp:Label>:&nbsp;<asp:DropDownList id="dDlSkins" Width="300px" runat="server"></asp:DropDownList>&nbsp;&nbsp;
