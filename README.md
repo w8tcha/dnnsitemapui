@@ -1,4 +1,6 @@
-# dnnsitemapui
+<p align="center">
+  <img src="Source/Resources/SiteMap.png" alt="SiteMap - A Modern SiteMap / TreeView" width="297" height="92" />
+</p>
 SiteMap - A Modern SiteMap / TreeView Module and Skin Object for DNN®
 
 ![preview](https://github.com/w8tcha/dnnsitemapui/blob/master/SiteMapSkinsCollage.png?raw=true)

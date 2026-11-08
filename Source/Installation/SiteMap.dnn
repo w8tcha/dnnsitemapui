@@ -24,7 +24,7 @@
             <moduleName>SiteMap</moduleName>
             <foldername>SiteMap</foldername>
             <shareable>Supported</shareable>
-            <businessControllerClass>DNN.Modules.SiteMapController, DNN.Modules.SiteMap</businessControllerClass>
+            <businessControllerClass>DNN.Modules.SiteMapController, SiteMap</businessControllerClass>
             <supportedFeatures>
           <supportedFeature type="Portable" />
           <supportedFeature type="Searchable" />
