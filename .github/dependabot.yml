@@ -5,3 +5,19 @@ updates:
   schedule:
     # Check for updates to GitHub Actions every week
     interval: "weekly"
+
+- package-ecosystem: "nuget"
+  directory: "/Source"
+  schedule:
+    # Check for updates to NuGet packages every week
+    interval: "weekly"
+  groups:
+    # DNN packages must be updated together (same platform version)
+    dnn:
+      patterns:
+        - "DotNetNuke.*"
+    # Microsoft runtime packages (DI, Bcl, System.*) in one PR
+    microsoft:
+      patterns:
+        - "Microsoft.*"
+        - "System.*"
