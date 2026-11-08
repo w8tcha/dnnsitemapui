@@ -75,29 +75,9 @@ public partial class Settings : ModuleSettingsBase
     private readonly INavigationManager navigationManager;
 
     /// <summary>
-    ///   The exclusion tabs.
-    /// </summary>
-    private string[] exclusionTabs;
-
-    /// <summary>
-    ///   The tab permissions.
-    /// </summary>
-    private TabPermissionCollection tabPermissions;
-
-    /// <summary>
     ///   The tabs.
     /// </summary>
     private List<TabInfo> tabs;
-
-    /// <summary>
-    ///   The vocabularies.
-    /// </summary>
-    private string[] _vocabularies;
-
-    /// <summary>
-    ///   The terms.
-    /// </summary>
-    private string[] terms;
 
     /// <summary>
     ///   The skin.
@@ -198,13 +178,7 @@ public partial class Settings : ModuleSettingsBase
 
                     this.cBlTerms.Enabled = false;
 
-                    if (this._vocabularies == null)
-                    {
-                        return;
-                    }
-
-                    this._vocabularies.ForEach(
-                        sVocabulary => this.cBlVocabularies.Items.FindByValue(sVocabulary).Selected = true);
+                    Utility.SelectValues(this.cBlVocabularies, this.GetSavedList("TaxVocabularies"));
 
                     break;
                 }
@@ -215,7 +189,7 @@ public partial class Settings : ModuleSettingsBase
 
                     this.cBlVocabularies.Enabled = false;
 
-                    this.terms.ForEach(term => this.cBlTerms.Items.FindByValue(term).Selected = true);
+                    Utility.SelectValues(this.cBlTerms, this.GetSavedList("TaxTerms"));
 
                     break;
                 }
@@ -250,15 +224,7 @@ public partial class Settings : ModuleSettingsBase
 
                         this.cBlTerms.Enabled = false;
 
-                        if (this._vocabularies == null)
-                        {
-                            return;
-                        }
-
-                        foreach (var vocabulary in this._vocabularies)
-                        {
-                            this.cBlVocabularies.Items.FindByValue(vocabulary).Selected = true;
-                        }
+                        Utility.SelectValues(this.cBlVocabularies, this.GetSavedList("TaxVocabularies"));
 
                         break;
                     }
@@ -317,10 +283,7 @@ public partial class Settings : ModuleSettingsBase
     {
         foreach (var objTab in this.tabs)
         {
-            this.tabPermissions = TabPermissionController.GetTabPermissions(objTab.TabID, this.PortalId);
-
-            if (objTab.IsDeleted || objTab.StartDate >= DateTime.Now || objTab.EndDate <= DateTime.Now ||
-                !PortalSecurity.IsInRoles(this.tabPermissions.ToString("VIEW")))
+            if (objTab.IsDeleted || !Utility.IsTabActive(objTab) || !Utility.CanViewTab(objTab))
             {
                 continue;
             }
@@ -514,36 +477,9 @@ public partial class Settings : ModuleSettingsBase
         this.FillExTabList();
 
         // Load Excluded Tabs
-        string exlTabLst;
-
-        try
-        {
-            exlTabLst = (string)this.TabModuleSettings["exclusTabsLst"];
-        }
-        catch (Exception)
-        {
-            exlTabLst = null;
-        }
-
-        try
-        {
-            if (!string.IsNullOrEmpty(exlTabLst))
-            {
-                this.exclusionTabs = exlTabLst.Split(',');
-
-                if (this.exclusionTabs.Length != 0)
-                {
-                    (from sExTabValue in this.exclusionTabs
-                     from ListItem item in this.cblExcludeLst.Items
-                     where item.Value.Equals(sExTabValue)
-                     select item).ForEach(item => item.Selected = true);
-                }
-            }
-        }
-        catch (Exception)
-        {
-            this.exclusionTabs = null;
-        }
+        Utility.SelectValues(
+            this.cblExcludeLst,
+            Utility.SplitList(this.TabModuleSettings["exclusTabsLst"] as string, ','));
 
         // Load Max Render Level Setting
         try
@@ -708,16 +644,8 @@ public partial class Settings : ModuleSettingsBase
                     this.cBlVocabularies.Enabled = true;
                     this.cBlTerms.Enabled = false;
 
-                    // Setting TaxMode Vocabularies
-                    if (!string.IsNullOrEmpty((string)this.TabModuleSettings["TaxVocabularies"]))
-                    {
-                        var taxVocabularies = (string)this.TabModuleSettings["TaxVocabularies"];
-
-                        this._vocabularies = taxVocabularies.Split(';');
-
-                        this._vocabularies.ForEach(
-                            sVocabulary => this.cBlVocabularies.Items.FindByValue(sVocabulary).Selected = true);
-                    }
+                    // Setting TaxMode Vocabularies (deleted vocabularies are skipped)
+                    Utility.SelectValues(this.cBlVocabularies, this.GetSavedList("TaxVocabularies"));
 
                     break;
                 }
@@ -727,15 +655,8 @@ public partial class Settings : ModuleSettingsBase
                     this.cBlVocabularies.Enabled = false;
                     this.cBlTerms.Enabled = true;
 
-                    // Setting TaxMode Terms
-                    if (!string.IsNullOrEmpty((string)this.TabModuleSettings["TaxTerms"]))
-                    {
-                        var taxTerms = (string)this.TabModuleSettings["TaxTerms"];
-
-                        this.terms = taxTerms.Split(';');
-
-                        this.terms.ForEach(sTerm => this.cBlTerms.Items.FindByValue(sTerm).Selected = true);
-                    }
+                    // Setting TaxMode Terms (deleted terms are skipped)
+                    Utility.SelectValues(this.cBlTerms, this.GetSavedList("TaxTerms"));
 
                     break;
                 }
@@ -809,10 +730,7 @@ public partial class Settings : ModuleSettingsBase
     {
         foreach (var objTab in this.tabs)
         {
-            this.tabPermissions = TabPermissionController.GetTabPermissions(objTab.TabID, this.PortalId);
-
-            if (objTab.IsDeleted || objTab.StartDate >= DateTime.Now || objTab.EndDate <= DateTime.Now ||
-                !PortalSecurity.IsInRoles(this.tabPermissions.ToString("VIEW")))
+            if (objTab.IsDeleted || !Utility.IsTabActive(objTab) || !Utility.CanViewTab(objTab))
             {
                 continue;
             }
@@ -842,38 +760,26 @@ public partial class Settings : ModuleSettingsBase
     /// </returns>
     private List<TabInfo> FillTabs()
     {
+        // The returned TabInfo objects are shared with the DNN tab cache, so they must not be modified
         var allTabs = new List<TabInfo>();
 
         // Add Portal Tabs
-        TabController.GetTabsBySortOrder(this.PortalId).ForEach(
-            objPortalTab =>
-                {
-                    if (Null.IsNull(objPortalTab.StartDate))
-                    {
-                        objPortalTab.StartDate = DateTime.MinValue;
-                    }
-
-                    if (Null.IsNull(objPortalTab.EndDate))
-                    {
-                        objPortalTab.EndDate = DateTime.MaxValue;
-                    }
-
-                    allTabs.Add(objPortalTab);
-                });
+        allTabs.AddRange(TabController.GetTabsBySortOrder(this.PortalId));
 
         // Add Host Tabs
-        TabController.GetTabsBySortOrder(Null.NullInteger).ForEach(
-            objHostTab =>
-                {
-                    objHostTab.PortalID = this.PortalId;
-
-                    objHostTab.StartDate = DateTime.MinValue;
-                    objHostTab.EndDate = DateTime.MaxValue;
-
-                    allTabs.Add(objHostTab);
-                });
+        allTabs.AddRange(TabController.GetTabsBySortOrder(Null.NullInteger));
 
         return allTabs;
+    }
+
+    /// <summary>
+    /// Gets a saved ';' separated list setting (vocabulary or term ids).
+    /// </summary>
+    /// <param name="key">The setting key.</param>
+    /// <returns>The saved values.</returns>
+    private List<string> GetSavedList(string key)
+    {
+        return Utility.SplitList(this.TabModuleSettings[key] as string, ';');
     }
 
     /// <summary>
@@ -1012,10 +918,8 @@ public partial class Settings : ModuleSettingsBase
         objModules.UpdateTabModuleSetting(this.TabModuleId, "bDemoMode", this.cBDemoMode.Checked.ToString());
         objModules.UpdateTabModuleSetting(this.TabModuleId, "bHumanUrls", this.cBHumanUrls.Checked.ToString());
 
-        if (!string.IsNullOrEmpty(this.DefaultIcon.Url))
-        {
-            objModules.UpdateTabModuleSetting(this.TabModuleId, "sDefaultIcon", this.DefaultIcon.Url);
-        }
+        // Always save, so the default icon can be cleared
+        objModules.UpdateTabModuleSetting(this.TabModuleId, "sDefaultIcon", this.DefaultIcon.Url ?? string.Empty);
 
         if (!Utility.IsNumeric(this.tbMaxLevel.Text))
         {

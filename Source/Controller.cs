@@ -27,6 +27,16 @@ namespace DNN.Modules;
 public class SiteMapController : ModuleSettingsBase, IPortable
 {
     /// <summary>
+    /// The names of all settings that are exported and imported.
+    /// </summary>
+    private static readonly string[] SettingNames =
+    [
+        "sSkin", "sRenderMode", "bShowInfo", "bDemoMode", "exclusTabsLst", "bShowHidden", "bShowTabIcons",
+        "sMaxLevel", "sRootTab", "sRootLevel", "sAnimated", "bCollapsed", "bUnique", "sPersist", "bRenderName",
+        "bHumanUrls", "FilterByTax", "TaxMode", "TaxVocabularies", "TaxTerms"
+    ];
+
+    /// <summary>
     /// Export Settings to XML File
     /// </summary>
     /// <param name="moduleID">
@@ -63,6 +73,7 @@ public class SiteMapController : ModuleSettingsBase, IPortable
             var sFilterByTax = "false";
             var sTaxMode = "all";
             var sVocabularies = string.Empty;
+            var sTerms = string.Empty;
 
             if (tabModuleSettings.ContainsKey("sSkin") &&
                 !string.IsNullOrEmpty((string)tabModuleSettings["sSkin"]))
@@ -175,6 +186,11 @@ public class SiteMapController : ModuleSettingsBase, IPortable
                 sVocabularies = (string)tabModuleSettings["TaxVocabularies"];
             }
 
+            if (!string.IsNullOrEmpty((string)tabModuleSettings["TaxTerms"]))
+            {
+                sTerms = (string)tabModuleSettings["TaxTerms"];
+            }
+
             var sw = new StringWriter();
 
             var xmlWrit = new XmlTextWriter(sw);
@@ -201,6 +217,7 @@ public class SiteMapController : ModuleSettingsBase, IPortable
             xmlWrit.WriteElementString("FilterByTax", sFilterByTax);
             xmlWrit.WriteElementString("TaxMode", sTaxMode);
             xmlWrit.WriteElementString("TaxVocabularies", sVocabularies);
+            xmlWrit.WriteElementString("TaxTerms", sTerms);
 
             xmlWrit.WriteEndElement();
             xmlWrit.WriteEndElement();
@@ -242,47 +259,27 @@ public class SiteMapController : ModuleSettingsBase, IPortable
 
             var objModules = new ModuleController(null, null, this.DependencyProvider.GetRequiredService<IHostSettings>());
 
-            var objModule = objModules.GetModule(moduleID, this.TabId);
-
-            //objModules.GetTabModuleSettings(objModule.TabModuleID);
+            // The controller has no page context here (TabId is -1), so update every
+            // tab module instance of the module
+            var tabModules = objModules.GetTabModulesByModule(moduleID);
 
             foreach (XmlNode xmlContent in xmlTagCloud.SelectNodes("Settings"))
             {
-                objModules.UpdateTabModuleSetting(objModule.TabModuleID, "sSkin", xmlContent["sSkin"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "sRenderMode", xmlContent["sRenderMode"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "bShowInfo", xmlContent["bShowInfo"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "bDemoMode", xmlContent["bDemoMode"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "exclusTabsLst", xmlContent["exclusTabsLst"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "bShowHidden", xmlContent["bShowHidden"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "bShowTabIcons", xmlContent["bShowTabIcons"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "sMaxLevel", xmlContent["sMaxLevel"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "sRootTab", xmlContent["sRootTab"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "sRootLevel", xmlContent["sRootLevel"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "sAnimated", xmlContent["sAnimated"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "bCollapsed", xmlContent["bCollapsed"].InnerText);
-                objModules.UpdateTabModuleSetting(objModule.TabModuleID, "bUnique", xmlContent["bUnique"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "sPersist", xmlContent["sPersist"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "bRenderName", xmlContent["bRenderName"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "bHumanUrls", xmlContent["bHumanUrls"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "FilterByTax", xmlContent["FilterByTax"].InnerText);
-                objModules.UpdateTabModuleSetting(objModule.TabModuleID, "TaxMode", xmlContent["TaxMode"].InnerText);
-                objModules.UpdateTabModuleSetting(
-                    objModule.TabModuleID, "TaxVocabularies", xmlContent["TaxVocabularies"].InnerText);
+                foreach (var settingName in SettingNames)
+                {
+                    // Skip settings missing in the import file (e.g. older exports without TaxTerms)
+                    var settingNode = xmlContent[settingName];
+
+                    if (settingNode == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (var tabModule in tabModules)
+                    {
+                        objModules.UpdateTabModuleSetting(tabModule.TabModuleID, settingName, settingNode.InnerText);
+                    }
+                }
             }
         }
         catch (Exception exc)

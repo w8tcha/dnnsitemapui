@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -95,7 +96,7 @@ public partial class SiteMap : PortalModuleBase
     /// <summary>
     /// The exclusion tabs.
     /// </summary>
-    private string[] exclusionTabs;
+    private HashSet<int> exclusionTabs = [];
 
     /// <summary>
     /// The max level.
@@ -163,24 +164,24 @@ public partial class SiteMap : PortalModuleBase
     private string unique;
 
     /// <summary>
-    /// The tab permissions.
-    /// </summary>
-    private TabPermissionCollection tabPermissions;
-
-    /// <summary>
     /// The tabs.
     /// </summary>
     private List<TabInfo> tabs;
 
     /// <summary>
+    /// The tabs grouped by their parent tab id (in sort order).
+    /// </summary>
+    private ILookup<int, TabInfo> tabsByParent;
+
+    /// <summary>
     /// The vocabularies.
     /// </summary>
-    private string[] vocabularies;
+    private List<int> vocabularies = [];
 
     /// <summary>
     /// The terms.
     /// </summary>
-    private string[] termsList;
+    private List<int> termsList = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SiteMap"/> class.
@@ -284,31 +285,18 @@ public partial class SiteMap : PortalModuleBase
     /// </returns>
     private bool ExcludeByTax(ContentItem checkTab)
     {
-        var exclude = true;
-
         if (!this.filterByTax)
         {
-            return this.filterByTax;
+            return false;
         }
 
-        try
+        if (checkTab.Terms.Count == 0 || this.taxTerms == null)
         {
-            if (checkTab.Terms.Count == 0)
-            {
-                return true;
-            }
-
-            if (checkTab.Terms.Exists(term1 => this.taxTerms.Find(t => t.Name.Equals(term1.Name)) != null))
-            {
-                return false;
-            }
-        }
-        catch (Exception)
-        {
-            exclude = false;
+            return true;
         }
 
-        return exclude;
+        return !checkTab.Terms.Exists(
+            tabTerm => this.taxTerms.Exists(t => t != null && t.Name.Equals(tabTerm.Name)));
     }
 
     /// <summary>
@@ -320,29 +308,9 @@ public partial class SiteMap : PortalModuleBase
     /// <returns>
     /// true or false
     /// </returns>
-    private bool ExcludeTabId(IEquatable<int> checkTabId)
+    private bool ExcludeTabId(int checkTabId)
     {
-        var exclude = false;
-
-        if (exclusionTabs is null)
-        {
-            return false;
-        }
-
-        try
-        {
-            if (this.exclusionTabs.Length != 0 && Array.Exists(this.exclusionTabs,
-                    sExTabValue => checkTabId.Equals(int.Parse(sExTabValue))))
-            {
-                exclude = true;
-            }
-        }
-        catch (Exception)
-        {
-            exclude = false;
-        }
-
-        return exclude;
+        return this.exclusionTabs.Contains(checkTabId);
     }
 
     /// <summary>
@@ -371,34 +339,14 @@ public partial class SiteMap : PortalModuleBase
     /// </returns>
     private List<TabInfo> FillTabs()
     {
+        // The returned TabInfo objects are shared with the DNN tab cache, so they must not be modified
         var allTabs = new List<TabInfo>();
 
         // Add Portal Tabs
-        TabController.GetTabsBySortOrder(this.PortalId).ForEach(objPortalTab =>
-        {
-            if (Null.IsNull(objPortalTab.StartDate))
-            {
-                objPortalTab.StartDate = DateTime.MinValue;
-            }
-
-            if (Null.IsNull(objPortalTab.EndDate))
-            {
-                objPortalTab.EndDate = DateTime.MaxValue;
-            }
-
-            allTabs.Add(objPortalTab);
-        });
+        allTabs.AddRange(TabController.GetTabsBySortOrder(this.PortalId));
 
         // Add Host Tabs
-        TabController.GetTabsBySortOrder(Null.NullInteger).ForEach(objHostTab =>
-        {
-            objHostTab.PortalID = this.PortalId;
-
-            objHostTab.StartDate = DateTime.MinValue;
-            objHostTab.EndDate = DateTime.MaxValue;
-
-            allTabs.Add(objHostTab);
-        });
+        allTabs.AddRange(TabController.GetTabsBySortOrder(Null.NullInteger));
 
         return allTabs;
     }
@@ -450,23 +398,18 @@ public partial class SiteMap : PortalModuleBase
                 break;
             case "custom":
             {
-                if (this.vocabularies != null)
-                {
-                    var termRep = new TermController(null, this.DependencyProvider.GetRequiredService<IHostSettings>());
+                var termRep = new TermController(null, this.DependencyProvider.GetRequiredService<IHostSettings>());
 
-                    this.vocabularies.ForEach(id => terms.AddRange(termRep.GetTermsByVocabulary(int.Parse(id))));
-                }
+                this.vocabularies.ForEach(id => terms.AddRange(termRep.GetTermsByVocabulary(id)));
             }
 
                 break;
             case "terms":
             {
-                if (this.termsList != null)
-                {
-                    var termRep = new TermController(null, this.DependencyProvider.GetRequiredService<IHostSettings>());
+                var termRep = new TermController(null, this.DependencyProvider.GetRequiredService<IHostSettings>());
 
-                    terms.AddRange(this.termsList.Select(sTermId => termRep.GetTerm(int.Parse(sTermId))));
-                }
+                // Skip terms that have been deleted since the settings were saved
+                terms.AddRange(this.termsList.Select(termRep.GetTerm).Where(term => term != null));
             }
 
                 break;
@@ -589,6 +532,7 @@ public partial class SiteMap : PortalModuleBase
     private void LoadSettings()
     {
         this.tabs = this.FillTabs();
+        this.tabsByParent = this.tabs.ToLookup(tab => tab.ParentId);
 
         var tabModuleSettings = this.ModuleConfiguration.TabModuleSettings;
 
@@ -660,28 +604,7 @@ public partial class SiteMap : PortalModuleBase
             this.defaultIcon = string.Empty;
         }
 
-        string excludeTabList;
-
-        try
-        {
-            excludeTabList = (string)tabModuleSettings["exclusTabsLst"];
-        }
-        catch (Exception)
-        {
-            excludeTabList = null;
-        }
-
-        try
-        {
-            if (!string.IsNullOrEmpty(excludeTabList))
-            {
-                this.exclusionTabs = excludeTabList.Split(',');
-            }
-        }
-        catch (Exception)
-        {
-            this.exclusionTabs = null;
-        }
+        this.exclusionTabs = [.. Utility.ParseIdList(tabModuleSettings["exclusTabsLst"] as string, ',')];
 
         // Load RenderMode
         try
@@ -821,9 +744,9 @@ public partial class SiteMap : PortalModuleBase
         }
         finally
         {
-            if (string.IsNullOrEmpty(this.rootLevel))
+            if (string.IsNullOrEmpty(this.rootTab))
             {
-                this.rootLevel = "-1";
+                this.rootTab = "-1";
             }
         }
 
@@ -882,18 +805,10 @@ public partial class SiteMap : PortalModuleBase
         }
 
         // Setting TaxMode Vocabularies
-        if (!string.IsNullOrEmpty((string)tabModuleSettings["TaxVocabularies"]))
-        {
-            this.vocabularies = tabModuleSettings["TaxVocabularies"].ToString().Split(';');
-        }
+        this.vocabularies = Utility.ParseIdList(tabModuleSettings["TaxVocabularies"] as string, ';');
 
         // Setting TaxMode Terms
-        if (string.IsNullOrEmpty((string)tabModuleSettings["TaxTerms"]))
-        {
-            return;
-        }
-
-        this.termsList = tabModuleSettings["TaxTerms"].ToString().Split(';');
+        this.termsList = Utility.ParseIdList(tabModuleSettings["TaxTerms"] as string, ';');
     }
 
     /// <summary>
@@ -969,11 +884,34 @@ public partial class SiteMap : PortalModuleBase
             return;
         }
 
-        this.rBlRender.Items.FindByValue(this.renderMode).Selected = true;
+        var renderItem = this.rBlRender.Items.FindByValue(this.renderMode);
+
+        if (renderItem == null)
+        {
+            this.renderMode = "normal";
+            renderItem = this.rBlRender.Items.FindByValue(this.renderMode);
+        }
+
+        if (renderItem != null)
+        {
+            renderItem.Selected = true;
+        }
 
         this.FillSkinList(this.renderMode);
 
-        this.dDlSkins.Items.FindByText(this.skinName).Selected = true;
+        var skinItem = this.dDlSkins.Items.FindByText(this.skinName);
+
+        if (skinItem == null && this.dDlSkins.Items.Count > 0)
+        {
+            // Stored skin does not exist (anymore) for this render mode, fall back to the first one
+            skinItem = this.dDlSkins.Items[0];
+            this.skinName = skinItem.Text;
+        }
+
+        if (skinItem != null)
+        {
+            skinItem.Selected = true;
+        }
     }
 
     /// <summary>
@@ -989,14 +927,12 @@ public partial class SiteMap : PortalModuleBase
     {
         HtmlGenericControl ctlUl = null;
 
-        foreach (var objTab in this.tabs)
+        foreach (var objTab in this.tabsByParent[parentTabId])
         {
-            this.tabPermissions = TabPermissionController.GetTabPermissions(objTab.TabID, this.PortalId);
-
-            if (!objTab.ParentId.Equals(parentTabId) || objTab.IsDeleted || !this.IsNotHidden(objTab) ||
-                objTab.IsDeleted || !PortalSecurity.IsInRoles(this.tabPermissions.ToString("VIEW")) ||
-                objTab.StartDate >= DateTime.Now || objTab.EndDate <= DateTime.Now || this.IsMaxLevel(objTab) ||
-                this.ExcludeTabId(objTab.TabID) || this.ExcludeByTax(objTab))
+            // Cheap checks first, the permission check last
+            if (objTab.IsDeleted || !this.IsNotHidden(objTab) || !Utility.IsTabActive(objTab) ||
+                this.IsMaxLevel(objTab) || this.ExcludeTabId(objTab.TabID) || this.ExcludeByTax(objTab) ||
+                !Utility.CanViewTab(objTab))
             {
                 continue;
             }
@@ -1055,41 +991,35 @@ public partial class SiteMap : PortalModuleBase
 
             ctlAnchor.Title = decodedTabName;
 
-            ctlAnchor.InnerText = decodedTabName;
+            // Menu Tab Icon (tab icon, or the default icon as fallback)
+            string iconUrl = null;
 
-            // Menu Tab Icon
-            if (!string.IsNullOrEmpty(objTab.IconFile) && this.showTabIcons)
+            if (this.showTabIcons)
             {
-                ctlAnchor.InnerHtml =
-                    $"<img src=\"{this.SetIconPath(objTab)}\" class=\"tabIcon\" alt=\"{decodedTabName}\" width=\"16px\" height=\"16px\" />{ctlAnchor.InnerText}";
-
-                if (objTab.HasChildren)
+                if (!string.IsNullOrEmpty(objTab.IconFile))
                 {
-                    ctlAnchor.Attributes["class"] = "SubItem";
+                    iconUrl = this.SetIconPath(objTab);
                 }
+                else if (!string.IsNullOrEmpty(this.defaultIcon))
+                {
+                    iconUrl = this.ResolveUrl(this.defaultIcon);
+                }
+            }
 
-                ctlMenu.Attributes["class"] += " hasIcon";
+            if (iconUrl != null)
+            {
+                ctlAnchor.InnerHtml = Utility.BuildIconLinkHtml(iconUrl, decodedTabName);
+
+                ctlMenu.Attributes["class"] = Utility.AppendCssClass(ctlMenu.Attributes["class"], "hasIcon");
             }
             else
             {
-                if (this.showTabIcons && !string.IsNullOrEmpty(this.defaultIcon))
-                {
-                    ctlAnchor.InnerHtml =
-                        $"<img src=\"{this.ResolveUrl(this.defaultIcon)}\" class=\"tabIcon\" alt=\"{decodedTabName}\" width=\"16px\" height=\"16px\" />{ctlAnchor.InnerText}";
+                ctlAnchor.InnerText = decodedTabName;
+            }
 
-                    ctlMenu.Attributes["class"] = " hasIcon";
-                }
-                else
-                {
-                    if (objTab.HasChildren)
-                    {
-                        ctlAnchor.Attributes["class"] = "SubItem";
-                    }
-                    else
-                    {
-                        ctlAnchor.InnerText = decodedTabName;
-                    }
-                }
+            if (objTab.HasChildren)
+            {
+                ctlAnchor.Attributes["class"] = "SubItem";
             }
 
             ctlMenu.Controls.Add(ctlAnchor);
@@ -1127,7 +1057,7 @@ public partial class SiteMap : PortalModuleBase
         var ctlAnchorWeb = new HtmlAnchor
         {
             Title = this.PortalSettings.PortalName,
-            InnerHtml = $"<strong><em>{this.PortalSettings.PortalName}</em></strong>",
+            InnerHtml = $"<strong><em>{HttpUtility.HtmlEncode(this.PortalSettings.PortalName)}</em></strong>",
             HRef =
                 $"{Globals.GetPortalDomainName(aliasInfo.HttpAlias, null, true)}/{Globals.glbDefaultPage}"
         };
@@ -1224,25 +1154,13 @@ public partial class SiteMap : PortalModuleBase
     /// </returns>
     private TabInfo SetActiveTab()
     {
-        TabInfo activeTab;
-
-        if (this.rootLevel.Equals("custom"))
+        if (!this.rootLevel.Equals("custom") || !int.TryParse(this.rootTab?.Trim(), out var rootTabId))
         {
-            try
-            {
-                activeTab = this.tabs.Find(objTestTab => objTestTab.TabID.ToString().Equals(this.rootTab));
-            }
-            catch (Exception)
-            {
-                activeTab = this.PortalSettings.ActiveTab;
-            }
-        }
-        else
-        {
-            activeTab = this.PortalSettings.ActiveTab;
+            return this.PortalSettings.ActiveTab;
         }
 
-        return activeTab;
+        // Fall back to the current page if the selected root page does not exist (anymore)
+        return this.tabs.Find(tab => tab.TabID == rootTabId && !tab.IsDeleted) ?? this.PortalSettings.ActiveTab;
     }
 
     /// <summary>
@@ -1261,8 +1179,8 @@ public partial class SiteMap : PortalModuleBase
             return this.ResolveUrl(tab.IconFile);
         }
 
-        return tab.IsSuperTab || tab.IsSecure
-            ? this.ResolveUrl($"{Globals.ApplicationPath}/images/{tab.IconFile}")
+        return tab.IsSuperTab
+            ?this.ResolveUrl($"{Globals.ApplicationPath}/images/{tab.IconFile}")
             : this.ResolveUrl(Path.Combine(this.PortalSettings.HomeDirectory, tab.IconFile));
     }
 

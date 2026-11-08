@@ -114,6 +114,7 @@
       <releaseNotes src="ReleaseNotes.html" />
       <dependencies>
         <dependency type="CoreVersion">10.04.01</dependency>
+        <dependency type="package">SiteMap</dependency>
       </dependencies>
       <components>
         <component type="SkinObject">

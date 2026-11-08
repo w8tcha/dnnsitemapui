@@ -57,12 +57,12 @@ public partial class SiteMapSl : SkinObjectBase
     /// <summary>
     /// The exclusion tabs.
     /// </summary>
-    private IList<string> exclusionTabs;
+    private HashSet<int> exclusionTabs = [];
 
     /// <summary>
     /// The Include Only Tabs.
     /// </summary>
-    private IList<string> inclusionTabs;
+    private HashSet<int> inclusionTabs = [];
 
     /// <summary>
     /// The items skins.
@@ -75,24 +75,24 @@ public partial class SiteMapSl : SkinObjectBase
     private ListItemCollection itemsTreeView;
 
     /// <summary>
-    /// The tab permissions.
-    /// </summary>
-    private TabPermissionCollection tabPermissions;
-
-    /// <summary>
     /// The tax vocabularies.
     /// </summary>
-    private string[] taxVocabularies;
+    private List<int> taxVocabularies = [];
 
     /// <summary>
     /// The terms.
     /// </summary>
-    private string[] terms;
+    private List<string> terms = [];
 
     /// <summary>
     /// The tabs.
     /// </summary>
     private List<TabInfo> tabs;
+
+    /// <summary>
+    /// The tabs grouped by their parent tab id (in sort order).
+    /// </summary>
+    private ILookup<int, TabInfo> tabsByParent;
 
     /// <summary>
     /// The java script
@@ -239,53 +239,10 @@ public partial class SiteMapSl : SkinObjectBase
     /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
     protected void Page_Load(object sender, EventArgs e)
     {
-        try
-        {
-            if (!string.IsNullOrEmpty(this.ExclusionTabs))
-            {
-                this.exclusionTabs = this.ExclusionTabs.Split(',');
-            }
-        }
-        catch (Exception)
-        {
-            this.exclusionTabs = null;
-        }
-
-        try
-        {
-            if (!string.IsNullOrEmpty(this.InclusionTabs))
-            {
-                this.inclusionTabs = this.InclusionTabs.Split(',');
-            }
-        }
-        catch (Exception)
-        {
-            this.inclusionTabs = null;
-        }
-
-        try
-        {
-            if (!string.IsNullOrEmpty(this.TaxVocabularies))
-            {
-                this.taxVocabularies = this.TaxVocabularies.Split(',');
-            }
-        }
-        catch (Exception)
-        {
-            this.taxVocabularies = null;
-        }
-
-        try
-        {
-            if (!string.IsNullOrEmpty(this.TaxTerms))
-            {
-                this.terms = this.TaxTerms.Split(',');
-            }
-        }
-        catch (Exception)
-        {
-            this.terms = null;
-        }
+        this.exclusionTabs = [.. Utility.ParseIdList(this.ExclusionTabs, ',')];
+        this.inclusionTabs = [.. Utility.ParseIdList(this.InclusionTabs, ',')];
+        this.taxVocabularies = Utility.ParseIdList(this.TaxVocabularies, ',');
+        this.terms = Utility.SplitList(this.TaxTerms, ',');
 
         if (this.isSkinChanged/* || this.IsPostBack*/)
         {
@@ -359,31 +316,18 @@ public partial class SiteMapSl : SkinObjectBase
     /// </returns>
     private bool ExcludeByTax(ContentItem checkTab)
     {
-        var exclude = true;
-
         if (!this.FilterByTax)
         {
-            return this.FilterByTax;
+            return false;
         }
 
-        try
+        if (checkTab.Terms.Count == 0 || this.taxTerms == null)
         {
-            if (checkTab.Terms.Count == 0)
-            {
-                return true;
-            }
-
-            if (checkTab.Terms.Exists(term1 => this.taxTerms.Find(t => t.Name.Equals(term1.Name)) != null))
-            {
-                return false;
-            }
-        }
-        catch (Exception)
-        {
-            exclude = false;
+            return true;
         }
 
-        return exclude;
+        return !checkTab.Terms.Exists(
+            tabTerm => this.taxTerms.Exists(t => t != null && t.Name.Equals(tabTerm.Name)));
     }
 
     /// <summary>
@@ -395,28 +339,9 @@ public partial class SiteMapSl : SkinObjectBase
     /// <returns>
     /// true or false
     /// </returns>
-    private bool ExcludeTabId(IEquatable<int> checkTabId)
+    private bool ExcludeTabId(int checkTabId)
     {
-        var exclude = false;
-
-        if (exclusionTabs is null)
-        {
-            return false;
-        }
-
-        try
-        {
-			if (this.exclusionTabs.Count > 0 && this.exclusionTabs.Any(sExTabValue => checkTabId.Equals(int.Parse(sExTabValue))))
-			{
-				exclude = true;
-			}
-		}
-        catch (Exception)
-        {
-            exclude = false;
-        }
-
-        return exclude;
+        return this.exclusionTabs.Contains(checkTabId);
     }
 
     /// <summary>
@@ -430,13 +355,7 @@ public partial class SiteMapSl : SkinObjectBase
     /// </returns>
     private bool IsIncluded(int checkTabId)
     {
-        if (this.inclusionTabs is null || this.inclusionTabs.Count == 0)
-        {
-            return true;
-        }
-
-        return this.inclusionTabs.Any(
-            inTabValue => int.TryParse(inTabValue.Trim(), out var tabId) && tabId == checkTabId);
+        return this.inclusionTabs.Count == 0 || this.inclusionTabs.Contains(checkTabId);
     }
 
     /// <summary>
@@ -465,35 +384,14 @@ public partial class SiteMapSl : SkinObjectBase
     /// </returns>
     private List<TabInfo> FillTabs()
     {
+        // The returned TabInfo objects are shared with the DNN tab cache, so they must not be modified
         var allTabs = new List<TabInfo>();
 
         // Add Portal Tabs
-        TabController.GetTabsBySortOrder(this.PortalSettings.PortalId).ForEach(objPortalTab =>
-            {
-                if (Null.IsNull(objPortalTab.StartDate))
-                {
-                    objPortalTab.StartDate = DateTime.MinValue;
-                }
-
-                if (Null.IsNull(objPortalTab.EndDate))
-                {
-                    objPortalTab.EndDate = DateTime.MaxValue;
-                }
-
-                allTabs.Add(objPortalTab);
-            });
+        allTabs.AddRange(TabController.GetTabsBySortOrder(this.PortalSettings.PortalId));
 
         // Add Host Tabs
-        TabController.GetTabsBySortOrder(Null.NullInteger).ForEach(
-            objHostTab =>
-                {
-                    objHostTab.PortalID = this.PortalSettings.PortalId;
-
-                    objHostTab.StartDate = DateTime.MinValue;
-                    objHostTab.EndDate = DateTime.MaxValue;
-
-                    allTabs.Add(objHostTab);
-                });
+        allTabs.AddRange(TabController.GetTabsBySortOrder(Null.NullInteger));
 
         return allTabs;
     }
@@ -544,19 +442,15 @@ public partial class SiteMapSl : SkinObjectBase
                 break;
             case "custom":
                 {
-                    if (this.taxVocabularies != null)
-                    {
-                        var termRep = new TermController(null, this.hostSettings);
+                    var termRep = new TermController(null, this.hostSettings);
 
-                        this.taxVocabularies.ForEach(
-                            id => tabTerms.AddRange(termRep.GetTermsByVocabulary(int.Parse(id))));
-                    }
+                    this.taxVocabularies.ForEach(id => tabTerms.AddRange(termRep.GetTermsByVocabulary(id)));
                 }
 
                 break;
             case "terms":
                 {
-                    if (this.terms != null)
+                    if (this.terms.Count > 0)
                     {
                         var vocabRep = new VocabularyController(null, this.hostSettings);
 
@@ -570,7 +464,9 @@ public partial class SiteMapSl : SkinObjectBase
 
                         vs.AsEnumerable().ForEach(v => allTerms.AddRange(v.Terms));
 
-                        tabTerms.AddRange(this.terms.Select(term => allTerms.Find(t => t.Name.Equals(term))));
+                        // Skip term names that do not match any term
+                        tabTerms.AddRange(
+                            this.terms.Select(term => allTerms.Find(t => t.Name.Equals(term))).Where(t => t != null));
                     }
                 }
 
@@ -778,11 +674,34 @@ public partial class SiteMapSl : SkinObjectBase
             return;
         }
 
-        this.rBlRender.Items.FindByValue(this.RenderMode).Selected = true;
+        var renderItem = this.rBlRender.Items.FindByValue(this.RenderMode);
+
+        if (renderItem == null)
+        {
+            this.RenderMode = "normal";
+            renderItem = this.rBlRender.Items.FindByValue(this.RenderMode);
+        }
+
+        if (renderItem != null)
+        {
+            renderItem.Selected = true;
+        }
 
         this.FillSkinList(this.RenderMode);
 
-        this.dDlSkins.Items.FindByText(this.SkinName).Selected = true;
+        var skinItem = this.dDlSkins.Items.FindByText(this.SkinName);
+
+        if (skinItem == null && this.dDlSkins.Items.Count > 0)
+        {
+            // Skin does not exist for this render mode, fall back to the first one
+            skinItem = this.dDlSkins.Items[0];
+            this.SkinName = skinItem.Text;
+        }
+
+        if (skinItem != null)
+        {
+            skinItem.Selected = true;
+        }
     }
 
     /// <summary>
@@ -798,15 +717,12 @@ public partial class SiteMapSl : SkinObjectBase
     {
         HtmlGenericControl ctlUl = null;
 
-        foreach (var objTab in this.tabs)
+        foreach (var objTab in this.tabsByParent[parentTabId])
         {
-            this.tabPermissions = TabPermissionController.GetTabPermissions(
-                objTab.TabID, this.PortalSettings.PortalId);
-
-            if (!objTab.ParentId.Equals(parentTabId) || objTab.IsDeleted || objTab.IsDeleted ||
-                !this.IsNotHidden(objTab) || !PortalSecurity.IsInRoles(this.tabPermissions.ToString("VIEW")) ||
-                objTab.StartDate >= DateTime.Now || objTab.EndDate <= DateTime.Now || this.IsMaxLevel(objTab) ||
-                this.ExcludeTabId(objTab.TabID) || this.ExcludeByTax(objTab) || !this.IsIncluded(objTab.TabID))
+            // Cheap checks first, the permission check last
+            if (objTab.IsDeleted || !this.IsNotHidden(objTab) || !Utility.IsTabActive(objTab) ||
+                this.IsMaxLevel(objTab) || this.ExcludeTabId(objTab.TabID) || !this.IsIncluded(objTab.TabID) ||
+                this.ExcludeByTax(objTab) || !Utility.CanViewTab(objTab))
             {
                 continue;
             }
@@ -869,41 +785,36 @@ public partial class SiteMapSl : SkinObjectBase
             }
 
             ctlAnchor.Title = decodedTabName;
-            ctlAnchor.InnerText = decodedTabName;
 
-            // Menu Tab Icon
-            if (!string.IsNullOrEmpty(objTab.IconFile) && this.ShowTabIcons)
+            // Menu Tab Icon (tab icon, or the default icon as fallback)
+            string iconUrl = null;
+
+            if (this.ShowTabIcons)
             {
-                ctlAnchor.InnerHtml =
-                    $"<img src=\"{this.SetIconPath(objTab)}\" class=\"tabIcon\" alt=\"{decodedTabName}\" width=\"16px\" height=\"16px\" />{ctlAnchor.InnerText}";
-
-                if (objTab.HasChildren)
+                if (!string.IsNullOrEmpty(objTab.IconFile))
                 {
-                    ctlAnchor.Attributes["class"] = "SubItem";
+                    iconUrl = this.SetIconPath(objTab);
                 }
+                else if (!string.IsNullOrEmpty(this.DefaultIcon))
+                {
+                    iconUrl = this.ResolveUrl(Path.Combine(this.PortalSettings.HomeDirectory, this.DefaultIcon));
+                }
+            }
 
-                ctlMenu.Attributes["class"] += " hasIcon";
+            if (iconUrl != null)
+            {
+                ctlAnchor.InnerHtml = Utility.BuildIconLinkHtml(iconUrl, decodedTabName);
+
+                ctlMenu.Attributes["class"] = Utility.AppendCssClass(ctlMenu.Attributes["class"], "hasIcon");
             }
             else
             {
-                if (this.ShowTabIcons && !string.IsNullOrEmpty(this.DefaultIcon))
-                {
-                    ctlAnchor.InnerHtml =
-                        $"<img src=\"{this.ResolveUrl(Path.Combine(this.PortalSettings.HomeDirectory, this.DefaultIcon))}\" class=\"tabIcon\" alt=\"{decodedTabName}\" width=\"16px\" height=\"16px\" />{ctlAnchor.InnerText}";
+                ctlAnchor.InnerText = decodedTabName;
+            }
 
-                    ctlMenu.Attributes["class"] = " hasIcon";
-                }
-                else
-                {
-                    if (objTab.HasChildren)
-                    {
-                        ctlAnchor.Attributes["class"] = "SubItem";
-                    }
-                    else
-                    {
-                        ctlAnchor.InnerText = decodedTabName;
-                    }
-                }
+            if (objTab.HasChildren)
+            {
+                ctlAnchor.Attributes["class"] = "SubItem";
             }
 
             ctlMenu.Controls.Add(ctlAnchor);
@@ -941,7 +852,7 @@ public partial class SiteMapSl : SkinObjectBase
         var ctlAnchorWeb = new HtmlAnchor
                                {
                                    Title = this.PortalSettings.PortalName,
-                                   InnerHtml = $"<strong><em>{this.PortalSettings.PortalName}</em></strong>",
+                                   InnerHtml = $"<strong><em>{HttpUtility.HtmlEncode(this.PortalSettings.PortalName)}</em></strong>",
                                    HRef =
                                        $"{Globals.GetPortalDomainName(aliasInfo.HttpAlias, null, true)}/{Globals.glbDefaultPage}"
                                };
@@ -960,6 +871,7 @@ public partial class SiteMapSl : SkinObjectBase
         this.siteMapPlaceHolder.Controls.Clear();
 
         this.tabs = this.FillTabs();
+        this.tabsByParent = this.tabs.ToLookup(tab => tab.ParentId);
 
         this.PlaceSkinStyleLink();
 
@@ -972,24 +884,21 @@ public partial class SiteMapSl : SkinObjectBase
 
         var tabActive = this.SetActiveTab();
 
-        if (this.FilterByTax)
-        {
-            this.taxTerms = [.. this.GetTerms()];
-        }
-
-        ////////////////////////////////////////////////
-        HtmlGenericControl ctlMain = null;
-
-        if (this.RenderMode.Equals("treeview") && this.RenderName)
-        {
-            ctlMain = this.RenderMainTree();
-        }
-
-        ////////////////////////////////////////////////
-
         // Render Menu
         try
         {
+            if (this.FilterByTax)
+            {
+                this.taxTerms = [.. this.GetTerms()];
+            }
+
+            HtmlGenericControl ctlMain = null;
+
+            if (this.RenderMode.Equals("treeview") && this.RenderName)
+            {
+                ctlMain = this.RenderMainTree();
+            }
+
             switch (this.RootLevel)
             {
                 case "parent" when tabActive.ParentId.Equals(-1):
@@ -1040,25 +949,13 @@ public partial class SiteMapSl : SkinObjectBase
     /// </returns>
     private TabInfo SetActiveTab()
     {
-        TabInfo activeTab;
-
-        if (this.RootLevel.Equals("custom"))
+        if (!this.RootLevel.Equals("custom") || !int.TryParse(this.RootTab?.Trim(), out var rootTabId))
         {
-            try
-            {
-                activeTab = this.tabs.Find(objTestTab => objTestTab.TabID.ToString().Equals(this.RootTab));
-            }
-            catch (Exception)
-            {
-                activeTab = this.PortalSettings.ActiveTab;
-            }
-        }
-        else
-        {
-            activeTab = this.PortalSettings.ActiveTab;
+            return this.PortalSettings.ActiveTab;
         }
 
-        return activeTab;
+        // Fall back to the current page if the root page does not exist
+        return this.tabs.Find(tab => tab.TabID == rootTabId && !tab.IsDeleted) ?? this.PortalSettings.ActiveTab;
     }
 
     /// <summary>
@@ -1077,8 +974,8 @@ public partial class SiteMapSl : SkinObjectBase
             return this.ResolveUrl(tab.IconFile);
         }
 
-        return tab.IsSuperTab || tab.IsSecure
-                   ? this.ResolveUrl($"{Globals.ApplicationPath}/images/{tab.IconFile}")
+        return tab.IsSuperTab
+                   ?this.ResolveUrl($"{Globals.ApplicationPath}/images/{tab.IconFile}")
                    : this.ResolveUrl(Path.Combine(this.PortalSettings.HomeDirectory, tab.IconFile));
     }
 }
