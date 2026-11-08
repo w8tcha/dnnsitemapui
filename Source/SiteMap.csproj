@@ -226,7 +226,6 @@
   <ItemGroup>
     <Content Include="Installation\License.html" />
     <Content Include="Installation\module.css" />
-    <Content Include="Installation\readme.txt" />
     <Content Include="Installation\ReleaseNotes.html" />
     <Content Include="Resources\ButtonActive.png" />
     <Content Include="Resources\ButtonHover.png" />
