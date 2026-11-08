@@ -420,31 +420,23 @@ public partial class SiteMapSl : SkinObjectBase
     }
 
     /// <summary>
-    /// Checks if the Tab is in the Include List
+    /// Checks if the Tab should be included based on the Include List
     /// </summary>
     /// <param name="checkTabId">
     /// Tab to Check
     /// </param>
     /// <returns>
-    /// true or false
+    /// true if no Include List is set or the Tab is in the Include List, otherwise false
     /// </returns>
-    private bool IncludeTabId(IEquatable<int> checkTabId)
+    private bool IsIncluded(int checkTabId)
     {
-        var include = false;
-
-        try
+        if (this.inclusionTabs is null || this.inclusionTabs.Count == 0)
         {
-            if (this.inclusionTabs.Count > 0)
-            {
-                include = this.inclusionTabs.ToList().Find(sInTabValue => checkTabId.Equals(int.Parse(sInTabValue))) == null;
-            }
-        }
-        catch (Exception)
-        {
-            include = false;
+            return true;
         }
 
-        return include;
+        return this.inclusionTabs.Any(
+            inTabValue => int.TryParse(inTabValue.Trim(), out var tabId) && tabId == checkTabId);
     }
 
     /// <summary>
@@ -814,7 +806,7 @@ public partial class SiteMapSl : SkinObjectBase
             if (!objTab.ParentId.Equals(parentTabId) || objTab.IsDeleted || objTab.IsDeleted ||
                 !this.IsNotHidden(objTab) || !PortalSecurity.IsInRoles(this.tabPermissions.ToString("VIEW")) ||
                 objTab.StartDate >= DateTime.Now || objTab.EndDate <= DateTime.Now || this.IsMaxLevel(objTab) ||
-                this.ExcludeTabId(objTab.TabID) || this.ExcludeByTax(objTab) || this.IncludeTabId(objTab.TabID))
+                this.ExcludeTabId(objTab.TabID) || this.ExcludeByTax(objTab) || !this.IsIncluded(objTab.TabID))
             {
                 continue;
             }
