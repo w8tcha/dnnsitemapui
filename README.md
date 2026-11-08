@@ -130,8 +130,7 @@ Then place it wherever you want the sitemap to appear, for example in the footer
 Requires Visual Studio (or MSBuild) with .NET Framework 4.8.1.
 
 ```powershell
-nuget restore SiteMap.slnx
-msbuild Source/SiteMap.csproj /p:Configuration=Deploy /p:Platform=AnyCPU
+msbuild Source/SiteMap.csproj /restore /p:Configuration=Deploy /p:Platform=AnyCPU
 ```
 
 The install packages are written to the `deploy` folder.

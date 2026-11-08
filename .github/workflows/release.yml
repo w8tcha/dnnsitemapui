@@ -62,17 +62,9 @@ jobs:
         if: steps.version.outputs.should_release == 'true'
         uses: microsoft/setup-msbuild@v3
 
-      - name: Setup NuGet
-        if: steps.version.outputs.should_release == 'true'
-        uses: NuGet/setup-nuget@v4
-
-      - name: Restore NuGet packages
-        if: steps.version.outputs.should_release == 'true'
-        run: nuget restore Source/SiteMap.csproj -PackagesDirectory packages
-
       - name: Build Deploy package
         if: steps.version.outputs.should_release == 'true'
-        run: msbuild Source/SiteMap.csproj /p:Configuration=Deploy /p:Platform=AnyCPU /m
+        run: msbuild Source/SiteMap.csproj /restore /p:Configuration=Deploy /p:Platform=AnyCPU /m
 
       - name: Verify deploy artifacts
         if: steps.version.outputs.should_release == 'true'
