@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="Source/Resources/SiteMap.png" alt="SiteMap - A Modern SiteMap / TreeView" width="297" height="92" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="Source/Resources/SiteMap-dark.png" />
+    <source media="(prefers-color-scheme: light)" srcset="Source/Resources/SiteMap.png" />
+    <img src="Source/Resources/SiteMap.png" alt="SiteMap - A Modern SiteMap / TreeView" width="297" height="92" />
+  </picture>
 </p>
 SiteMap - A Modern SiteMap / TreeView Module and Skin Object for DNN®
 
