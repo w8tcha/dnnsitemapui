@@ -1,0 +1,6 @@
+# Configuration for the automatically generated release notes (gh release create --generate-notes)
+changelog:
+  exclude:
+    authors:
+      - dependabot
+      - dependabot[bot]
