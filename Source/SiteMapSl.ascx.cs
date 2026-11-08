@@ -28,7 +28,6 @@ using DotNetNuke.Entities.Content;
 using DotNetNuke.Entities.Content.Common;
 using DotNetNuke.Entities.Content.Taxonomy;
 using DotNetNuke.Entities.Tabs;
-using DotNetNuke.Framework.JavaScriptLibraries;
 using DotNetNuke.Security;
 using DotNetNuke.Security.Permissions;
 using DotNetNuke.Services.ClientDependency;
@@ -98,7 +97,6 @@ public partial class SiteMapSl : SkinObjectBase
     /// <summary>
     /// The java script
     /// </summary>
-    private readonly IJavaScriptLibraryHelper javaScript;
 
     /// <summary>
     /// The client resource controller
@@ -220,7 +218,6 @@ public partial class SiteMapSl : SkinObjectBase
         var scope = HttpContext.Current.GetScope();
         var serviceProvider = scope.ServiceProvider;
 
-        this.javaScript = serviceProvider.GetRequiredService<IJavaScriptLibraryHelper>();
         this.clientResourceController = serviceProvider.GetRequiredService<IClientResourceController>();
         this.hostSettings = serviceProvider.GetRequiredService<IHostSettings>();
     }
@@ -719,14 +716,8 @@ public partial class SiteMapSl : SkinObjectBase
     /// </summary>
     private void PlaceScriptLink()
     {
-        // JQuery JS
-        this.javaScript.RequestRegistration(CommonJs.jQuery);
-
-        // jQuery Cookie Plugin
-        this.clientResourceController.RegisterScript(this.ResolveUrl("js/jquery.cookie.js"));
-
-        // jQuery TreeView Plugin
-        this.clientResourceController.RegisterScript(this.ResolveUrl("js/jquery.treeview.js"));
+        // TreeView Script (vanilla JS, includes cookie handling)
+        this.clientResourceController.RegisterScript(this.ResolveUrl("js/treeview.js"));
     }
 
     /// <summary>
@@ -740,7 +731,7 @@ public partial class SiteMapSl : SkinObjectBase
         var persist = string.Empty;
 
         var header =
-            $"jQuery(document).ready(function(){{ jQuery(\".{this.SkinName}\").treeview({{collapsed: {this.Collapsed},unique: {this.Unique}";
+            $"TreeView.init(\".{this.SkinName}\", {{collapsed: {this.Collapsed},unique: {this.Unique}";
 
         if (this.Animated != "false")
         {
@@ -760,7 +751,7 @@ public partial class SiteMapSl : SkinObjectBase
 
         var name = $"TreeViewScript{Guid.NewGuid()}";
 
-        var script = $"{header}{anim}{persist}}}); }});";
+        var script = $"{header}{anim}{persist}}});";
 
         ScriptManager.RegisterStartupScript(this, type, name, script, true);
     }

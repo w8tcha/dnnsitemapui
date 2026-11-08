@@ -901,11 +901,8 @@ public partial class SiteMap : PortalModuleBase
     /// </summary>
     private void PlaceScriptLink()
     {
-        // jQuery Cookie Plugin
-        this.clientResourceController.RegisterScript(this.ResolveUrl("js/jquery.cookie.js"));
-
-        // jQuery TreeView Plugin
-        this.clientResourceController.RegisterScript(this.ResolveUrl("js/jquery.treeview.js"));
+        // TreeView Script (vanilla JS, includes cookie handling)
+        this.clientResourceController.RegisterScript(this.ResolveUrl("js/treeview.js"));
     }
 
     /// <summary>
@@ -919,7 +916,7 @@ public partial class SiteMap : PortalModuleBase
         var litPersist = string.Empty;
 
         var header =
-            $"jQuery(document).ready(function(){{ jQuery(\".{this.skinName}\").treeview({{collapsed: {this.collapsed},unique: {this.unique}";
+            $"TreeView.init(\".{this.skinName}\", {{collapsed: {this.collapsed},unique: {this.unique}";
 
         if (this.animated != "false")
         {
@@ -937,7 +934,7 @@ public partial class SiteMap : PortalModuleBase
         }
 
         var name = $"TreeViewScript{Guid.NewGuid()}";
-        var script = $"{header}{anim}{litPersist}}}); }});";
+        var script = $"{header}{anim}{litPersist}}});";
 
         ScriptManager.RegisterStartupScript(this, type, name, script, true);
     }

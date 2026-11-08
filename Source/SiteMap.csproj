@@ -231,8 +231,7 @@
     <Content Include="Resources\ButtonActive.png" />
     <Content Include="Resources\ButtonHover.png" />
     <Content Include="Resources\HeaderBack.png" />
-    <Content Include="Resources\js\jquery.cookie.js" />
-    <Content Include="Resources\js\jquery.treeview.js" />
+    <Content Include="Resources\js\treeview.js" />
     <Content Include="Resources\SiteMap.gif" />
     <Content Include="Resources\Skins\Black-Blue\Preview.jpg" />
     <Content Include="Resources\Skins\Black-Blue\SiteMap.css" />

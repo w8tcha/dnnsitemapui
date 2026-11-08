@@ -51,9 +51,7 @@ Features
 - Filter Tabs By Taxonomy Tags (Terms from Current Page, All Terms from All Vacabularies, From Selected Vocabularies and from Selected Terms) 
 
 * TreeView Mode uses...
-- jQuery (jQuery.com) 
-- jQuery TreeView plugin (http://bassistance.de/jquery-plugins/jquery-plugin-treeview/)
-- jQuery Cookie plugin
+- a vanilla JS port of the jQuery TreeView plugin (http://bassistance.de/jquery-plugins/jquery-plugin-treeview/), no jQuery required
 
 Browser Support
 -----------
