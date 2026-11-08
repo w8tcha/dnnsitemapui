@@ -64,7 +64,7 @@ jobs:
 
       - name: Setup NuGet
         if: steps.version.outputs.should_release == 'true'
-        uses: NuGet/setup-nuget@v2
+        uses: NuGet/setup-nuget@v4
 
       - name: Restore NuGet packages
         if: steps.version.outputs.should_release == 'true'
