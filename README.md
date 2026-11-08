@@ -5,51 +5,137 @@
     <img src="Source/Resources/SiteMap.png" alt="SiteMap - A Modern SiteMap / TreeView" width="297" height="92" />
   </picture>
 </p>
-SiteMap - A Modern SiteMap / TreeView Module and Skin Object for DNN®
 
-![preview](https://github.com/w8tcha/dnnsitemapui/blob/master/SiteMapSkinsCollage.png?raw=true)
+<p align="center">
+  A modern SiteMap / TreeView <b>Module</b> and <b>Skin Object</b> for DNN®
+</p>
 
-Back in the old days, almost every web site had a sitemap where they listed out all the pages. The purpose of the sitemap is to help visitors and search engine spiders to find information on the site.
+<p align="center">
+  <a href="https://github.com/w8tcha/dnnsitemapui/releases/latest"><img src="https://img.shields.io/github/v/release/w8tcha/dnnsitemapui?label=release" alt="Latest release" /></a>
+  <a href="https://github.com/w8tcha/dnnsitemapui/releases"><img src="https://img.shields.io/github/downloads/w8tcha/dnnsitemapui/total" alt="Downloads" /></a>
+  <img src="https://img.shields.io/badge/DNN-10.4.1%2B-blue" alt="DNN 10.4.1+" />
+  <a href="LICENSE.md"><img src="https://img.shields.io/badge/license-BSD-green" alt="License" /></a>
+</p>
 
-Now, a lot of modern websites have dropped the sitemap page, instead they place the sitemap in the footer area. 
+---
 
-This Module/Skin Object Creates a SiteMap that looks like such footer SiteMap, but of course it can be placed anywhere on your Website. There a many pre-installed Skins, which changes the look of the SiteMap.
+![SiteMap skins preview](SiteMapSkinsCollage.png)
 
-The Module/Skin Object also can Render the SiteMap as a TreeView (With Skin Support & Animations)
+## About
 
-# Features
+Back in the old days, almost every website had a sitemap page listing all of its pages, helping visitors and search engine spiders find their way around. Many modern websites have dropped that page and place the sitemap in the footer instead.
 
-* SiteMap available as Module and Skin Object
-* Very Light Weight
-* Skin Support (Contains 9 Normal Skins, and 10 TreeView Skins)
-* There are two Render Modes : Normal and as TreeView*
-* Option to Show only Sub Links from Current Tab
-* Simply excluding of Tabs
-* Show / Hide Tab Hidden Tabs
-* Show / Hide Tab Icons
-* Define a Default Tab Icon
-* Shows links based on visitor's authorized permission level
-* Full Language Localization
-* Generates Human Friendly URLs
-* IPortable Support (Easy Import/Export of Settings)
-* Option to Set Maximum Sublevels
-* Demo Modus (Shows Skin Selector above the SiteMap)
-* Filter Tabs By Taxonomy Tags (Terms from Current Page, All Terms from All Vacabularies, From Selected Vocabularies and from Selected Terms)
+**SiteMap** renders exactly that kind of footer-style sitemap – but you can place it anywhere on your site, either as a module or directly in your theme as a skin object. It ships with a range of skins and can also render the sitemap as an animated, collapsible **TreeView**.
 
-## Extra TreeView Options
+## Features
 
-* Animation: Sets the animation speed for Expanding/Collapsing of Child Tabs. 
-* Valid values are one of the strings "slow", "normal", "fast".
-* Collapse: Sets whether all nodes should be collapsed by default
-* Unique: Sets whether only one tree node can be open at any time, collapsing any previous open nodes.
-* Persist: Persists the tree's expand/collapse state in one of two ways: 
-** "location" - looks within all tree nodes with link anchors that match the document's current URL (location.href), and if found, expands that node (including its parent nodes). Great for href-based state saving.
-** "cookie" - Saves the current state of the tree on each click to a cookie and restores that state on page load.
+- Available as **Module** and as **Skin Object**
+- Lightweight
+- Two render modes: **Normal** and **TreeView**
+- 19 built-in skins (9 normal, 10 TreeView)
+- Shows only the pages the visitor is permitted to see
+- Configurable start level and maximum number of sublevels
+- Option to show only the sub-links of the current page
+- Easily exclude (or include) specific pages by ID
+- Show / hide hidden pages
+- Show / hide page icons, with an optional default icon
+- Filter pages by taxonomy tags
+- Human-friendly URLs
+- Full localization support
+- `IPortable` support (import / export of module settings)
+- Demo mode with a skin selector shown above the sitemap
 
-## Option to Set Start Level
+## Requirements
 
-* Root : Shows All Tabs
-* Parent : Shows All Tabs From the Current Tabs Level Parent - If No Parent Tabs available it Renders from Root
-* Current: Shows All Tabs In the Current Level
-* Children: Shows All Child Tabs From The Current Tab - If No Child Tabs available it Renders from Root)
-* Custom: Shows all Tabs in The Current level based on the selected Tab
+- DNN Platform **10.4.1** or later
+
+## Installation
+
+1. Download the latest install package from the [Releases](https://github.com/w8tcha/dnnsitemapui/releases) page.
+2. In DNN, go to **Settings → Extensions → Install Extension** and upload the package.
+3. Add the **SiteMap** module to a page, or use the skin object in your theme (see below).
+
+## Configuration
+
+### Start level
+
+| Option     | Description |
+|------------|-------------|
+| `Root`     | Shows all pages. |
+| `Parent`   | Shows all pages starting from the parent level of the current page. Falls back to root if there is no parent. |
+| `Current`  | Shows all pages on the current page's level. |
+| `Children` | Shows all child pages of the current page. Falls back to root if there are no children. |
+| `Custom`   | Shows all pages on the level of the selected page. |
+
+### TreeView options
+
+| Option      | Description |
+|-------------|-------------|
+| `Animation` | Expand / collapse animation speed: `slow`, `normal` or `fast`. |
+| `Collapse`  | Whether all nodes are collapsed by default. |
+| `Unique`    | Only one node can be open at a time; opening a node collapses the others. |
+| `Persist`   | How the expand / collapse state is kept:<br>• `location` – expands the node (and its parents) whose link matches the current URL<br>• `cookie` – saves the state in a cookie on each click and restores it on page load |
+
+### Taxonomy filter
+
+Pages can be filtered by taxonomy terms from:
+
+- the current page
+- all vocabularies
+- selected vocabularies
+- selected terms
+
+## Using the Skin Object
+
+Register the skin object in your theme:
+
+```aspx
+<%@ Register TagPrefix="dnn" TagName="SITEMAP" Src="~/DesktopModules/SiteMap/SiteMapSl.ascx" %>
+```
+
+Then place it wherever you want the sitemap to appear, for example in the footer:
+
+```aspx
+<dnn:SITEMAP runat="server" id="dnnSiteMap" SkinName="Default" RenderMode="normal" RootLevel="root" MaxLevel="2" />
+```
+
+### Skin Object properties
+
+| Property          | Default    | Description |
+|-------------------|------------|-------------|
+| `SkinName`        | `Default`  | Name of the skin to use. |
+| `RenderMode`      | `normal`   | `normal` or `treeview`. |
+| `RootLevel`       | `root`     | `root`, `parent`, `current`, `children` or `custom`. |
+| `RootTab`         | `-1`       | Page ID to start from when `RootLevel` is `custom`. |
+| `MaxLevel`        | `-1`       | Maximum number of sublevels (`-1` = unlimited). |
+| `ExclusionTabs`   | *(empty)*  | Comma-separated list of page IDs to exclude. |
+| `InclusionTabs`   | *(empty)*  | Comma-separated list of page IDs to include. |
+| `ShowHidden`      | `false`    | Show pages that are hidden from the menu. |
+| `ShowTabIcons`    | `false`    | Show page icons. |
+| `DefaultIcon`     | *(empty)*  | Icon to use for pages without an icon. |
+| `HumanUrls`       | `false`    | Generate human-friendly URLs. |
+| `RenderName`      | `false`    | Render the root name in TreeView mode. |
+| `Animated`        | `normal`   | TreeView animation speed: `slow`, `normal` or `fast`. |
+| `Collapsed`       | `true`     | TreeView: collapse all nodes by default. |
+| `Unique`          | `true`     | TreeView: allow only one open node at a time. |
+| `Persist`         | `location` | TreeView: `location` or `cookie`. |
+| `FilterByTax`     | `false`    | Enable filtering by taxonomy. |
+| `TaxMode`         | `all`      | `tab`, `all`, `custom` (vocabularies) or `terms`. |
+| `TaxVocabularies` | *(empty)*  | Comma-separated vocabulary IDs (for `TaxMode="custom"`). |
+| `TaxTerms`        | *(empty)*  | Comma-separated term names (for `TaxMode="terms"`). |
+| `DemoMode`        | `false`    | Show the skin selector above the sitemap. |
+
+## Building from source
+
+Requires Visual Studio (or MSBuild) with .NET Framework 4.8.1.
+
+```powershell
+nuget restore SiteMap.slnx
+msbuild Source/SiteMap.csproj /p:Configuration=Deploy /p:Platform=AnyCPU
+```
+
+The install packages are written to the `deploy` folder.
+
+## License
+
+Copyright © Ingo Herbote. Released under a BSD-style license – see [LICENSE.md](LICENSE.md).
